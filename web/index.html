@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Physics engines for robotics, revisited with MuJoCo 4.0</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uplot@1.6.31/dist/uPlot.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+    {"imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/",
+      "uplot": "https://cdn.jsdelivr.net/npm/uplot@1.6.31/dist/uPlot.esm.js"
+    }}
+  </script>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <h1>Physics engines for robotics, revisited</h1>
+      <p>A reproduction of Manda Robotics'
+        <a href="https://mandarobotics.com/blog/comparing-physics-engines/index.html">engine
+        comparison</a> with MuJoCo 4.0, MuJoCo-Warp 4.0, Newton 1.7 and Genesis 1.4.5</p>
+    </div>
+    <nav id="tabs">
+      <button data-tab="overview" class="active">Overview</button>
+      <button data-tab="replay">Replay</button>
+      <button data-tab="versions">MuJoCo 4.0 vs 3.11</button>
+      <button data-tab="sensitivity">Sensitivity</button>
+      <button data-tab="runtime">Runtime</button>
+      <button data-tab="audit">Audit</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="overview" class="tab active">
+      <div id="findings" class="cards"></div>
+      <div class="prose">
+        <h2>What was run</h2>
+        <p>Every route loads the same MJCF scene. MuJoCo, MuJoCo-Warp and Genesis read it
+          through the MuJoCo compiler, and Newton reads it through its own importer. Each
+          route gets the same initial state, the same efforts or frozen controller tape, and
+          the same timestep. The model is the Franka Panda from MuJoCo Menagerie at the
+          article's pinned revision. Each route has its own locked <code>uv</code>
+          environment. The Panda reference and feedforward tapes are generated once on
+          MuJoCo 3.11, as in the article.</p>
+        <p>Phases: (1) single-object controls, (2) a three-object collision chain, (3) the
+          Panda: open-loop effort, joint tracking, grasping, stacking and channel pushing,
+          (4) what MuJoCo 4.0 changes and how sensitive the results are to solver options,
+          (5) runtime from one world up to 131,072 worlds.</p>
+        <p class="muted">The article does not publish its table, object layout or IK
+          waypoints for grasp, stack and push. Those scenes follow its protocol (timings,
+          gains, pads, masses, friction) on a layout defined here, so every engine is
+          compared on identical inputs, but absolute positions are not the article's.</p>
+      </div>
+    </section>
+
+    <section id="replay" class="tab">
+      <aside class="panel">
+        <h3>Scene</h3>
+        <div id="scene-list"></div>
+        <h3>Engines</h3>
+        <div id="route-list"></div>
+        <h3>View</h3>
+        <div class="seg" id="view-mode">
+          <button data-mode="overlay" class="active">Overlay</button>
+          <button data-mode="side">Side by side</button>
+        </div>
+        <label class="check"><input type="checkbox" id="show-forces" checked> Contact forces
+          <select id="force-scale">
+            <option value="0.01">1 N = 1 cm</option>
+            <option value="0.002">1 N = 2 mm</option>
+            <option value="0.05">1 N = 5 cm</option>
+          </select></label>
+        <label class="check"><input type="checkbox" id="show-trails" checked> COM trails</label>
+      </aside>
+      <div class="stage">
+        <div id="viewer"></div>
+        <div class="transport">
+          <button id="play" title="Play / pause (space)">▶</button>
+          <input type="range" id="scrub" min="0" max="1000" value="0">
+          <span id="time">0.000 s</span>
+          <select id="speed">
+            <option value="0.1">0.1×</option><option value="0.25">0.25×</option>
+            <option value="1" selected>1×</option><option value="2">2×</option>
+          </select>
+        </div>
+        <div class="plot-head">
+          <select id="signal"></select>
+          <span class="muted" id="signal-note"></span>
+        </div>
+        <div id="plot"></div>
+        <div id="scene-metrics"></div>
+      </div>
+    </section>
+
+    <section id="versions" class="tab">
+      <div class="prose">
+        <h2>Same MJCF, same options: MuJoCo 3.11 vs 4.0</h2>
+        <p>The path difference is the largest centre-of-mass distance between the two traces
+          over all bodies and frames. The first divergence is when it first exceeds 1 µm. The
+          contact column lists the body pairs whose mean number of contacts per frame
+          changed.</p>
+      </div>
+      <div id="versions-table"></div>
+    </section>
+
+    <section id="sensitivity" class="tab">
+      <div class="prose">
+        <h2>Option and determinism sensitivity</h2>
+        <p>Each variant changes one setting relative to its baseline run on the same route.
+          The variants cover cone type, native CCD, multi-contact CCD, impratio, the new 4.0
+          speculative contacts, the new 4.0 discrete integrator and IPC, a forced
+          dense or sparse Jacobian (the mujoco#3767 check), the GPU determinism switches,
+          and Genesis's own default options.</p>
+      </div>
+      <div id="sensitivity-table"></div>
+    </section>
+
+    <section id="runtime" class="tab">
+      <div class="prose">
+        <h2>Runtime</h2>
+        <p>Native batched stepping with no trace recording. Each case gets one warm-up trial,
+          then the median of three timed trials from the same reset state. MuJoCo-Warp and
+          Newton replay one CUDA graph per step, and the push controller runs on the device.
+          Genesis batches through <code>n_envs</code>. The machine is an RTX 5090 with a
+          Ryzen 9 9950X (32 threads).</p>
+      </div>
+      <div class="seg" id="workload"></div>
+      <div class="grid2">
+        <div><h3>World-steps per second</h3><div id="bench-throughput"></div></div>
+        <div><h3>Real-time factor per world</h3><div id="bench-rtf"></div></div>
+      </div>
+      <h3>MuJoCo CPU: 3.11 vs 4.0</h3>
+      <div id="bench-cpu"></div>
+      <h3>GPU memory and batch equivalence</h3>
+      <div id="bench-gpu"></div>
+    </section>
+
+    <section id="audit" class="tab">
+      <div class="prose">
+        <h2>Import audit</h2>
+        <p>Every route reads back the masses, centres of mass, inertias, joint properties
+          and forward kinematics it simulates. These are checked against MuJoCo 4.0 using
+          the article's tolerances.</p>
+      </div>
+      <div id="audit-tables"></div>
+      <h3>Environments</h3>
+      <div id="env-table"></div>
+    </section>
+  </main>
+
+  <footer>
+    Robot model: Franka Emika Panda from
+    <a href="https://github.com/google-deepmind/mujoco_menagerie">MuJoCo Menagerie</a>
+    (Apache-2.0, see <a href="data/PANDA-LICENSE">licence</a>). Data: <code>results/</code>.
+  </footer>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

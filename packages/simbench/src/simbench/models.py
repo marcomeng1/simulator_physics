@@ -4,50 +4,72 @@ Generation uses only the standard library, so every route compiles byte-identica
 XML regardless of which MuJoCo version (if any) it has installed.
 """
 
+import os
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import numpy as np
 
 from simbench.paths import ASSETS, PANDA_DIR, PANDA_XML
+from simbench.scene import OPTION, SOLIMP, SOLREF
 
 GENERATED = ASSETS / "generated"
 FINGER_OPENING = 0.04
 ARM_JOINTS = [f"joint{i}" for i in range(1, 8)]
+FINGER_JOINTS = ["finger_joint1", "finger_joint2"]
+PANDA_BODIES = ["link0", "link1", "link2", "link3", "link4", "link5", "link6", "link7", "hand",
+                "left_finger", "right_finger"]
+Q_READY = [0.0, -np.pi / 4, 0.0, -3 * np.pi / 4, 0.0, np.pi / 2, np.pi / 4]
+
+# Fingertip pad (article grasp audit): one box per finger, in the finger frame.
+PAD_HALF = (0.012, 0.004, 0.016)
+PAD_POS = (0.0, 0.004, 0.0445)
+TCP_POS = (0.0, 0.0, 0.0584 + PAD_POS[2])
+FRICTION = 0.5
+
+# Collision bits: pads touch objects; objects touch everything; statics touch objects.
+PAD, OBJECT, STATIC = 1, 2, 4
+MASKS = {"pad": (PAD, OBJECT), "object": (OBJECT, PAD | OBJECT | STATIC),
+         "static": (STATIC, OBJECT)}
 
 
-def _quat_rotate(quat_wxyz: np.ndarray, v: np.ndarray) -> np.ndarray:
-    w, x, y, z = quat_wxyz / np.linalg.norm(quat_wxyz)
-    u = np.array([x, y, z])
-    return v + 2 * np.cross(u, np.cross(u, v) + w * v)
+def contact_attrs(kind: str, friction: float = FRICTION) -> dict[str, str]:
+    contype, conaffinity = MASKS[kind]
+    return {"contype": str(contype), "conaffinity": str(conaffinity),
+            "friction": f"{friction} 0 0", "condim": "3", "solref": SOLREF, "solimp": SOLIMP}
 
 
 def _fmt(values) -> str:
     return " ".join(f"{float(v):.12g}" for v in values)
 
 
-def build_panda_article() -> Path:
-    """The article's simplified free-space Panda.
+def panda_tree(variant: str, out_dir: Path) -> ET.ElementTree:
+    """Menagerie Panda simplified for the benchmark.
 
-    Seven dynamic arm joints on a fixed base; fingers welded open at 4 cm each;
-    no tendon, finger equality, actuators or keyframe; all collisions disabled;
-    armature, damping and frictionloss zero; Euler integrator.
+    Common to both variants: no tendon, finger equality, actuators, keyframe or contact
+    excludes; armature, damping and frictionloss zero; Euler integrator; every source
+    geom collision-free.
+
+    free: fingers welded open at 4 cm each (the article's free-space Panda).
+    pads: fingers are independent slide joints (0-4 cm) with one analytic box pad each,
+          the only robot geoms that collide; a `tcp` site sits between the pads.
     """
     tree = ET.parse(PANDA_XML)
     root = tree.getroot()
-    root.set("model", "panda_article")
+    root.set("model", f"panda_{variant}")
 
     compiler = root.find("compiler")
-    meshdir = Path("..") / PANDA_DIR.relative_to(ASSETS) / compiler.get("meshdir")
-    compiler.set("meshdir", meshdir.as_posix())
-    root.find("option").set("integrator", "Euler")
+    meshdir = os.path.relpath(PANDA_DIR / compiler.get("meshdir"), out_dir)
+    compiler.set("meshdir", Path(meshdir).as_posix())
+    option = root.find("option")
+    for key, value in (part.split("=") for part in OPTION.split()):
+        option.set(key, value.strip('"'))
 
     top_default = root.find("default")
     ET.SubElement(top_default, "geom", contype="0", conaffinity="0")
     panda_joint = top_default.find("default[@class='panda']/joint")
-    panda_joint.set("armature", "0")
-    panda_joint.set("damping", "0")
-    panda_joint.set("frictionloss", "0")
+    for key in ("armature", "damping", "frictionloss"):
+        panda_joint.set(key, "0")
 
     for tag in ("tendon", "equality", "actuator", "keyframe", "contact"):
         for el in root.findall(tag):
@@ -55,17 +77,37 @@ def build_panda_article() -> Path:
 
     for name in ("left_finger", "right_finger"):
         body = root.find(f".//body[@name='{name}']")
-        joint = body.find("joint")
-        body.remove(joint)
-        pos = np.array([float(v) for v in body.get("pos", "0 0 0").split()])
-        quat = np.array([float(v) for v in body.get("quat", "1 0 0 0").split()])
-        body.set("pos", _fmt(pos + _quat_rotate(quat, np.array([0.0, FINGER_OPENING, 0.0]))))
+        if variant == "free":
+            # The article welds both fingers at +4 cm along the *hand* Y axis (its recorded
+            # poses put the right finger on the same side as the left), not along each
+            # finger's own slide axis. Kept so the effort replay matches its traces exactly.
+            body.remove(body.find("joint"))
+            pos = np.array([float(v) for v in body.get("pos", "0 0 0").split()])
+            body.set("pos", _fmt(pos + np.array([0.0, FINGER_OPENING, 0.0])))
+        else:
+            for geom in body.findall("geom"):
+                if geom.get("class", "").startswith("fingertip_pad_collision"):
+                    body.remove(geom)
+            ET.SubElement(body, "geom", name=f"{name}_pad", type="box", size=_fmt(PAD_HALF),
+                          pos=_fmt(PAD_POS), rgba="0.9 0.5 0.1 1", **contact_attrs("pad"))
+    if variant == "pads":
+        hand = root.find(".//body[@name='hand']")
+        ET.SubElement(hand, "site", name="tcp", pos=_fmt(TCP_POS), size="0.005")
+    return tree
 
-    GENERATED.mkdir(parents=True, exist_ok=True)
-    out = GENERATED / "panda_article.xml"
+
+def write(tree: ET.ElementTree, path: Path) -> Path:
+    path.parent.mkdir(parents=True, exist_ok=True)
     ET.indent(tree)
-    tree.write(out, encoding="unicode")
-    return out
+    tree.write(path, encoding="unicode")
+    return path
+
+
+def build_panda_article() -> Path:
+    """The article's simplified free-space Panda as a standalone file (for the audit)."""
+    tree = panda_tree("free", GENERATED)
+    tree.getroot().set("model", "panda_article")
+    return write(tree, GENERATED / "panda_article.xml")
 
 
 MODELS = {

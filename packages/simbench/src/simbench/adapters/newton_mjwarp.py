@@ -127,6 +127,121 @@ def _generated_mjmodel_readback(m: newton.Model, route: str, model: str,
     return rb
 
 
+class Sim:
+    """Newton model stepped by SolverMuJoCo with native MuJoCo-Warp contacts (float32, GPU).
+
+    Body state comes from Newton's State; contact forces come from the solver's
+    MuJoCo-Warp data, mapped back to MJCF body names.
+    """
+
+    def __init__(self, scene, seed: int = 0, naconmax: int = 256, njmax: int = 1024,
+                 **solver_options):
+        import mujoco_warp as mjw
+
+        self.mjw = mjw
+        self.scene = scene
+        path = scene.mjcf_path()
+        self.model = m = build(path)
+        opts = {"solver": "newton", "integrator": "euler", "cone": "elliptic",
+                "iterations": 100, "tolerance": 1e-10, "nconmax": naconmax, "njmax": njmax}
+        opts.update(solver_options)
+        if isinstance(opts.get("deterministic"), str):  # plans are JSON: "RUN_TO_RUN" etc.
+            opts["deterministic"] = wp.DeterministicMode[opts["deterministic"]]
+        self.solver = newton.solvers.SolverMuJoCo(m, **opts)
+        self.dt = scene.dt
+
+        body_index = {_short(label): b for b, label in enumerate(m.body_label)}
+        self.body_ids = np.array([body_index[n] for n in scene.bodies])
+        jtype, q_start, qd_start = (m.joint_type.numpy(), m.joint_q_start.numpy(),
+                                    m.joint_qd_start.numpy())
+        joint_index = {_short(label): j for j, label in enumerate(m.joint_label)}
+        self.q_idx = np.array([q_start[joint_index[n]] for n in scene.joints], dtype=int)
+        self.qd_idx = np.array([qd_start[joint_index[n]] for n in scene.joints], dtype=int)
+        self.body_com = m.body_com.numpy().astype(float)
+
+        q, qd = m.joint_q.numpy().copy(), m.joint_qd.numpy().copy()
+        for name, value in scene.joint_init.items():
+            q[q_start[joint_index[name]]] = value
+        free_joint_of = {int(m.joint_child.numpy()[j]): j for j in range(m.joint_count)
+                         if int(jtype[j]) == int(newton.JointType.FREE)}
+        for name, init in scene.free_init.items():
+            # Free-joint qd: COM linear velocity and angular velocity, both world frame.
+            start = qd_start[free_joint_of[body_index[name]]]
+            qd[start:start + 3] = init.linear
+            qd[start + 3:start + 6] = init.angular
+        self.s0, self.s1, self.control = m.state(), m.state(), m.control()
+        self.s0.joint_q.assign(q)
+        self.s0.joint_qd.assign(qd)
+        newton.eval_fk(m, self.s0.joint_q, self.s0.joint_qd, self.s0)
+        self._joint_f = np.zeros(m.joint_dof_count, dtype=np.float32)
+
+        # Contact geoms -> MJCF body names via the generated MjModel's naming.
+        mjm = self.solver.mj_model
+        short = {label.replace("/", "_"): _short(label) for label in m.body_label}
+        self.contact_names = [short.get(mjm.body(b).name, mjm.body(b).name) or "world"
+                              for b in range(mjm.nbody)]
+        self.contact_names[0] = "world"
+        self.geom_body = mjm.geom_bodyid.copy()
+        self.track = {self.contact_names.index(n): i for i, n in enumerate(scene.bodies)}
+        self._ids = wp.array(np.arange(self.solver.mjw_data.naconmax, dtype=np.int32),
+                             dtype=wp.int32)
+        self._force = wp.zeros(self.solver.mjw_data.naconmax, dtype=wp.spatial_vector)
+
+    def settings(self) -> dict:
+        from simbench.adapters.mujoco_cpu import options
+
+        return {"engine": "newton", "version": newton.__version__, "warp": wp.__version__,
+                "mujoco_warp": getattr(self.mjw, "__version__", None), "precision": "float32",
+                "device": str(wp.get_device()),
+                "deterministic": int(getattr(self.solver.mjw_model.opt, "deterministic", 0)),
+                **options(self.solver.mj_model)}
+
+    def effective_model(self) -> dict:
+        mass, inertia = self.model.body_mass.numpy(), self.model.body_inertia.numpy()
+        return {n: {"mass": float(mass[b]), "inertia": inertia[b].astype(float).tolist()}
+                for n, b in zip(self.scene.bodies, self.body_ids, strict=True)}
+
+    def state(self) -> dict:
+        ids = self.body_ids
+        body_q = self.s0.body_q.numpy()[ids].astype(float)
+        body_qd = self.s0.body_qd.numpy()[ids].astype(float)
+        pos, quat_xyzw = body_q[:, :3], body_q[:, 3:]
+        com = pos + np.array([_rotate_xyzw(q, c) for q, c in
+                              zip(quat_xyzw, self.body_com[ids], strict=True)])
+        q, qd = self.s0.joint_q.numpy(), self.s0.joint_qd.numpy()
+        return {"pos": pos, "com": com,
+                "quat": np.array([_quat_xyzw_to_wxyz(x) for x in quat_xyzw]),
+                "linvel": body_qd[:, :3], "angvel": body_qd[:, 3:],
+                "q": q[self.q_idx].astype(float), "qd": qd[self.qd_idx].astype(float)}
+
+    def step(self, tau: np.ndarray) -> None:
+        self._joint_f[:] = 0
+        self._joint_f[self.qd_idx] = tau
+        self.control.joint_f.assign(self._joint_f)
+        self.solver.step(self.s0, self.s1, self.control, None, self.dt)
+        self.s0, self.s1 = self.s1, self.s0
+
+    def contacts(self) -> dict:
+        d = self.solver.mjw_data
+        n = int(d.nacon.numpy()[0])
+        net = np.zeros((len(self.body_ids), 3))
+        if n == 0:
+            e = np.zeros(0, int)
+            return {"a": e, "b": e, "pos": np.zeros((0, 3)), "force": np.zeros((0, 3)),
+                    "dist": np.zeros(0), "net": net}
+        self.mjw.contact_force(self.solver.mjw_model, d, self._ids, True, self._force)
+        geom = d.contact.geom.numpy()[:n]
+        a, b = self.geom_body[geom[:, 0]], self.geom_body[geom[:, 1]]
+        force = self._force.numpy()[:n, :3].astype(float)
+        for i in range(n):
+            if b[i] in self.track:
+                net[self.track[b[i]]] += force[i]
+            if a[i] in self.track:
+                net[self.track[a[i]]] -= force[i]
+        return {"a": a, "b": b, "pos": d.contact.pos.numpy()[:n].astype(float), "force": force,
+                "dist": d.contact.dist.numpy()[:n].astype(float), "net": net}
+
+
 def smoke(path: Path, steps: int = 1000) -> dict:
     m = build(path)
     solver = newton.solvers.SolverMuJoCo(m)

@@ -87,6 +87,82 @@ def cmd_audit_compare(args) -> None:
             print(f"{'':<18}  missing: {', '.join(r['missing'][:6])}")
 
 
+def cmd_run_plan(args) -> None:
+    from simbench.plans import PLANS
+    from simbench.run import simulate, trace_stem
+    from simbench.scenes import make
+
+    for run in PLANS[args.plan]:
+        if args.scene and run.scene not in args.scene:
+            continue
+        if run.routes is not None and args.route not in run.routes:
+            continue
+        for seed in run.seeds:
+            scene = make(run.scene, **run.overrides)
+            tr = simulate(args.route, scene, seed=seed, tag=run.tag, sim_kwargs=run.sim)
+            stem = trace_stem(scene, args.route, seed, run.tag)
+            tr.save(stem)
+            print(f"{args.route:<10} {stem.parent.parent.name}/{stem.parent.name} seed {seed}: "
+                  f"{tr.meta['status']} ({tr.meta['frames']} frames, "
+                  f"{tr.meta['timing']['loop_s']:.1f} s)", flush=True)
+
+
+def cmd_make_tapes(args) -> None:
+    from simbench import tapes
+    from simbench.scenes.panda import tape_specs
+
+    for spec in tape_specs():
+        path = tapes.tape_path(spec)
+        if path.exists() and not args.force:
+            print(f"kept {path.name}")
+            continue
+        print(f"wrote {tapes.generate(spec).name}", flush=True)
+
+
+def cmd_bench(args) -> None:
+    from simbench import bench
+    from simbench.envinfo import environment
+
+    path = SUMMARY / "bench" / f"{args.route}.json"
+    out = json.loads(path.read_text()) if path.exists() else {"workloads": {}}
+    out["environment"] = environment(args.route)
+    worlds = [n for n in bench.WORLDS if n <= args.max_worlds]
+    for workload in args.workloads:
+        kwargs = {} if args.route.startswith("mujoco") else {"worlds": worlds}
+        runs, equiv = bench.BENCH[args.route](workload, **kwargs)
+        out["workloads"][workload] = {"runs": runs, "equivalence": equiv}
+        _write(path, out)
+        for r in runs:
+            if "error" in r:
+                print(f"{args.route:<10} {workload:<6} n={r['worlds']:<7} ERROR {r['error']}")
+                continue
+            mem = r.get("gpu_memory_mib")
+            print(f"{args.route:<10} {workload:<6} {r['mode']:<10} n={r['worlds']:<7} "
+                  f"threads={r.get('threads', '-'):<3} {r['world_steps_per_s']:>14,.0f} "
+                  f"world-steps/s  rtf/world {r['rtf_per_world']:>9.3f}"
+                  + (f"  {mem:,.0f} MiB" if mem else ""), flush=True)
+        if equiv:
+            print(f"{'':<10} {workload:<6} equivalence {json.dumps(equiv)}", flush=True)
+
+
+def cmd_export_web(args) -> None:
+    from simbench.web import export
+
+    export()
+
+
+def cmd_report(args) -> None:
+    from simbench import report
+    from simbench.plans import PLANS
+
+    if args.plan == "versions":
+        report.version_report()
+    elif any(r.base for r in PLANS[args.plan]):
+        report.sensitivity_report(args.plan)
+    else:
+        report.phase_report(args.plan)
+
+
 def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="simbench")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -108,6 +184,29 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--model", choices=MODEL_NAMES, default="panda_article")
     p.add_argument("--reference", default="mujoco4")
     p.set_defaults(func=cmd_audit_compare)
+
+    p = sub.add_parser("run-plan", help="run every scene/timestep/seed of a plan on one route")
+    p.add_argument("--route", required=True)
+    p.add_argument("--plan", required=True)
+    p.add_argument("--scene", nargs="*", help="restrict to these scenes")
+    p.set_defaults(func=cmd_run_plan)
+
+    p = sub.add_parser("make-tapes", help="generate the frozen Panda reference/feedforward tapes")
+    p.add_argument("--force", action="store_true", help="regenerate existing tapes")
+    p.set_defaults(func=cmd_make_tapes)
+
+    p = sub.add_parser("bench", help="Phase 5 batched runtime benchmark on one route")
+    p.add_argument("--route", required=True)
+    p.add_argument("--workloads", nargs="*", default=["slide", "drop", "panda", "push"])
+    p.add_argument("--max-worlds", type=int, default=131072)
+    p.set_defaults(func=cmd_bench)
+
+    p = sub.add_parser("export-web", help="write replay data and summaries for web/")
+    p.set_defaults(func=cmd_export_web)
+
+    p = sub.add_parser("report", help="metrics for every recorded trace of a plan")
+    p.add_argument("--plan", required=True)
+    p.set_defaults(func=cmd_report)
 
     args = parser.parse_args(argv)
     args.func(args)

@@ -13,5 +13,5 @@ reference/article/
 # Raw run outputs; summaries are committed under results/summary/
 results/raw/
 
-web/node_modules/
-web/dist/
+# Site data, regenerated from results/ by `make web`
+web/data/

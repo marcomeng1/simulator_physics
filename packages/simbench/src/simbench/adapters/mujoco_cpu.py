@@ -69,6 +69,127 @@ def readback(path: Path, route: str, model: str,
     return rb
 
 
+def free_dofs(m: mujoco.MjModel, body: int) -> int | None:
+    """DOF address of a body's free joint, if it has one."""
+    for j in range(m.body_jntadr[body], m.body_jntadr[body] + m.body_jntnum[body]):
+        if int(m.jnt_type[j]) == int(mujoco.mjtJoint.mjJNT_FREE):
+            return int(m.jnt_dofadr[j])
+    return None
+
+
+def options(m: mujoco.MjModel) -> dict:
+    o = m.opt
+    return {
+        "timestep": float(o.timestep), "integrator": int(o.integrator),
+        "solver": int(o.solver), "cone": int(o.cone), "jacobian": int(o.jacobian),
+        "iterations": int(o.iterations), "tolerance": float(o.tolerance),
+        "ls_iterations": int(o.ls_iterations), "impratio": float(o.impratio),
+        "noslip_iterations": int(o.noslip_iterations),
+        "enableflags": int(o.enableflags), "disableflags": int(o.disableflags),
+        "gravity": o.gravity.tolist(),
+    }
+
+
+def apply_options(m: mujoco.MjModel, options: dict) -> None:
+    """Override compiled mjOption fields by name, e.g. for Phase 4 sensitivity runs.
+
+    `enable` / `disable` take mjtEnableBit / mjtDisableBit names; `cone`, `jacobian`,
+    `integrator` take enum suffixes ("PYRAMIDAL", "SPARSE", "DISCRETE"); anything else
+    is set as a field.
+    """
+    for key, value in options.items():
+        if key == "enable":
+            for name in value:
+                m.opt.enableflags |= int(getattr(mujoco.mjtEnableBit, f"mjENBL_{name}"))
+        elif key == "disable":
+            for name in value:
+                m.opt.disableflags |= int(getattr(mujoco.mjtDisableBit, f"mjDSBL_{name}"))
+        elif key == "cone":
+            m.opt.cone = getattr(mujoco.mjtCone, f"mjCONE_{value}")
+        elif key == "jacobian":
+            m.opt.jacobian = getattr(mujoco.mjtJacobian, f"mjJAC_{value}")
+        elif key == "integrator":
+            m.opt.integrator = getattr(mujoco.mjtIntegrator, f"mjINT_{value}")
+        else:
+            setattr(m.opt, key, value)
+
+
+class Sim:
+    """MuJoCo CPU simulation of one Scene (float64)."""
+
+    def __init__(self, scene, seed: int = 0, options: dict | None = None):
+        self.scene = scene
+        self.m = m = mujoco.MjModel.from_xml_path(str(scene.mjcf_path()))
+        apply_options(m, options or {})
+        self.d = d = mujoco.MjData(m)
+        self.body_ids = np.array([m.body(n).id for n in scene.bodies])
+        self.qposadr = np.array([m.jnt_qposadr[m.joint(n).id] for n in scene.joints], dtype=int)
+        self.dofadr = np.array([m.jnt_dofadr[m.joint(n).id] for n in scene.joints], dtype=int)
+        self.contact_names = [m.body(b).name or "world" for b in range(m.nbody)]
+        self.track = {b: i for i, b in enumerate(self.body_ids)}
+
+        for name, q in scene.joint_init.items():
+            d.qpos[m.jnt_qposadr[m.joint(name).id]] = q
+        mujoco.mj_kinematics(m, d)
+        for name, init in scene.free_init.items():
+            b = m.body(name).id
+            dof = free_dofs(m, b)
+            # Free-joint qvel: world-frame linear velocity, body-frame angular velocity.
+            d.qvel[dof:dof + 3] = init.linear
+            d.qvel[dof + 3:dof + 6] = d.xmat[b].reshape(3, 3).T @ np.asarray(init.angular)
+        mujoco.mj_forward(m, d)
+        self._vel = np.zeros(6)
+        self._f6 = np.zeros(6)
+
+    def settings(self) -> dict:
+        return {"engine": "mujoco", "version": mujoco.__version__, "precision": "float64",
+                "device": "cpu", **options(self.m)}
+
+    def effective_model(self) -> dict:
+        m = self.m
+        return {n: {"mass": float(m.body_mass[b]), "inertia": m.body_inertia[b].tolist()}
+                for n, b in zip(self.scene.bodies, self.body_ids, strict=True)}
+
+    def state(self) -> dict:
+        m, d, ids = self.m, self.d, self.body_ids
+        # mj_step integrates qpos/qvel but leaves xpos/cvel at the pre-step state.
+        mujoco.mj_kinematics(m, d)
+        mujoco.mj_comPos(m, d)
+        mujoco.mj_comVel(m, d)
+        lin, ang = np.zeros((len(ids), 3)), np.zeros((len(ids), 3))
+        for i, b in enumerate(ids):
+            mujoco.mj_objectVelocity(m, d, mujoco.mjtObj.mjOBJ_BODY, b, self._vel, 0)
+            ang[i], lin[i] = self._vel[:3], self._vel[3:]
+        return {"pos": d.xpos[ids].copy(), "com": d.xipos[ids].copy(),
+                "quat": d.xquat[ids].copy(), "linvel": lin, "angvel": ang,
+                "q": d.qpos[self.qposadr].copy(), "qd": d.qvel[self.dofadr].copy()}
+
+    def step(self, tau: np.ndarray) -> None:
+        self.d.qfrc_applied[:] = 0
+        self.d.qfrc_applied[self.dofadr] = tau
+        mujoco.mj_step(self.m, self.d)
+
+    def contacts(self) -> dict:
+        m, d = self.m, self.d
+        n = d.ncon
+        a, b = np.zeros(n, int), np.zeros(n, int)
+        pos, force, dist = np.zeros((n, 3)), np.zeros((n, 3)), np.zeros(n)
+        net = np.zeros((len(self.body_ids), 3))
+        for i in range(n):
+            c = d.contact[i]
+            mujoco.mj_contactForce(m, d, i, self._f6)
+            # Contact frame rows are (normal, tangent1, tangent2); the normal points
+            # from geom1 to geom2, so this is the force geom1 exerts on geom2.
+            f = c.frame.reshape(3, 3).T @ self._f6[:3]
+            a[i], b[i] = m.geom_bodyid[c.geom1], m.geom_bodyid[c.geom2]
+            pos[i], force[i], dist[i] = c.pos, f, c.dist
+            if b[i] in self.track:
+                net[self.track[b[i]]] += f
+            if a[i] in self.track:
+                net[self.track[a[i]]] -= f
+        return {"a": a, "b": b, "pos": pos, "force": force, "dist": dist, "net": net}
+
+
 def smoke(path: Path, steps: int = 1000) -> dict:
     m = load_model(path)
     d = mujoco.MjData(m)

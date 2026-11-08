@@ -1,0 +1,433 @@
+{
+  "workloads": {
+    "slide": {
+      "runs": [
+        {
+          "mode": "n_envs",
+          "setup_s": 0.10580479889176786,
+          "worlds": 1,
+          "steps": 1000,
+          "trials_s": [
+            0.7248116240371019,
+            0.7247241900768131,
+            0.7242821981199086
+          ],
+          "warmup_s": 0.7700009099207819,
+          "world_steps_per_s": 1379.8352720833157,
+          "rtf_per_world": 1.3798352720833156,
+          "gpu_memory_mib": 3536.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 1.0082901928108186,
+          "worlds": 128,
+          "steps": 1000,
+          "trials_s": [
+            0.7614904348738492,
+            0.7622405199799687,
+            0.7618258290458471
+          ],
+          "warmup_s": 0.8082919099833816,
+          "world_steps_per_s": 168017.40649869316,
+          "rtf_per_world": 1.3126359882710403,
+          "gpu_memory_mib": 4408.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 0.10825463803485036,
+          "worlds": 1024,
+          "steps": 1000,
+          "trials_s": [
+            0.8970289861317724,
+            0.8968942831270397,
+            0.8972203291486949
+          ],
+          "warmup_s": 0.8981332269031554,
+          "world_steps_per_s": 1141546.166100786,
+          "rtf_per_world": 1.114791177832799,
+          "gpu_memory_mib": 4440.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 0.1290078570600599,
+          "worlds": 8192,
+          "steps": 488,
+          "trials_s": [
+            1.9397391600068659,
+            1.9404337331652641,
+            1.9409664319828153
+          ],
+          "warmup_s": 1.9409382638987154,
+          "world_steps_per_s": 2060207.4328397184,
+          "rtf_per_world": 0.2514901651415672,
+          "gpu_memory_mib": 4634.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 17.12907233601436,
+          "worlds": 32768,
+          "steps": 122,
+          "trials_s": [
+            2.041159682907164,
+            2.0401578000746667,
+            2.0414710100740194
+          ],
+          "warmup_s": 2.040518229128793,
+          "world_steps_per_s": 1958541.525916384,
+          "rtf_per_world": 0.05976994402820997,
+          "gpu_memory_mib": 5392.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 0.1756669720634818,
+          "worlds": 131072,
+          "steps": 100,
+          "trials_s": [
+            6.631886848947033,
+            6.6060203849337995,
+            6.60485096112825
+          ],
+          "warmup_s": 6.640059701167047,
+          "world_steps_per_s": 1984129.5116032783,
+          "rtf_per_world": 0.015137706845117786,
+          "gpu_memory_mib": 8504.0,
+          "finite": true
+        }
+      ],
+      "equivalence": {
+        "repeat_n1_max_dq": 0.0,
+        "batch_n128_vs_n1_max_dq": 0.0
+      }
+    },
+    "drop": {
+      "runs": [
+        {
+          "mode": "n_envs",
+          "setup_s": 0.10473312996327877,
+          "worlds": 1,
+          "steps": 1000,
+          "trials_s": [
+            0.6299982711207122,
+            0.6305439898278564,
+            0.6288421018980443
+          ],
+          "warmup_s": 0.6295506069436669,
+          "world_steps_per_s": 1587.3059432704267,
+          "rtf_per_world": 1.5873059432704266,
+          "gpu_memory_mib": 9272.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 4.180764581076801,
+          "worlds": 128,
+          "steps": 1000,
+          "trials_s": [
+            0.6608764210250229,
+            0.6604511011391878,
+            0.6604885121341795
+          ],
+          "warmup_s": 0.6612736699171364,
+          "world_steps_per_s": 193795.95200892238,
+          "rtf_per_world": 1.5140308750697062,
+          "gpu_memory_mib": 7834.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 0.10929570090956986,
+          "worlds": 1024,
+          "steps": 1000,
+          "trials_s": [
+            0.7522798189893365,
+            0.7522412671241909,
+            0.7517570850905031
+          ],
+          "warmup_s": 0.7529513738118112,
+          "world_steps_per_s": 1361265.387519538,
+          "rtf_per_world": 1.3293607299995487,
+          "gpu_memory_mib": 7802.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 0.13256817893125117,
+          "worlds": 8192,
+          "steps": 488,
+          "trials_s": [
+            0.8563905300106853,
+            0.8561444270890206,
+            0.8566537171136588
+          ],
+          "warmup_s": 0.8575751418247819,
+          "world_steps_per_s": 4668075.9068530565,
+          "rtf_per_world": 0.5698334847232736,
+          "gpu_memory_mib": 7996.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 0.13908643717877567,
+          "worlds": 32768,
+          "steps": 122,
+          "trials_s": [
+            0.17566182208247483,
+            0.17556853615678847,
+            0.17540305410511792
+          ],
+          "warmup_s": 0.17626282502897084,
+          "world_steps_per_s": 22770002.458925363,
+          "rtf_per_world": 0.6948853289466969,
+          "gpu_memory_mib": 8752.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 0.17397642484866083,
+          "worlds": 131072,
+          "steps": 100,
+          "trials_s": [
+            0.4367431290447712,
+            0.43805026402696967,
+            0.43812747998163104
+          ],
+          "warmup_s": 0.438419490121305,
+          "world_steps_per_s": 29921680.40148247,
+          "rtf_per_world": 0.22828430482088066,
+          "gpu_memory_mib": 11832.0,
+          "finite": true
+        }
+      ],
+      "equivalence": {
+        "repeat_n1_max_dq": 0.0,
+        "batch_n128_vs_n1_max_dq": 0.0
+      }
+    },
+    "panda": {
+      "runs": [
+        {
+          "mode": "n_envs",
+          "setup_s": 0.30746981990523636,
+          "worlds": 1,
+          "steps": 1000,
+          "trials_s": [
+            0.5803170991130173,
+            0.5799982869066298,
+            0.580306489020586
+          ],
+          "warmup_s": 0.5818860349245369,
+          "world_steps_per_s": 1723.2273271452693,
+          "rtf_per_world": 1.7232273271452694,
+          "gpu_memory_mib": 12504.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 0.4122446230612695,
+          "worlds": 128,
+          "steps": 1000,
+          "trials_s": [
+            0.6066927590873092,
+            0.6067691340576857,
+            0.6063832968939096
+          ],
+          "warmup_s": 0.6076366379857063,
+          "world_steps_per_s": 210979.93685067122,
+          "rtf_per_world": 1.648280756645869,
+          "gpu_memory_mib": 11120.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 0.32467039581388235,
+          "worlds": 1024,
+          "steps": 1000,
+          "trials_s": [
+            0.6111758721526712,
+            0.6103271930478513,
+            0.6105051289778203
+          ],
+          "warmup_s": 0.6133613809943199,
+          "world_steps_per_s": 1677299.5858601576,
+          "rtf_per_world": 1.63798787681656,
+          "gpu_memory_mib": 11056.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 0.44275410706177354,
+          "worlds": 8192,
+          "steps": 488,
+          "trials_s": [
+            0.45967530412599444,
+            0.46012098412029445,
+            0.46069574798457325
+          ],
+          "warmup_s": 0.4600929010193795,
+          "world_steps_per_s": 8688358.362188581,
+          "rtf_per_world": 1.0605906203843483,
+          "gpu_memory_mib": 11376.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 0.8793640148360282,
+          "worlds": 32768,
+          "steps": 122,
+          "trials_s": [
+            0.3047114561777562,
+            0.30447523994371295,
+            0.3047379869967699
+          ],
+          "warmup_s": 0.3059994939249009,
+          "world_steps_per_s": 13119611.74727841,
+          "rtf_per_world": 0.4003787764672366,
+          "gpu_memory_mib": 12528.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 2.64972547092475,
+          "worlds": 131072,
+          "steps": 100,
+          "trials_s": [
+            0.8833408360369503,
+            0.8835444308351725,
+            0.8837998129893094
+          ],
+          "warmup_s": 0.8827060090843588,
+          "world_steps_per_s": 14834794.428629229,
+          "rtf_per_world": 0.11318049948600181,
+          "gpu_memory_mib": 17330.0,
+          "finite": true
+        }
+      ],
+      "equivalence": {
+        "repeat_n1_max_dq": 0.0,
+        "batch_n128_vs_n1_max_dq": 0.0
+      }
+    },
+    "push": {
+      "runs": [
+        {
+          "mode": "n_envs",
+          "setup_s": 0.3178252191282809,
+          "worlds": 1,
+          "steps": 1000,
+          "trials_s": [
+            2.495482377940789,
+            2.4753522779792547,
+            2.491745497100055
+          ],
+          "warmup_s": 2.505706342868507,
+          "world_steps_per_s": 401.3250956663996,
+          "rtf_per_world": 0.40132509566639957,
+          "gpu_memory_mib": 15924.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 0.7079206730704755,
+          "worlds": 128,
+          "steps": 1000,
+          "trials_s": [
+            2.600705960066989,
+            2.5970375321339816,
+            2.5938626839779317
+          ],
+          "warmup_s": 2.61119089811109,
+          "world_steps_per_s": 49286.92728395904,
+          "rtf_per_world": 0.38505411940593004,
+          "gpu_memory_mib": 16660.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 0.333119970979169,
+          "worlds": 1024,
+          "steps": 1000,
+          "trials_s": [
+            3.6973887390922755,
+            3.694579476956278,
+            3.709583713905886
+          ],
+          "warmup_s": 3.694924771087244,
+          "world_steps_per_s": 276952.21472746634,
+          "rtf_per_world": 0.27046114719479136,
+          "gpu_memory_mib": 16920.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 0.438726332038641,
+          "worlds": 8192,
+          "steps": 488,
+          "trials_s": [
+            4.464416959090158,
+            4.464143892982975,
+            4.463961047120392
+          ],
+          "warmup_s": 4.464149095118046,
+          "world_steps_per_s": 895512.3526111766,
+          "rtf_per_world": 0.10931547273085651,
+          "gpu_memory_mib": 18586.0,
+          "finite": true
+        },
+        {
+          "mode": "n_envs",
+          "setup_s": 0.8332733670249581,
+          "worlds": 32768,
+          "steps": 122,
+          "trials_s": [
+            3.8716422859579325,
+            3.869509318144992,
+            3.8756141010671854
+          ],
+          "warmup_s": 3.867778698913753,
+          "world_steps_per_s": 1032558.2026261187,
+          "rtf_per_world": 0.031511175617252155,
+          "gpu_memory_mib": 25338.0,
+          "finite": true
+        },
+        {
+          "worlds": 131072,
+          "error": "RuntimeError: [cuda_driver.h:operator()@94] CUDA Error CUDA_ERROR_OUT_OF_MEMORY: out of memory while calling malloc_async_impl (cuMemAllocAsync)"
+        }
+      ],
+      "equivalence": {
+        "repeat_n1_max_dq": 0.0,
+        "batch_n128_vs_n1_max_dq": 0.0
+      }
+    }
+  },
+  "environment": {
+    "route": "genesis",
+    "python": "3.12.3",
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+    "cpu": "x86_64",
+    "cpu_count": 32,
+    "gpus": [
+      {
+        "name": "NVIDIA GeForce RTX 5090",
+        "driver": "580.178.04",
+        "memory": "32607 MiB"
+      }
+    ],
+    "git_commit": "dec5e92eff7c79ad1bae13716de06d8e111ceff3",
+    "git_dirty": true,
+    "packages": {
+      "simbench": "0.1.0",
+      "numpy": "2.5.4",
+      "mujoco": "4.0.0",
+      "mujoco-core": "4.0.0",
+      "genesis-world": "1.4.5",
+      "quadrants": "1.3.3",
+      "torch": "2.14.1+cu130"
+    }
+  }
+}

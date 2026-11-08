@@ -25,12 +25,12 @@
         "armature": 0.0,
         "damping": 0.0,
         "frictionloss": 0.0,
-        "fk_pos": 6.301894886419484e-16,
+        "fk_pos": 6.282765148915853e-16,
         "fk_rot": 1.2707083321416676e-15
       },
       "worst_at": {
         "joint_axis": "joint2",
-        "fk_pos": "config 0 right_finger",
+        "fk_pos": "config 0 left_finger",
         "fk_rot": "config 4 link7"
       },
       "fail": []
@@ -122,7 +122,7 @@
         "armature": 0.0,
         "damping": 0.0,
         "frictionloss": 0.0,
-        "fk_pos": 9.601371868079838e-07,
+        "fk_pos": 8.970334709593317e-07,
         "fk_rot": 5.114807968224374e-07
       },
       "worst_at": {
@@ -130,7 +130,7 @@
         "com": "link3",
         "inertia": "link1",
         "joint_range": "joint6",
-        "fk_pos": "config 4 right_finger",
+        "fk_pos": "config 2 left_finger",
         "fk_rot": "config 4 right_finger"
       },
       "fail": []

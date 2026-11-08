@@ -1,0 +1,2258 @@
+{
+  "collision-chain/dt0.5ms": {
+    "path_diff_m": 0.0329679,
+    "first_divergence_1um_s": 0.001,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "cube-prism",
+          1.0502092050209204
+        ],
+        [
+          "cube-sphere",
+          1.0
+        ],
+        [
+          "cube-world",
+          3.3279147982062782
+        ],
+        [
+          "prism-world",
+          1.7367891293407147
+        ],
+        [
+          "sphere-world",
+          1.0
+        ]
+      ],
+      "mujoco4": [
+        [
+          "cube-prism",
+          2.022801302931596
+        ],
+        [
+          "cube-sphere",
+          1.0
+        ],
+        [
+          "cube-world",
+          3.3074380165289257
+        ],
+        [
+          "prism-world",
+          2.619660319094184
+        ],
+        [
+          "sphere-world",
+          1.0
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 2000,
+        "sphere_final_xy_mm": [
+          172.017,
+          -153.295
+        ],
+        "sphere_final_heading_deg": 121.797,
+        "cube_final_xy_mm": [
+          138.984,
+          -3.11943
+        ],
+        "cube_final_heading_deg": 33.1115,
+        "prism_final_xy_mm": [
+          181.463,
+          50.8088
+        ],
+        "prism_final_heading_deg": 57.3732,
+        "peak_horizontal_force_N": 21.1608
+      },
+      "mujoco4": {
+        "frames": 2000,
+        "sphere_final_xy_mm": [
+          141.505,
+          -140.809
+        ],
+        "sphere_final_heading_deg": -78.3152,
+        "cube_final_xy_mm": [
+          138.158,
+          -4.87268
+        ],
+        "cube_final_heading_deg": 27.149,
+        "prism_final_xy_mm": [
+          175.146,
+          47.2837
+        ],
+        "prism_final_heading_deg": 56.2127,
+        "peak_horizontal_force_N": 21.1608
+      }
+    }
+  },
+  "collision-chain/dt1ms": {
+    "path_diff_m": 0.0186557,
+    "first_divergence_1um_s": 0.002,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "cube-prism",
+          1.1
+        ],
+        [
+          "cube-sphere",
+          1.0
+        ],
+        [
+          "cube-world",
+          3.2970852017937218
+        ],
+        [
+          "prism-world",
+          1.738430583501006
+        ],
+        [
+          "sphere-world",
+          1.0
+        ]
+      ],
+      "mujoco4": [
+        [
+          "cube-prism",
+          1.9387096774193548
+        ],
+        [
+          "cube-sphere",
+          1.0
+        ],
+        [
+          "cube-world",
+          3.328555678059537
+        ],
+        [
+          "prism-world",
+          2.6384297520661155
+        ],
+        [
+          "sphere-world",
+          1.0
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 1000,
+        "sphere_final_xy_mm": [
+          172.695,
+          -145.863
+        ],
+        "sphere_final_heading_deg": 98.9303,
+        "cube_final_xy_mm": [
+          142.333,
+          -2.54227
+        ],
+        "cube_final_heading_deg": 32.2032,
+        "prism_final_xy_mm": [
+          185.259,
+          48.7458
+        ],
+        "prism_final_heading_deg": 58.7021,
+        "peak_horizontal_force_N": 21.1579
+      },
+      "mujoco4": {
+        "frames": 1000,
+        "sphere_final_xy_mm": [
+          154.45,
+          -149.757
+        ],
+        "sphere_final_heading_deg": -114.535,
+        "cube_final_xy_mm": [
+          134.689,
+          -1.72576
+        ],
+        "cube_final_heading_deg": 27.9789,
+        "prism_final_xy_mm": [
+          174.349,
+          47.1055
+        ],
+        "prism_final_heading_deg": 55.4598,
+        "peak_horizontal_force_N": 21.1579
+      }
+    }
+  },
+  "drop/dt1ms": {
+    "path_diff_m": 0.0,
+    "first_divergence_1um_s": null,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "cube-world",
+          4.0
+        ]
+      ],
+      "mujoco4": [
+        [
+          "cube-world",
+          4.0
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 1000,
+        "travel_x_m": 0.0,
+        "peak_contact_force_N": 52.0389,
+        "mean_final_support_N": 0.981,
+        "min_com_z_m": 0.012156,
+        "max_com_z_m": 0.35,
+        "settled_at_s": 0.362,
+        "max_overlap_m": 0.00784397,
+        "max_momentum_residual_Ns": 2.98655e-14,
+        "first_contact_s": 0.259,
+        "impulse_first_40ms_Ns": 0.304298
+      },
+      "mujoco4": {
+        "frames": 1000,
+        "travel_x_m": 0.0,
+        "peak_contact_force_N": 52.0389,
+        "mean_final_support_N": 0.981,
+        "min_com_z_m": 0.012156,
+        "max_com_z_m": 0.35,
+        "settled_at_s": 0.362,
+        "max_overlap_m": 0.00784397,
+        "max_momentum_residual_Ns": 2.98655e-14,
+        "first_contact_s": 0.259,
+        "impulse_first_40ms_Ns": 0.304298
+      }
+    }
+  },
+  "drop/dt2ms": {
+    "path_diff_m": 0.0,
+    "first_divergence_1um_s": null,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "cube-world",
+          4.0
+        ]
+      ],
+      "mujoco4": [
+        [
+          "cube-world",
+          4.0
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 500,
+        "travel_x_m": 0.0,
+        "peak_contact_force_N": 56.1627,
+        "mean_final_support_N": 0.981,
+        "min_com_z_m": 0.0109902,
+        "max_com_z_m": 0.35,
+        "settled_at_s": 0.35,
+        "max_overlap_m": 0.00900979,
+        "max_momentum_residual_Ns": 8.26283e-14,
+        "first_contact_s": 0.26,
+        "impulse_first_40ms_Ns": 0.307076
+      },
+      "mujoco4": {
+        "frames": 500,
+        "travel_x_m": 0.0,
+        "peak_contact_force_N": 56.1627,
+        "mean_final_support_N": 0.981,
+        "min_com_z_m": 0.0109902,
+        "max_com_z_m": 0.35,
+        "settled_at_s": 0.35,
+        "max_overlap_m": 0.00900979,
+        "max_momentum_residual_Ns": 8.26283e-14,
+        "first_contact_s": 0.26,
+        "impulse_first_40ms_Ns": 0.307076
+      }
+    }
+  },
+  "grasp/dt1ms": {
+    "path_diff_m": 2.96692e-11,
+    "first_divergence_1um_s": null,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "cube-left_finger",
+          4.0
+        ],
+        [
+          "cube-right_finger",
+          4.0
+        ],
+        [
+          "cube-world",
+          3.997966446365023
+        ]
+      ],
+      "mujoco4": [
+        [
+          "cube-left_finger",
+          4.0
+        ],
+        [
+          "cube-right_finger",
+          4.0
+        ],
+        [
+          "cube-world",
+          3.997966446365023
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 3500,
+        "max_lift_cm": 7.53877,
+        "hold_lift_cm": 7.53628,
+        "final_height_error_mm": -0.00249726,
+        "max_lateral_mm": 3.91908,
+        "final_lateral_mm": 3.68042,
+        "hold_slip_mm": 0.0999308,
+        "mean_hold_normal_force_per_finger_N": 3.18949,
+        "peak_normal_force_per_finger_N": 3.18958,
+        "max_arm_limit_violation_rad": 0.0
+      },
+      "mujoco4": {
+        "frames": 3500,
+        "max_lift_cm": 7.53877,
+        "hold_lift_cm": 7.53628,
+        "final_height_error_mm": -0.00249726,
+        "max_lateral_mm": 3.91908,
+        "final_lateral_mm": 3.68042,
+        "hold_slip_mm": 0.0999308,
+        "mean_hold_normal_force_per_finger_N": 3.18949,
+        "peak_normal_force_per_finger_N": 3.18958,
+        "max_arm_limit_violation_rad": 0.0
+      }
+    }
+  },
+  "grasp/dt1ms-offset8mm": {
+    "path_diff_m": 0.000693404,
+    "first_divergence_1um_s": 1.016,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "cube-left_finger",
+          4.131291028446389
+        ],
+        [
+          "cube-right_finger",
+          4.130743982494529
+        ],
+        [
+          "cube-world",
+          3.9959349593495936
+        ]
+      ],
+      "mujoco4": [
+        [
+          "cube-left_finger",
+          4.133406232914161
+        ],
+        [
+          "cube-right_finger",
+          4.133406232914161
+        ],
+        [
+          "cube-world",
+          3.997966446365023
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 3500,
+        "max_lift_cm": 7.51242,
+        "hold_lift_cm": 7.50973,
+        "final_height_error_mm": -0.00249726,
+        "max_lateral_mm": 4.73048,
+        "final_lateral_mm": 4.63612,
+        "hold_slip_mm": 0.121913,
+        "mean_hold_normal_force_per_finger_N": 3.18927,
+        "peak_normal_force_per_finger_N": 3.19158,
+        "max_arm_limit_violation_rad": 0.0
+      },
+      "mujoco4": {
+        "frames": 3500,
+        "max_lift_cm": 7.51509,
+        "hold_lift_cm": 7.51232,
+        "final_height_error_mm": -0.00249726,
+        "max_lateral_mm": 4.13181,
+        "final_lateral_mm": 4.00702,
+        "hold_slip_mm": 0.1162,
+        "mean_hold_normal_force_per_finger_N": 3.18949,
+        "peak_normal_force_per_finger_N": 3.19158,
+        "max_arm_limit_violation_rad": 0.0
+      }
+    }
+  },
+  "hinge/dt0.5ms": {
+    "path_diff_m": 0.0,
+    "first_divergence_1um_s": null,
+    "contacts_per_frame": {
+      "mujoco311": [],
+      "mujoco4": []
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 2000,
+        "max_reference_error_deg": 0.0419211,
+        "final_angle_rad": 0.369184
+      },
+      "mujoco4": {
+        "frames": 2000,
+        "max_reference_error_deg": 0.0419211,
+        "final_angle_rad": 0.369184
+      }
+    }
+  },
+  "hinge/dt1ms": {
+    "path_diff_m": 0.0,
+    "first_divergence_1um_s": null,
+    "contacts_per_frame": {
+      "mujoco311": [],
+      "mujoco4": []
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 1000,
+        "max_reference_error_deg": 0.0839291,
+        "final_angle_rad": 0.369533
+      },
+      "mujoco4": {
+        "frames": 1000,
+        "max_reference_error_deg": 0.0839291,
+        "final_angle_rad": 0.369533
+      }
+    }
+  },
+  "panda-effort/dt0.5ms": {
+    "path_diff_m": 1.12462e-10,
+    "first_divergence_1um_s": null,
+    "contacts_per_frame": {
+      "mujoco311": [],
+      "mujoco4": []
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 1000,
+        "hand_excursion_cm": 3.60178,
+        "final_hand_pos_m": [
+          0.341106,
+          0.00173656,
+          0.579166
+        ],
+        "max_arm_limit_violation_rad": 0.0,
+        "max_abs_effort": [
+          0.0,
+          3.98782,
+          0.635676,
+          22.021,
+          0.622074,
+          2.27816,
+          6.86707e-18
+        ]
+      },
+      "mujoco4": {
+        "frames": 1000,
+        "hand_excursion_cm": 3.60178,
+        "final_hand_pos_m": [
+          0.341106,
+          0.00173656,
+          0.579166
+        ],
+        "max_arm_limit_violation_rad": 0.0,
+        "max_abs_effort": [
+          0.0,
+          3.98782,
+          0.635676,
+          22.021,
+          0.622074,
+          2.27816,
+          6.86707e-18
+        ]
+      }
+    }
+  },
+  "panda-effort/dt1ms": {
+    "path_diff_m": 1.12068e-10,
+    "first_divergence_1um_s": null,
+    "contacts_per_frame": {
+      "mujoco311": [],
+      "mujoco4": []
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 500,
+        "hand_excursion_cm": 3.59749,
+        "final_hand_pos_m": [
+          0.341063,
+          0.001736,
+          0.579173
+        ],
+        "max_arm_limit_violation_rad": 0.0,
+        "max_abs_effort": [
+          0.0,
+          3.98782,
+          0.635676,
+          22.021,
+          0.622074,
+          2.27816,
+          6.86707e-18
+        ]
+      },
+      "mujoco4": {
+        "frames": 500,
+        "hand_excursion_cm": 3.59749,
+        "final_hand_pos_m": [
+          0.341063,
+          0.001736,
+          0.579173
+        ],
+        "max_arm_limit_violation_rad": 0.0,
+        "max_abs_effort": [
+          0.0,
+          3.98782,
+          0.635676,
+          22.021,
+          0.622074,
+          2.27816,
+          6.86707e-18
+        ]
+      }
+    }
+  },
+  "panda-tracking/dt0.5ms": {
+    "path_diff_m": 1.2922e-10,
+    "first_divergence_1um_s": null,
+    "contacts_per_frame": {
+      "mujoco311": [],
+      "mujoco4": []
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 5000,
+        "hand_excursion_cm": 19.2818,
+        "final_hand_pos_m": [
+          0.306896,
+          2.46694e-05,
+          0.590299
+        ],
+        "max_arm_limit_violation_rad": 0.0,
+        "max_abs_effort": [
+          1.15308,
+          11.8728,
+          4.61707,
+          22.3249,
+          0.66675,
+          2.37512,
+          0.00727438
+        ],
+        "max_tracking_error_deg": 0.0155933
+      },
+      "mujoco4": {
+        "frames": 5000,
+        "hand_excursion_cm": 19.2818,
+        "final_hand_pos_m": [
+          0.306896,
+          2.46694e-05,
+          0.590299
+        ],
+        "max_arm_limit_violation_rad": 0.0,
+        "max_abs_effort": [
+          1.15308,
+          11.8728,
+          4.61707,
+          22.3249,
+          0.66675,
+          2.37512,
+          0.00727438
+        ],
+        "max_tracking_error_deg": 0.0155933
+      }
+    }
+  },
+  "panda-tracking/dt1ms": {
+    "path_diff_m": 1.28995e-10,
+    "first_divergence_1um_s": null,
+    "contacts_per_frame": {
+      "mujoco311": [],
+      "mujoco4": []
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 2500,
+        "hand_excursion_cm": 19.2777,
+        "final_hand_pos_m": [
+          0.306917,
+          5.27391e-05,
+          0.590286
+        ],
+        "max_arm_limit_violation_rad": 0.0,
+        "max_abs_effort": [
+          1.15303,
+          11.8706,
+          4.61711,
+          22.3244,
+          0.666716,
+          2.37503,
+          0.00726873
+        ],
+        "max_tracking_error_deg": 0.00715814
+      },
+      "mujoco4": {
+        "frames": 2500,
+        "hand_excursion_cm": 19.2777,
+        "final_hand_pos_m": [
+          0.306917,
+          5.27392e-05,
+          0.590286
+        ],
+        "max_arm_limit_violation_rad": 0.0,
+        "max_abs_effort": [
+          1.15303,
+          11.8706,
+          4.61711,
+          22.3244,
+          0.666716,
+          2.37503,
+          0.00726873
+        ],
+        "max_tracking_error_deg": 0.00715815
+      }
+    }
+  },
+  "push/dt0.5ms-w90mm": {
+    "path_diff_m": 0.0250081,
+    "first_divergence_1um_s": 0.858,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "block_left-block_right",
+          1.8657218352149891
+        ],
+        [
+          "block_left-cube",
+          1.8666958680099284
+        ],
+        [
+          "block_left-world",
+          4.088864017907107
+        ],
+        [
+          "block_right-cube",
+          1.7969722693831354
+        ],
+        [
+          "block_right-world",
+          4.072406181015452
+        ],
+        [
+          "cube-left_finger",
+          1.2688365650969529
+        ],
+        [
+          "cube-right_finger",
+          1.9075785582255083
+        ],
+        [
+          "cube-world",
+          2.776044226044226
+        ]
+      ],
+      "mujoco4": [
+        [
+          "block_left-block_right",
+          1.8729268292682928
+        ],
+        [
+          "block_left-cube",
+          1.7751128668171559
+        ],
+        [
+          "block_left-world",
+          4.058777949966792
+        ],
+        [
+          "block_right-cube",
+          2.0306854029251507
+        ],
+        [
+          "block_right-world",
+          4.029769809650288
+        ],
+        [
+          "cube-left_finger",
+          1.6910137228862328
+        ],
+        [
+          "cube-right_finger",
+          1.2957765855000687
+        ],
+        [
+          "cube-world",
+          2.8846675712347354
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 10000,
+        "all_passed": true,
+        "passed_count": 3,
+        "final_positions_m": {
+          "cube": [
+            0.62745540216308,
+            -0.012801029585666793,
+            0.019997563408151207
+          ],
+          "block_left": [
+            0.6690544574068652,
+            -0.022677620371485623,
+            0.019997848248760046
+          ],
+          "block_right": [
+            0.6624643573722421,
+            0.020001918269789375,
+            0.019997760663972648
+          ]
+        },
+        "max_pad_push_N": 17.7678,
+        "final_hand_travel_mm": 233.495,
+        "max_hand_height_change_mm": 6.97016,
+        "max_finger_opening_mm": 24.8778,
+        "max_object_tilt_deg": 0.205995,
+        "max_arm_limit_violation_rad": 0.0
+      },
+      "mujoco4": {
+        "frames": 10000,
+        "all_passed": true,
+        "passed_count": 3,
+        "final_positions_m": {
+          "cube": [
+            0.6268364279901198,
+            0.012199450726415664,
+            0.019997427615064085
+          ],
+          "block_left": [
+            0.66285086783878,
+            -0.020061829210806296,
+            0.01999783233768378
+          ],
+          "block_right": [
+            0.6678346745941496,
+            0.023518499150888102,
+            0.019997960763087994
+          ]
+        },
+        "max_pad_push_N": 14.0462,
+        "final_hand_travel_mm": 233.034,
+        "max_hand_height_change_mm": 7.24523,
+        "max_finger_opening_mm": 24.9337,
+        "max_object_tilt_deg": 0.189084,
+        "max_arm_limit_violation_rad": 0.0
+      }
+    }
+  },
+  "push/dt1ms-w100mm": {
+    "path_diff_m": 0.0411426,
+    "first_divergence_1um_s": 0.877,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "block_left-cube",
+          2.8792723263506064
+        ],
+        [
+          "block_left-world",
+          3.651650312221231
+        ],
+        [
+          "block_right-cube",
+          1.563664596273292
+        ],
+        [
+          "block_right-right_finger",
+          1.0048732943469785
+        ],
+        [
+          "block_right-world",
+          3.3471468865263616
+        ],
+        [
+          "cube-left_finger",
+          1.2610027855153203
+        ],
+        [
+          "cube-right_finger",
+          1.953125
+        ],
+        [
+          "cube-world",
+          3.1800097040271713
+        ]
+      ],
+      "mujoco4": [
+        [
+          "block_left-cube",
+          1.5336194563662375
+        ],
+        [
+          "block_left-left_finger",
+          1.0
+        ],
+        [
+          "block_left-world",
+          3.3698422985526033
+        ],
+        [
+          "block_right-cube",
+          2.969252468265162
+        ],
+        [
+          "block_right-world",
+          3.758158247653107
+        ],
+        [
+          "cube-left_finger",
+          1.8083588175331295
+        ],
+        [
+          "cube-right_finger",
+          1.301033230941078
+        ],
+        [
+          "cube-world",
+          3.1908582543155846
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 5000,
+        "all_passed": true,
+        "passed_count": 3,
+        "final_positions_m": {
+          "cube": [
+            0.6304720446570358,
+            -0.019014619362213228,
+            0.019997553984677865
+          ],
+          "block_left": [
+            0.6699038020593182,
+            -0.028687779112407805,
+            0.01999775998105529
+          ],
+          "block_right": [
+            0.6303076079293607,
+            0.02399847082164269,
+            0.01999750845737988
+          ]
+        },
+        "max_pad_push_N": 11.9266,
+        "final_hand_travel_mm": 235.347,
+        "max_hand_height_change_mm": 5.30226,
+        "max_finger_opening_mm": 24.9618,
+        "max_object_tilt_deg": 0.296983,
+        "max_arm_limit_violation_rad": 0.0
+      },
+      "mujoco4": {
+        "frames": 5000,
+        "all_passed": true,
+        "passed_count": 3,
+        "final_positions_m": {
+          "cube": [
+            0.6306822514355247,
+            0.01937947666207619,
+            0.01999758640007891
+          ],
+          "block_left": [
+            0.631610427424236,
+            -0.0236999208116124,
+            0.019997420422930685
+          ],
+          "block_right": [
+            0.6701797195447359,
+            0.0288234510785814,
+            0.019997766674082085
+          ]
+        },
+        "max_pad_push_N": 10.3605,
+        "final_hand_travel_mm": 235.524,
+        "max_hand_height_change_mm": 5.40018,
+        "max_finger_opening_mm": 25.0363,
+        "max_object_tilt_deg": 0.293447,
+        "max_arm_limit_violation_rad": 0.0
+      }
+    }
+  },
+  "push/dt1ms-w80mm": {
+    "path_diff_m": 0.0159452,
+    "first_divergence_1um_s": 0.877,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "block_left-block_right",
+          1.848396501457726
+        ],
+        [
+          "block_left-cube",
+          1.7112676056338028
+        ],
+        [
+          "block_left-left_finger",
+          1.2331288343558282
+        ],
+        [
+          "block_left-world",
+          3.799713876967096
+        ],
+        [
+          "block_right-cube",
+          1.8013307984790874
+        ],
+        [
+          "block_right-right_finger",
+          1.3642384105960266
+        ],
+        [
+          "block_right-world",
+          3.8497451580020385
+        ],
+        [
+          "cube-left_finger",
+          1.8197879858657244
+        ],
+        [
+          "cube-right_finger",
+          1.9708846584546473
+        ],
+        [
+          "cube-world",
+          3.6230918082132875
+        ]
+      ],
+      "mujoco4": [
+        [
+          "block_left-block_right",
+          1.7964601769911503
+        ],
+        [
+          "block_left-cube",
+          1.7495344506517692
+        ],
+        [
+          "block_left-left_finger",
+          1.3770491803278688
+        ],
+        [
+          "block_left-world",
+          3.828712261244609
+        ],
+        [
+          "block_right-cube",
+          1.7692990239574091
+        ],
+        [
+          "block_right-right_finger",
+          1.510948905109489
+        ],
+        [
+          "block_right-world",
+          3.8500205170291344
+        ],
+        [
+          "cube-left_finger",
+          1.963768115942029
+        ],
+        [
+          "cube-right_finger",
+          1.974025974025974
+        ],
+        [
+          "cube-world",
+          3.6202179952981406
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 5000,
+        "all_passed": false,
+        "passed_count": 0,
+        "final_positions_m": {
+          "cube": [
+            0.41300686399038183,
+            0.0014839150630746331,
+            0.019997502735004394
+          ],
+          "block_left": [
+            0.4657985428785151,
+            -0.017525740510346006,
+            0.019997502735004353
+          ],
+          "block_right": [
+            0.4549293477853172,
+            0.02576534023865635,
+            0.01999750273500441
+          ]
+        },
+        "max_pad_push_N": 93.4542,
+        "final_hand_travel_mm": 239.991,
+        "max_hand_height_change_mm": 37.061,
+        "max_finger_opening_mm": 24.3458,
+        "max_object_tilt_deg": 21.3787,
+        "max_arm_limit_violation_rad": 0.0
+      },
+      "mujoco4": {
+        "frames": 5000,
+        "all_passed": false,
+        "passed_count": 0,
+        "final_positions_m": {
+          "cube": [
+            0.4136607291798332,
+            -0.0013579088462315062,
+            0.01999750273500439
+          ],
+          "block_left": [
+            0.4540704413212536,
+            -0.02767083621918798,
+            0.01999750273500439
+          ],
+          "block_right": [
+            0.46521350755430585,
+            0.01697980071023443,
+            0.019997502735004377
+          ]
+        },
+        "max_pad_push_N": 94.2066,
+        "final_hand_travel_mm": 239.992,
+        "max_hand_height_change_mm": 37.042,
+        "max_finger_opening_mm": 24.3724,
+        "max_object_tilt_deg": 21.8739,
+        "max_arm_limit_violation_rad": 0.0
+      }
+    }
+  },
+  "push/dt1ms-w90mm": {
+    "path_diff_m": 0.00181013,
+    "first_divergence_1um_s": 0.877,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "block_left-block_right",
+          1.8775710088148874
+        ],
+        [
+          "block_left-cube",
+          1.8526256352343309
+        ],
+        [
+          "block_left-world",
+          3.51672278338945
+        ],
+        [
+          "block_right-cube",
+          1.7906712172923778
+        ],
+        [
+          "block_right-world",
+          4.104051361523135
+        ],
+        [
+          "cube-left_finger",
+          1.2443897099069512
+        ],
+        [
+          "cube-right_finger",
+          1.961427193828351
+        ],
+        [
+          "cube-world",
+          2.7096059113300495
+        ]
+      ],
+      "mujoco4": [
+        [
+          "block_left-block_right",
+          1.3289124668435013
+        ],
+        [
+          "block_left-cube",
+          1.8077035307849432
+        ],
+        [
+          "block_left-world",
+          3.301048873019415
+        ],
+        [
+          "block_right-cube",
+          1.773986013986014
+        ],
+        [
+          "block_right-world",
+          4.051333333333333
+        ],
+        [
+          "cube-left_finger",
+          1.2794928335170892
+        ],
+        [
+          "cube-right_finger",
+          1.6865942028985508
+        ],
+        [
+          "cube-world",
+          2.681245366938473
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 5000,
+        "all_passed": true,
+        "passed_count": 3,
+        "final_positions_m": {
+          "cube": [
+            0.6274199396748166,
+            -0.013468343411098049,
+            0.019997578148374533
+          ],
+          "block_left": [
+            0.6699596636394236,
+            -0.02133941200979008,
+            0.01999795498646885
+          ],
+          "block_right": [
+            0.660778242974516,
+            0.019758517507394192,
+            0.019997825499849232
+          ]
+        },
+        "max_pad_push_N": 15.6964,
+        "final_hand_travel_mm": 233.551,
+        "max_hand_height_change_mm": 6.81441,
+        "max_finger_opening_mm": 25.071,
+        "max_object_tilt_deg": 0.358774,
+        "max_arm_limit_violation_rad": 0.0
+      },
+      "mujoco4": {
+        "frames": 5000,
+        "all_passed": true,
+        "passed_count": 3,
+        "final_positions_m": {
+          "cube": [
+            0.6283082800094523,
+            -0.013514319293962433,
+            0.01999754832519563
+          ],
+          "block_left": [
+            0.6710486592714902,
+            -0.021848854886822665,
+            0.019997859717380172
+          ],
+          "block_right": [
+            0.6616595918186872,
+            0.019797042603636857,
+            0.019997870243040016
+          ]
+        },
+        "max_pad_push_N": 9.67777,
+        "final_hand_travel_mm": 234.19,
+        "max_hand_height_change_mm": 6.25492,
+        "max_finger_opening_mm": 25.1466,
+        "max_object_tilt_deg": 0.260663,
+        "max_arm_limit_violation_rad": 0.0
+      }
+    }
+  },
+  "push/dt1ms-w90mm-l+1mm": {
+    "path_diff_m": 0.00306313,
+    "first_divergence_1um_s": 0.877,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "block_left-block_right",
+          1.762633996937213
+        ],
+        [
+          "block_left-cube",
+          2.8210741389375364
+        ],
+        [
+          "block_left-world",
+          3.2797499441839695
+        ],
+        [
+          "block_right-cube",
+          1.7600554785020806
+        ],
+        [
+          "block_right-world",
+          4.070152217074785
+        ],
+        [
+          "cube-left_finger",
+          1.1760601180891035
+        ],
+        [
+          "cube-right_finger",
+          1.948130277442702
+        ],
+        [
+          "cube-world",
+          2.6725204056393768
+        ]
+      ],
+      "mujoco4": [
+        [
+          "block_left-block_right",
+          1.8681204569055037
+        ],
+        [
+          "block_left-cube",
+          1.8502457357617808
+        ],
+        [
+          "block_left-world",
+          3.291947818263608
+        ],
+        [
+          "block_right-cube",
+          2.863028953229399
+        ],
+        [
+          "block_right-world",
+          4.057249396797543
+        ],
+        [
+          "cube-left_finger",
+          1.211021505376344
+        ],
+        [
+          "cube-right_finger",
+          1.6694214876033058
+        ],
+        [
+          "cube-world",
+          2.7439145553899653
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 5000,
+        "all_passed": true,
+        "passed_count": 3,
+        "final_positions_m": {
+          "cube": [
+            0.6286481004127796,
+            -0.015520602466872913,
+            0.019997691786663333
+          ],
+          "block_left": [
+            0.6719324676785335,
+            -0.019050372630622654,
+            0.019997851441405676
+          ],
+          "block_right": [
+            0.6591394574873135,
+            0.019408285025598198,
+            0.019997745460104355
+          ]
+        },
+        "max_pad_push_N": 12.6363,
+        "final_hand_travel_mm": 234.167,
+        "max_hand_height_change_mm": 6.29387,
+        "max_finger_opening_mm": 25.5755,
+        "max_object_tilt_deg": 0.276032,
+        "max_arm_limit_violation_rad": 0.0
+      },
+      "mujoco4": {
+        "frames": 5000,
+        "all_passed": true,
+        "passed_count": 3,
+        "final_positions_m": {
+          "cube": [
+            0.6283657968898015,
+            -0.014200935072511899,
+            0.019997848518330884
+          ],
+          "block_left": [
+            0.6740041879995738,
+            -0.01867724435189615,
+            0.019997781380617356
+          ],
+          "block_right": [
+            0.6575704480015392,
+            0.018612493611025224,
+            0.019997731452885012
+          ]
+        },
+        "max_pad_push_N": 12.8402,
+        "final_hand_travel_mm": 234.252,
+        "max_hand_height_change_mm": 6.25174,
+        "max_finger_opening_mm": 25.5749,
+        "max_object_tilt_deg": 0.279464,
+        "max_arm_limit_violation_rad": 0.0
+      }
+    }
+  },
+  "push/dt1ms-w90mm-l-1mm": {
+    "path_diff_m": 0.0143541,
+    "first_divergence_1um_s": 0.877,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "block_left-block_right",
+          1.1363636363636365
+        ],
+        [
+          "block_left-cube",
+          1.7686139747995417
+        ],
+        [
+          "block_left-world",
+          3.6299776286353467
+        ],
+        [
+          "block_right-cube",
+          1.7833333333333334
+        ],
+        [
+          "block_right-world",
+          3.657876943881001
+        ],
+        [
+          "cube-left_finger",
+          1.9032830523513753
+        ],
+        [
+          "cube-right_finger",
+          1.9364937388193202
+        ],
+        [
+          "cube-world",
+          3.1657213316892725
+        ]
+      ],
+      "mujoco4": [
+        [
+          "block_left-block_right",
+          1.8818698673404928
+        ],
+        [
+          "block_left-cube",
+          2.5849682232660958
+        ],
+        [
+          "block_left-world",
+          4.0300287039081475
+        ],
+        [
+          "block_right-cube",
+          2.3268107476635516
+        ],
+        [
+          "block_right-world",
+          3.279424977538185
+        ],
+        [
+          "cube-left_finger",
+          1.6793893129770991
+        ],
+        [
+          "cube-right_finger",
+          1.2424324324324325
+        ],
+        [
+          "cube-world",
+          2.7078513413733694
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 5000,
+        "all_passed": true,
+        "passed_count": 3,
+        "final_positions_m": {
+          "cube": [
+            0.6303153953878139,
+            0.0006408065873930492,
+            0.019997212727105217
+          ],
+          "block_left": [
+            0.6700837090224279,
+            -0.02239191615636298,
+            0.01999775148372895
+          ],
+          "block_right": [
+            0.6701850259893696,
+            0.022851288002887757,
+            0.019997747508978356
+          ]
+        },
+        "max_pad_push_N": 9.49982,
+        "final_hand_travel_mm": 235.28,
+        "max_hand_height_change_mm": 5.10142,
+        "max_finger_opening_mm": 24.2777,
+        "max_object_tilt_deg": 0.289494,
+        "max_arm_limit_violation_rad": 0.0
+      },
+      "mujoco4": {
+        "frames": 5000,
+        "all_passed": true,
+        "passed_count": 3,
+        "final_positions_m": {
+          "cube": [
+            0.628267953675826,
+            0.014741424066427398,
+            0.019997630553952254
+          ],
+          "block_left": [
+            0.6579521299988216,
+            -0.019070488654987172,
+            0.019997745737088953
+          ],
+          "block_right": [
+            0.6725860181519673,
+            0.01816312784840365,
+            0.019997810885059003
+          ]
+        },
+        "max_pad_push_N": 10.0517,
+        "final_hand_travel_mm": 234.219,
+        "max_hand_height_change_mm": 6.17529,
+        "max_finger_opening_mm": 25.4764,
+        "max_object_tilt_deg": 0.379102,
+        "max_arm_limit_violation_rad": 0.0
+      }
+    }
+  },
+  "slide/dt1ms": {
+    "path_diff_m": 1.03146e-15,
+    "first_divergence_1um_s": null,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "cube-world",
+          3.9235737351991387
+        ]
+      ],
+      "mujoco4": [
+        [
+          "cube-world",
+          3.9235737351991387
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 2000,
+        "travel_x_m": 0.126986,
+        "peak_contact_force_N": 9.17071,
+        "mean_final_support_N": 0.981,
+        "min_com_z_m": 0.0199233,
+        "max_com_z_m": 0.0202292,
+        "settled_at_s": 0.266,
+        "max_overlap_m": 0.000129411,
+        "max_momentum_residual_Ns": 3.00076e-14,
+        "first_contact_s": 0.001,
+        "impulse_first_40ms_Ns": 0.039186
+      },
+      "mujoco4": {
+        "frames": 2000,
+        "travel_x_m": 0.126986,
+        "peak_contact_force_N": 9.17071,
+        "mean_final_support_N": 0.981,
+        "min_com_z_m": 0.0199233,
+        "max_com_z_m": 0.0202292,
+        "settled_at_s": 0.266,
+        "max_overlap_m": 0.000129411,
+        "max_momentum_residual_Ns": 3.00069e-14,
+        "first_contact_s": 0.001,
+        "impulse_first_40ms_Ns": 0.039186
+      }
+    }
+  },
+  "slide/dt2ms": {
+    "path_diff_m": 4.91792e-15,
+    "first_divergence_1um_s": null,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "cube-world",
+          3.9781181619256016
+        ]
+      ],
+      "mujoco4": [
+        [
+          "cube-world",
+          3.9781181619256016
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 1000,
+        "travel_x_m": 0.126471,
+        "peak_contact_force_N": 10.458,
+        "mean_final_support_N": 0.981,
+        "min_com_z_m": 0.0197798,
+        "max_com_z_m": 0.0211248,
+        "settled_at_s": 0.266,
+        "max_overlap_m": 0.000227339,
+        "max_momentum_residual_Ns": 5.77021e-14,
+        "first_contact_s": 0.002,
+        "impulse_first_40ms_Ns": 0.047811
+      },
+      "mujoco4": {
+        "frames": 1000,
+        "travel_x_m": 0.126471,
+        "peak_contact_force_N": 10.458,
+        "mean_final_support_N": 0.981,
+        "min_com_z_m": 0.0197798,
+        "max_com_z_m": 0.0211248,
+        "settled_at_s": 0.266,
+        "max_overlap_m": 0.000227339,
+        "max_momentum_residual_Ns": 5.77079e-14,
+        "first_contact_s": 0.002,
+        "impulse_first_40ms_Ns": 0.047811
+      }
+    }
+  },
+  "stack/dt0.5ms-offset20mm": {
+    "path_diff_m": 5.52366e-07,
+    "first_divergence_1um_s": null,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "left_finger-upper",
+          4.0
+        ],
+        [
+          "right_finger-upper",
+          4.0
+        ],
+        [
+          "support-upper",
+          3.9986633994208063
+        ],
+        [
+          "support-world",
+          4.0
+        ],
+        [
+          "upper-world",
+          3.99853228962818
+        ]
+      ],
+      "mujoco4": [
+        [
+          "left_finger-upper",
+          4.0
+        ],
+        [
+          "right_finger-upper",
+          4.0
+        ],
+        [
+          "support-upper",
+          3.9986633994208063
+        ],
+        [
+          "support-world",
+          4.0
+        ],
+        [
+          "upper-world",
+          3.99853228962818
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 12000,
+        "stack_survives": true,
+        "sustained_stack": true,
+        "final_relative_position_mm": [
+          16.198,
+          -0.460481,
+          39.9911
+        ],
+        "release_relative_position_mm": [
+          16.1978,
+          -0.460479,
+          39.9911
+        ],
+        "final_tilt_deg": 0.022151,
+        "max_post_release_tilt_deg": 0.022151,
+        "final_base_displacement_mm": 0.00542772,
+        "max_final_speed_m_s": 9.5789e-08,
+        "tail_support_contact_fraction": 1.0,
+        "final_window_position_range_mm": [
+          4.78421e-05,
+          6.46419e-07,
+          3.26053e-08
+        ],
+        "max_arm_limit_violation_rad": 0.0
+      },
+      "mujoco4": {
+        "frames": 12000,
+        "stack_survives": true,
+        "sustained_stack": true,
+        "final_relative_position_mm": [
+          16.198,
+          -0.459929,
+          39.9911
+        ],
+        "release_relative_position_mm": [
+          16.1978,
+          -0.459926,
+          39.9911
+        ],
+        "final_tilt_deg": 0.022151,
+        "max_post_release_tilt_deg": 0.022151,
+        "final_base_displacement_mm": 0.00542772,
+        "max_final_speed_m_s": 9.5789e-08,
+        "tail_support_contact_fraction": 1.0,
+        "final_window_position_range_mm": [
+          4.78421e-05,
+          6.45608e-07,
+          3.26054e-08
+        ],
+        "max_arm_limit_violation_rad": 0.0
+      }
+    }
+  },
+  "stack/dt1ms-offset0mm": {
+    "path_diff_m": 4.75118e-07,
+    "first_divergence_1um_s": null,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "left_finger-upper",
+          4.0
+        ],
+        [
+          "right_finger-upper",
+          4.0
+        ],
+        [
+          "support-upper",
+          3.998217468805704
+        ],
+        [
+          "support-world",
+          3.998666666666667
+        ],
+        [
+          "upper-world",
+          3.9980430528375734
+        ]
+      ],
+      "mujoco4": [
+        [
+          "left_finger-upper",
+          4.0
+        ],
+        [
+          "right_finger-upper",
+          4.0
+        ],
+        [
+          "support-upper",
+          3.998217468805704
+        ],
+        [
+          "support-world",
+          3.998666666666667
+        ],
+        [
+          "upper-world",
+          3.9980430528375734
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 6000,
+        "stack_survives": true,
+        "sustained_stack": true,
+        "final_relative_position_mm": [
+          -3.7357,
+          -0.461479,
+          39.9949
+        ],
+        "release_relative_position_mm": [
+          -3.73568,
+          -0.461476,
+          39.9949
+        ],
+        "final_tilt_deg": 0.0029809,
+        "max_post_release_tilt_deg": 0.0029809,
+        "final_base_displacement_mm": 0.00499817,
+        "max_final_speed_m_s": 1.28821e-08,
+        "tail_support_contact_fraction": 1.0,
+        "final_window_position_range_mm": [
+          6.38777e-06,
+          7.19405e-07,
+          5.04e-10
+        ],
+        "max_arm_limit_violation_rad": 0.0
+      },
+      "mujoco4": {
+        "frames": 6000,
+        "stack_survives": true,
+        "sustained_stack": true,
+        "final_relative_position_mm": [
+          -3.7357,
+          -0.461004,
+          39.9949
+        ],
+        "release_relative_position_mm": [
+          -3.73568,
+          -0.461001,
+          39.9949
+        ],
+        "final_tilt_deg": 0.00298086,
+        "max_post_release_tilt_deg": 0.00298086,
+        "final_base_displacement_mm": 0.00499817,
+        "max_final_speed_m_s": 1.28819e-08,
+        "tail_support_contact_fraction": 1.0,
+        "final_window_position_range_mm": [
+          6.38778e-06,
+          7.18654e-07,
+          5.03944e-10
+        ],
+        "max_arm_limit_violation_rad": 0.0
+      }
+    }
+  },
+  "stack/dt1ms-offset16mm": {
+    "path_diff_m": 4.86e-07,
+    "first_divergence_1um_s": null,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "left_finger-upper",
+          4.0
+        ],
+        [
+          "right_finger-upper",
+          4.0
+        ],
+        [
+          "support-upper",
+          3.998218262806236
+        ],
+        [
+          "support-world",
+          3.9983333333333335
+        ],
+        [
+          "upper-world",
+          3.9980430528375734
+        ]
+      ],
+      "mujoco4": [
+        [
+          "left_finger-upper",
+          4.0
+        ],
+        [
+          "right_finger-upper",
+          4.0
+        ],
+        [
+          "support-upper",
+          3.998218262806236
+        ],
+        [
+          "support-world",
+          3.9983333333333335
+        ],
+        [
+          "upper-world",
+          3.9980430528375734
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 6000,
+        "stack_survives": true,
+        "sustained_stack": true,
+        "final_relative_position_mm": [
+          12.1917,
+          -0.460866,
+          39.9931
+        ],
+        "release_relative_position_mm": [
+          12.1915,
+          -0.460863,
+          39.9931
+        ],
+        "final_tilt_deg": 0.013386,
+        "max_post_release_tilt_deg": 0.013386,
+        "final_base_displacement_mm": 0.00540125,
+        "max_final_speed_m_s": 5.7866e-08,
+        "tail_support_contact_fraction": 1.0,
+        "final_window_position_range_mm": [
+          2.88666e-05,
+          6.98886e-07,
+          1.09319e-08
+        ],
+        "max_arm_limit_violation_rad": 0.0
+      },
+      "mujoco4": {
+        "frames": 6000,
+        "stack_survives": true,
+        "sustained_stack": true,
+        "final_relative_position_mm": [
+          12.1917,
+          -0.46038,
+          39.9931
+        ],
+        "release_relative_position_mm": [
+          12.1915,
+          -0.460377,
+          39.9931
+        ],
+        "final_tilt_deg": 0.013386,
+        "max_post_release_tilt_deg": 0.013386,
+        "final_base_displacement_mm": 0.00540126,
+        "max_final_speed_m_s": 5.7866e-08,
+        "tail_support_contact_fraction": 1.0,
+        "final_window_position_range_mm": [
+          2.88666e-05,
+          6.98132e-07,
+          1.0932e-08
+        ],
+        "max_arm_limit_violation_rad": 0.0
+      }
+    }
+  },
+  "stack/dt1ms-offset20mm": {
+    "path_diff_m": 4.80019e-07,
+    "first_divergence_1um_s": null,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "left_finger-upper",
+          4.0
+        ],
+        [
+          "right_finger-upper",
+          4.0
+        ],
+        [
+          "support-upper",
+          3.998218262806236
+        ],
+        [
+          "support-world",
+          3.9995
+        ],
+        [
+          "upper-world",
+          3.9980430528375734
+        ]
+      ],
+      "mujoco4": [
+        [
+          "left_finger-upper",
+          4.0
+        ],
+        [
+          "right_finger-upper",
+          4.0
+        ],
+        [
+          "support-upper",
+          3.998218262806236
+        ],
+        [
+          "support-world",
+          3.9995
+        ],
+        [
+          "upper-world",
+          3.9980430528375734
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 6000,
+        "stack_survives": true,
+        "sustained_stack": true,
+        "final_relative_position_mm": [
+          16.1781,
+          -0.46087,
+          39.9911
+        ],
+        "release_relative_position_mm": [
+          16.1779,
+          -0.460867,
+          39.9911
+        ],
+        "final_tilt_deg": 0.0220966,
+        "max_post_release_tilt_deg": 0.0220966,
+        "final_base_displacement_mm": 0.00546171,
+        "max_final_speed_m_s": 9.55536e-08,
+        "tail_support_contact_fraction": 1.0,
+        "final_window_position_range_mm": [
+          4.76767e-05,
+          6.46741e-07,
+          3.23959e-08
+        ],
+        "max_arm_limit_violation_rad": 0.0
+      },
+      "mujoco4": {
+        "frames": 6000,
+        "stack_survives": true,
+        "sustained_stack": true,
+        "final_relative_position_mm": [
+          16.1781,
+          -0.46039,
+          39.9911
+        ],
+        "release_relative_position_mm": [
+          16.1779,
+          -0.460388,
+          39.9911
+        ],
+        "final_tilt_deg": 0.0220966,
+        "max_post_release_tilt_deg": 0.0220966,
+        "final_base_displacement_mm": 0.00546171,
+        "max_final_speed_m_s": 9.55536e-08,
+        "tail_support_contact_fraction": 1.0,
+        "final_window_position_range_mm": [
+          4.76767e-05,
+          6.46038e-07,
+          3.23958e-08
+        ],
+        "max_arm_limit_violation_rad": 0.0
+      }
+    }
+  },
+  "stack/dt1ms-offset22mm": {
+    "path_diff_m": 4.97364e-07,
+    "first_divergence_1um_s": null,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "left_finger-upper",
+          4.0
+        ],
+        [
+          "right_finger-upper",
+          4.0
+        ],
+        [
+          "support-upper",
+          3.998218262806236
+        ],
+        [
+          "support-world",
+          4.0
+        ],
+        [
+          "upper-world",
+          3.9980430528375734
+        ]
+      ],
+      "mujoco4": [
+        [
+          "left_finger-upper",
+          4.0
+        ],
+        [
+          "right_finger-upper",
+          4.0
+        ],
+        [
+          "support-upper",
+          3.998218262806236
+        ],
+        [
+          "support-world",
+          4.0
+        ],
+        [
+          "upper-world",
+          3.9980430528375734
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 6000,
+        "stack_survives": true,
+        "sustained_stack": true,
+        "final_relative_position_mm": [
+          18.1716,
+          -0.460836,
+          39.9895
+        ],
+        "release_relative_position_mm": [
+          18.1713,
+          -0.460834,
+          39.9895
+        ],
+        "final_tilt_deg": 0.0283114,
+        "max_post_release_tilt_deg": 0.0283114,
+        "final_base_displacement_mm": 0.00548983,
+        "max_final_speed_m_s": 1.22463e-07,
+        "tail_support_contact_fraction": 1.0,
+        "final_window_position_range_mm": [
+          6.11061e-05,
+          5.92878e-07,
+          5.64356e-08
+        ],
+        "max_arm_limit_violation_rad": 0.0
+      },
+      "mujoco4": {
+        "frames": 6000,
+        "stack_survives": true,
+        "sustained_stack": true,
+        "final_relative_position_mm": [
+          18.1716,
+          -0.460339,
+          39.9895
+        ],
+        "release_relative_position_mm": [
+          18.1713,
+          -0.460337,
+          39.9895
+        ],
+        "final_tilt_deg": 0.0283114,
+        "max_post_release_tilt_deg": 0.0283114,
+        "final_base_displacement_mm": 0.00548983,
+        "max_final_speed_m_s": 1.22463e-07,
+        "tail_support_contact_fraction": 1.0,
+        "final_window_position_range_mm": [
+          6.11061e-05,
+          5.9221e-07,
+          5.64356e-08
+        ],
+        "max_arm_limit_violation_rad": 0.0
+      }
+    }
+  },
+  "stack/dt1ms-offset24mm": {
+    "path_diff_m": 9.80714e-07,
+    "first_divergence_1um_s": null,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "left_finger-upper",
+          4.0
+        ],
+        [
+          "right_finger-upper",
+          4.0
+        ],
+        [
+          "support-upper",
+          2.134782608695652
+        ],
+        [
+          "support-world",
+          4.0
+        ],
+        [
+          "upper-world",
+          3.9952830188679247
+        ]
+      ],
+      "mujoco4": [
+        [
+          "left_finger-upper",
+          4.0
+        ],
+        [
+          "right_finger-upper",
+          4.0
+        ],
+        [
+          "support-upper",
+          2.134782608695652
+        ],
+        [
+          "support-world",
+          4.0
+        ],
+        [
+          "upper-world",
+          3.9952830188679247
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 6000,
+        "stack_survives": false,
+        "sustained_stack": false,
+        "final_relative_position_mm": [
+          46.5005,
+          -0.451727,
+          -1.38778e-14
+        ],
+        "release_relative_position_mm": [
+          36.8345,
+          -0.457398,
+          30.9365
+        ],
+        "final_tilt_deg": 90.0,
+        "max_post_release_tilt_deg": 90.0,
+        "final_base_displacement_mm": 0.00359398,
+        "max_final_speed_m_s": 2.80958e-15,
+        "tail_support_contact_fraction": 0.0,
+        "final_window_position_range_mm": [
+          0.0,
+          0.0,
+          6.93889e-15
+        ],
+        "max_arm_limit_violation_rad": 0.0
+      },
+      "mujoco4": {
+        "frames": 6000,
+        "stack_survives": false,
+        "sustained_stack": false,
+        "final_relative_position_mm": [
+          46.5008,
+          -0.450944,
+          2.08167e-14
+        ],
+        "release_relative_position_mm": [
+          36.8345,
+          -0.456757,
+          30.9365
+        ],
+        "final_tilt_deg": 90.0,
+        "max_post_release_tilt_deg": 90.0,
+        "final_base_displacement_mm": 0.00359398,
+        "max_final_speed_m_s": 2.70263e-15,
+        "tail_support_contact_fraction": 0.0,
+        "final_window_position_range_mm": [
+          0.0,
+          0.0,
+          3.46945e-15
+        ],
+        "max_arm_limit_violation_rad": 0.0
+      }
+    }
+  },
+  "stack/dt1ms-offset26mm": {
+    "path_diff_m": 8.39458e-07,
+    "first_divergence_1um_s": null,
+    "contacts_per_frame": {
+      "mujoco311": [
+        [
+          "left_finger-upper",
+          4.0
+        ],
+        [
+          "right_finger-upper",
+          4.0
+        ],
+        [
+          "support-upper",
+          2.112781954887218
+        ],
+        [
+          "support-world",
+          4.0
+        ],
+        [
+          "upper-world",
+          3.996414602346806
+        ]
+      ],
+      "mujoco4": [
+        [
+          "left_finger-upper",
+          4.0
+        ],
+        [
+          "right_finger-upper",
+          4.0
+        ],
+        [
+          "support-upper",
+          2.112781954887218
+        ],
+        [
+          "support-world",
+          4.0
+        ],
+        [
+          "upper-world",
+          3.996414602346806
+        ]
+      ]
+    },
+    "metrics": {
+      "mujoco311": {
+        "frames": 6000,
+        "stack_survives": false,
+        "sustained_stack": false,
+        "final_relative_position_mm": [
+          47.5431,
+          -0.583237,
+          -6.93889e-15
+        ],
+        "release_relative_position_mm": [
+          47.6259,
+          -0.54896,
+          -0.318299
+        ],
+        "final_tilt_deg": 90.0,
+        "max_post_release_tilt_deg": 90.0,
+        "final_base_displacement_mm": 0.00358476,
+        "max_final_speed_m_s": 2.44631e-15,
+        "tail_support_contact_fraction": 0.0,
+        "final_window_position_range_mm": [
+          0.0,
+          0.0,
+          3.46945e-15
+        ],
+        "max_arm_limit_violation_rad": 0.0
+      },
+      "mujoco4": {
+        "frames": 6000,
+        "stack_survives": false,
+        "sustained_stack": false,
+        "final_relative_position_mm": [
+          47.5432,
+          -0.582555,
+          6.93889e-15
+        ],
+        "release_relative_position_mm": [
+          47.6261,
+          -0.548265,
+          -0.318308
+        ],
+        "final_tilt_deg": 90.0,
+        "max_post_release_tilt_deg": 90.0,
+        "final_base_displacement_mm": 0.00358476,
+        "max_final_speed_m_s": 2.44913e-15,
+        "tail_support_contact_fraction": 0.0,
+        "final_window_position_range_mm": [
+          0.0,
+          0.0,
+          6.93889e-15
+        ],
+        "max_arm_limit_violation_rad": 0.0
+      }
+    }
+  }
+}

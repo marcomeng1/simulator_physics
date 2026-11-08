@@ -1,0 +1,454 @@
+{
+  "collision-chain": {
+    "dt0.5ms": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 0.0329679,
+        "notes": [],
+        "metrics": {
+          "frames": 2000,
+          "sphere_final_xy_mm": [
+            172.017,
+            -153.295
+          ],
+          "sphere_final_heading_deg": 121.797,
+          "cube_final_xy_mm": [
+            138.984,
+            -3.11943
+          ],
+          "cube_final_heading_deg": 33.1115,
+          "prism_final_xy_mm": [
+            181.463,
+            50.8088
+          ],
+          "prism_final_heading_deg": 57.3732,
+          "peak_horizontal_force_N": 21.1608
+        }
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "metrics": {
+          "frames": 2000,
+          "sphere_final_xy_mm": [
+            141.505,
+            -140.809
+          ],
+          "sphere_final_heading_deg": -78.3152,
+          "cube_final_xy_mm": [
+            138.158,
+            -4.87268
+          ],
+          "cube_final_heading_deg": 27.149,
+          "prism_final_xy_mm": [
+            175.146,
+            47.2837
+          ],
+          "prism_final_heading_deg": 56.2127,
+          "peak_horizontal_force_N": 21.1608
+        }
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0008478838891111475,
+        "path_diff_vs_mujoco4_m": 0.00525374,
+        "notes": [],
+        "metrics": {
+          "frames": 2000,
+          "sphere_final_xy_mm": [
+            137.181,
+            -137.825
+          ],
+          "sphere_final_heading_deg": -79.2012,
+          "cube_final_xy_mm": [
+            139.021,
+            -6.96641
+          ],
+          "cube_final_heading_deg": 26.5812,
+          "prism_final_xy_mm": [
+            176.3,
+            44.4624
+          ],
+          "prism_final_heading_deg": 56.1102,
+          "peak_horizontal_force_N": 21.1608
+        }
+      },
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0025459018115627915,
+        "path_diff_vs_mujoco4_m": 0.0165529,
+        "notes": [],
+        "metrics": {
+          "frames": 2000,
+          "sphere_final_xy_mm": [
+            155.385,
+            -149.828
+          ],
+          "sphere_final_heading_deg": -169.92,
+          "cube_final_xy_mm": [
+            135.986,
+            -2.05128
+          ],
+          "cube_final_heading_deg": 28.5471,
+          "prism_final_xy_mm": [
+            174.987,
+            47.4979
+          ],
+          "prism_final_heading_deg": 56.0214,
+          "peak_horizontal_force_N": 21.1618
+        }
+      },
+      "genesis": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "genesis-world": "1.4.5",
+          "quadrants": "1.3.3",
+          "torch": "2.14.1+cu130"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 0.00860503,
+        "notes": [],
+        "metrics": {
+          "frames": 2000,
+          "sphere_final_xy_mm": [
+            142.277,
+            -149.379
+          ],
+          "sphere_final_heading_deg": 98.6741,
+          "cube_final_xy_mm": [
+            135.16,
+            -5.12977
+          ],
+          "cube_final_heading_deg": 27.2186,
+          "prism_final_xy_mm": [
+            174.394,
+            44.3266
+          ],
+          "prism_final_heading_deg": 55.2505,
+          "peak_horizontal_force_N": 16.359
+        }
+      },
+      "article:physx": {
+        "status": "published",
+        "versions": {
+          "physx": "6.1.0.0"
+        },
+        "path_diff_vs_mujoco4_m": 0.02126,
+        "metrics": {
+          "frames": 2000,
+          "sphere_final_xy_mm": [
+            138.843,
+            -135.851
+          ],
+          "sphere_final_heading_deg": -74.0656,
+          "cube_final_xy_mm": [
+            119.297,
+            4.93165
+          ],
+          "cube_final_heading_deg": 24.2846,
+          "prism_final_xy_mm": [
+            185.375,
+            42.259
+          ],
+          "prism_final_heading_deg": 22.9892,
+          "peak_horizontal_force_N": 158.592
+        }
+      },
+      "article:newton_mjwarp": {
+        "status": "published",
+        "versions": {
+          "newton_mjwarp": "1.5.2"
+        },
+        "path_diff_vs_mujoco4_m": 0.0148195,
+        "metrics": {
+          "frames": 2000,
+          "sphere_final_xy_mm": [
+            153.535,
+            -149.463
+          ],
+          "sphere_final_heading_deg": -125.07,
+          "cube_final_xy_mm": [
+            136.514,
+            -2.73559
+          ],
+          "cube_final_heading_deg": 28.4537,
+          "prism_final_xy_mm": [
+            175.394,
+            47.7476
+          ],
+          "prism_final_heading_deg": 55.5374,
+          "peak_horizontal_force_N": 21.1617
+        }
+      },
+      "article:mujoco_cpu": {
+        "status": "published",
+        "versions": {
+          "mujoco_cpu": "3.11.0"
+        },
+        "path_diff_vs_mujoco4_m": 0.0329679,
+        "metrics": {
+          "frames": 2000,
+          "sphere_final_xy_mm": [
+            172.017,
+            -153.295
+          ],
+          "sphere_final_heading_deg": 121.797,
+          "cube_final_xy_mm": [
+            138.984,
+            -3.11943
+          ],
+          "cube_final_heading_deg": 33.1115,
+          "prism_final_xy_mm": [
+            181.463,
+            50.8088
+          ],
+          "prism_final_heading_deg": 57.3732,
+          "peak_horizontal_force_N": 21.1608
+        }
+      },
+      "article:genesis": {
+        "status": "published",
+        "versions": {
+          "genesis": "1.4.1"
+        },
+        "path_diff_vs_mujoco4_m": 0.00871667,
+        "metrics": {
+          "frames": 2000,
+          "sphere_final_xy_mm": [
+            142.353,
+            -149.484
+          ],
+          "sphere_final_heading_deg": 99.7766,
+          "cube_final_xy_mm": [
+            135.145,
+            -4.9877
+          ],
+          "cube_final_heading_deg": 27.1843,
+          "prism_final_xy_mm": [
+            174.357,
+            44.4089
+          ],
+          "prism_final_heading_deg": 55.2976,
+          "peak_horizontal_force_N": 16.3281
+        }
+      }
+    },
+    "dt1ms": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.0186557,
+        "notes": [],
+        "metrics": {
+          "frames": 1000,
+          "sphere_final_xy_mm": [
+            172.695,
+            -145.863
+          ],
+          "sphere_final_heading_deg": 98.9303,
+          "cube_final_xy_mm": [
+            142.333,
+            -2.54227
+          ],
+          "cube_final_heading_deg": 32.2032,
+          "prism_final_xy_mm": [
+            185.259,
+            48.7458
+          ],
+          "prism_final_heading_deg": 58.7021,
+          "peak_horizontal_force_N": 21.1579
+        }
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "metrics": {
+          "frames": 1000,
+          "sphere_final_xy_mm": [
+            154.45,
+            -149.757
+          ],
+          "sphere_final_heading_deg": -114.535,
+          "cube_final_xy_mm": [
+            134.689,
+            -1.72576
+          ],
+          "cube_final_heading_deg": 27.9789,
+          "prism_final_xy_mm": [
+            174.349,
+            47.1055
+          ],
+          "prism_final_heading_deg": 55.4598,
+          "peak_horizontal_force_N": 21.1579
+        }
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.00343545,
+        "notes": [],
+        "metrics": {
+          "frames": 1000,
+          "sphere_final_xy_mm": [
+            154.982,
+            -152.041
+          ],
+          "sphere_final_heading_deg": -111.721,
+          "cube_final_xy_mm": [
+            134.205,
+            -3.16903
+          ],
+          "cube_final_heading_deg": 30.5011,
+          "prism_final_xy_mm": [
+            174.965,
+            47.3522
+          ],
+          "prism_final_heading_deg": 54.2194,
+          "peak_horizontal_force_N": 21.1578
+        }
+      },
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.00947297,
+        "notes": [],
+        "metrics": {
+          "frames": 1000,
+          "sphere_final_xy_mm": [
+            163.853,
+            -148.606
+          ],
+          "sphere_final_heading_deg": -110.6,
+          "cube_final_xy_mm": [
+            136.231,
+            -0.190958
+          ],
+          "cube_final_heading_deg": 28.2559,
+          "prism_final_xy_mm": [
+            176.201,
+            49.7045
+          ],
+          "prism_final_heading_deg": 54.5817,
+          "peak_horizontal_force_N": 21.1584
+        }
+      },
+      "genesis": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "genesis-world": "1.4.5",
+          "quadrants": "1.3.3",
+          "torch": "2.14.1+cu130"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.0131473,
+        "notes": [],
+        "metrics": {
+          "frames": 1000,
+          "sphere_final_xy_mm": [
+            141.335,
+            -148.833
+          ],
+          "sphere_final_heading_deg": 97.186,
+          "cube_final_xy_mm": [
+            134.926,
+            -5.16683
+          ],
+          "cube_final_heading_deg": 27.1061,
+          "prism_final_xy_mm": [
+            174.193,
+            44.2781
+          ],
+          "prism_final_heading_deg": 55.1733,
+          "peak_horizontal_force_N": 16.3563
+        }
+      }
+    }
+  }
+}

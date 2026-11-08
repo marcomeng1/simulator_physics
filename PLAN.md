@@ -38,10 +38,13 @@ simulator_physics/
   pyproject.toml            # dev environment (fetch, analysis), ruff / pytest config
   Makefile                  # one-line commands for every step
   packages/simbench/        # engine-agnostic core, depends only on numpy
-    scenes/                 # scene specs (geometry, mass, friction, dt, initial state)
-    controller.py           # shared 1 kHz PD + inverse-dynamics feedforward
+    scenes/                 # scene specs; panda.py holds the shared 1 kHz PD controller
+    tapes.py                # IK, reference and feedforward tapes (generated on 3.11)
     trace.py                # common trace format: poses, contact forces, efforts
-    metrics.py              # travel, peak force, overlap, settle time, momentum check
+    metrics.py              # per-scene metrics and the momentum check
+    plans.py, report.py     # run plans per phase, summaries and version/option reports
+    bench.py                # batched runtime benchmark per route
+    web.py                  # export of replays and summaries for the site
     adapters/               # one module per engine: build scene, step, read back
   envs/<route>/             # one locked uv project per route (pyproject + uv.lock)
   assets/                   # pinned Menagerie Panda + generated scene MJCF
@@ -60,7 +63,86 @@ metadata file (package versions, git commit, GPU, driver, seed).
 | Phase | State |
 | --- | --- |
 | 0. Setup and import audit | Done (2026-11-08) |
-| 1–6 | Not started |
+| 1. Single-object controls | Done (2026-11-08) |
+| 2. Collision chain | Done (2026-11-08) |
+| 3. Panda (free space, grasp, stack, push) | Done (2026-11-08) |
+| 4. What MuJoCo 4.0 changes | Done (2026-11-08) |
+| 5. Runtime benchmark | Done (2026-11-08) |
+| Website | Done (2026-11-08), `make web serve` |
+| 6. Insertion, sweep, deformables | Not started |
+
+Numbers below come from `results/summary/`; "path" means the largest COM distance
+between two traces over all bodies and frames.
+
+### Phase 1 results (`phase1.json`)
+- MuJoCo 3.11 reproduces the article's MuJoCo traces exactly: sliding block 126.471 mm
+  travel and 10.458 N peak at 2 ms, drop 52.039 N peak at 1 ms, hinge 0.0839° error.
+- MuJoCo 4.0 is identical to 3.11 on all three (path ≤ 5e-12 m).
+- MuJoCo-Warp 4.0 and Newton are within 2 µm of MuJoCo 4.0, with momentum residuals
+  of about 1e-6 N·s from float32.
+- Genesis 1.4.5 with matched options reproduces the article's Genesis slide (1.52 N
+  vs 1.50 N peak) but not its drop (52.039 N vs the article's 53.44 N).
+
+### Phase 2 results (`phase2.json`)
+- MuJoCo 3.11 matches the article's MuJoCo chain exactly. MuJoCo 4.0 ends 33 mm away
+  at 0.5 ms (18.7 mm at 1 ms) because it generates more prism contacts (prism-ground
+  1.74 → 2.62 and cube-prism 1.05 → 2.02 contacts per step).
+- With that change, MuJoCo 4.0 lands closer to the GPU routes than 3.11 does:
+  MuJoCo-Warp 4.0 5.3 mm, Genesis 8.6 mm, Newton 16.6 mm.
+- GPU seed spread: MuJoCo-Warp 0.85 mm, Newton 2.55 mm, Genesis 0.
+
+### Phase 3 results (`phase3.json`)
+- Panda models: the article's free-space Panda (fingers welded, with the article's
+  +0.04 m offset on both fingers reproduced) and a grasping Panda with box finger
+  pads, where only pads collide. Controller tapes (IK, quintic references, unloaded
+  inverse-dynamics feedforward) are generated once on MuJoCo 3.11 and replayed
+  unchanged by every route.
+- Open-loop effort: the article's MuJoCo trace is matched to 1e-10 m. All routes
+  agree within 0.003 mm (the article's PhysX: 0.04 mm).
+- Tracking: 0.00716° max error on every route, as in the article.
+- Grasp: 7.54 cm lift and 3.19 N per finger on all routes. With an 8 mm offset,
+  Genesis ends 10.9 mm sideways vs about 4 mm on the others.
+- Stack: every route survives up to the 22 mm nominal offset and topples at 24 and
+  26 mm. The loaded hand lags its reference by about 4 mm in −X, so the effective
+  offsets are about 4 mm smaller than nominal.
+- Push: every route passes the 90 and 100 mm channels and fails at 80 mm. Genesis's
+  peak pad force is about 3 N vs about 10 N on the others.
+
+### Phase 4 results (`mujoco4-vs-311.json`, `phase4.json`)
+- 3.11 vs 4.0 on identical MJCF: 18 of 27 variants agree within 1 µm (primitives,
+  free-space Panda, centred grasp, all stacks within 1 µm). Differences come
+  from box-face contacts. The collision chain diverges after 0.001 s. Push diverges at
+  0.877 s (box-face contacts change from 3 or 5 to 4) and ends 1.8–41 mm apart.
+  The offset grasp differs by 0.69 mm.
+- mujoco#3767: forcing a sparse vs dense Jacobian under the Newton solver differs
+  by ≤ 3e-12 m on both versions in the chain, grasp, stack and push. The sparse
+  Cholesky regression is not triggered by these scenes.
+- New 4.0 options: speculative contacts change nothing at default margins. The
+  discrete integrator lowers the slide spike from 10.46 N to 7.41 N and the drop
+  peak from 52.0 N to 45.3 N. IPC (which requires the discrete integrator) gives
+  results identical to discrete alone here.
+- Pyramidal cone: 0.05 mm on slide, 0.005 mm on drop, 12–35 mm on the chain.
+  Genesis's own defaults use a pyramidal cone and give 10.46 N on the slide, the
+  same as MuJoCo. The 1.5 N Genesis slide comes from the elliptic cone.
+- Determinism: MuJoCo-Warp `DeterminismType.ALL` reduces seed spread to zero
+  (chain 0.85 mm → 0, push 3.66 mm → 0). Newton 1.7's
+  `DeterministicMode.RUN_TO_RUN` fails to compile its own contact-conversion kernel.
+
+### Phase 5 results (`bench/<route>.json`)
+- MuJoCo 4.0 vs 3.11 CPU, contact-free Panda: 405k vs 275k steps/s on one thread
+  (1.47×), 7.02M vs 4.62M with `mujoco.rollout` on 32 threads (1.52×). Push
+  (Python controller, `mj_step`): 51.4k vs 45.8k. Slide and drop are unchanged.
+- Peak GPU world-steps/s, contact-free Panda at 131,072 worlds: MuJoCo-Warp 4.0 51M,
+  Newton 38.6M, Genesis 14.8M.
+- Push (contact-heavy, controller on device): MuJoCo-Warp 5.8M and Newton 3.6M at
+  8,192 worlds, Genesis 1.0M at 32,768. 131,072 worlds runs out of GPU memory on
+  all three.
+- Batch equivalence (the same world run with n = 1 and as one of n = 128):
+  - Genesis is exact.
+  - MuJoCo-Warp and Newton match to 2e-8 on drop and exactly on the Panda. On
+    slide they differ by up to 8e-4 and on push by up to 4e-3.
+  - Newton is also not run-to-run repeatable on push (3e-3 between identical n = 1
+    runs).
 
 ### Phase 0 results
 - Five locked routes install and step both Panda models on the RTX 5090
@@ -130,7 +212,9 @@ Peg insertion, 15-object crowded sweep (most exposed to the sparse Cholesky bug)
 deformable ball (4.0 flex contact and elasticity fixes), controller tuning.
 
 ## Interactive website
-Static site (Vite + Three.js + uPlot), built to `web/dist`:
+Static site in plain ES modules (Three.js and uPlot from a CDN, no build step).
+`make web` exports replays and summaries to `web/data/` (gitignored), and
+`make serve` serves it:
 - Replay viewer: scene picker, engine toggles, side-by-side or overlay, timeline
   scrubber, force arrows at 1 N = 1 cm.
 - Plots linked to the same time cursor as the 3D view.
@@ -146,5 +230,3 @@ Static site (Vite + Three.js + uPlot), built to `web/dist`:
 - The article's scene code is not published; parameters are matched from its audit
   files, and any mismatch is reported as a reproduction difference.
 - MuJoCo 4.0.0 sparse Cholesky regression (see Phase 4).
-- Node.js is not installed on this machine; the web build either installs it
-  (e.g. via `nodeenv` inside the dev environment) or ships plain ES modules.

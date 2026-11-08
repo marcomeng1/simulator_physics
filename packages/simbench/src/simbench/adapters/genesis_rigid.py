@@ -121,6 +121,121 @@ def readback(path: Path, route: str, model: str,
     return rb
 
 
+def rigid_options(mjcf_path: Path, dt: float) -> dict:
+    """Solver settings matched to the scene's MJCF <option> (Genesis does not read them)."""
+    import mujoco
+
+    from simbench.adapters.mujoco_cpu import load_model
+
+    o = load_model(mjcf_path).opt
+    integrators = {int(mujoco.mjtIntegrator.mjINT_EULER): gs.integrator.Euler,
+                   int(mujoco.mjtIntegrator.mjINT_IMPLICITFAST): gs.integrator.implicitfast}
+    cones = {int(mujoco.mjtCone.mjCONE_ELLIPTIC): gs.friction_cone.elliptic,
+             int(mujoco.mjtCone.mjCONE_PYRAMIDAL): gs.friction_cone.pyramidal}
+    return {"dt": dt, "integrator": integrators[int(o.integrator)],
+            "constraint_solver": gs.constraint_solver.Newton,
+            "iterations": int(o.iterations), "tolerance": float(o.tolerance),
+            "friction_cone": cones[int(o.cone)], "gravity": tuple(o.gravity)}
+
+
+class Sim:
+    """Genesis rigid solver, single environment (float64, GPU)."""
+
+    def __init__(self, scene, seed: int = 0, matched_options: bool = True):
+        """matched_options=False keeps Genesis's own RigidOptions defaults (only dt is set)."""
+        import torch
+
+        self.torch = torch
+        _init()
+        self.scene = scene
+        path = scene.mjcf_path()
+        opts = rigid_options(path, scene.dt) if matched_options else {"dt": scene.dt}
+        self.rigid_opts = {k: str(v) for k, v in opts.items()}
+        gravity = opts.pop("gravity", (0.0, 0.0, -9.81))
+        dt = opts.pop("dt")
+        self.gs_scene = gs.Scene(
+            sim_options=gs.options.SimOptions(dt=dt, gravity=gravity),
+            rigid_options=gs.options.RigidOptions(**opts),
+            show_viewer=False,
+        )
+        self.entity = e = self.gs_scene.add_entity(gs.morphs.MJCF(file=str(path)))
+        self.gs_scene.build()
+        self.notes = apply_mjcf_dof_properties(path, e)
+
+        links = {link.name: link for link in e.links}
+        self.links = [links[n] for n in scene.bodies]
+        joints = {j.name: j for j in e.joints}
+        self.dofs = [joints[n].dofs_idx_local[0] for n in scene.joints]
+        self.qs = [joints[n].qs_idx_local[0] for n in scene.joints]
+        solver = e.solver
+        self.link_global = [link.idx for link in self.links]
+        self.contact_names = [link.name for link in solver.links]
+        self.track = {g: i for i, g in enumerate(self.link_global)}
+
+        if scene.joint_init:
+            q = _np(e.get_qpos())
+            for name, value in scene.joint_init.items():
+                q[joints[name].qs_idx_local[0]] = value
+            e.set_qpos(q)
+        if scene.free_init:
+            vel = _np(e.get_dofs_velocity())
+            for name, init in scene.free_init.items():
+                link = links[name]
+                joint = next(j for j in link.joints if j.type == gs.JOINT_TYPE.FREE)
+                start = joint.dofs_idx_local[0]
+                rot = quat_to_mat(_np(link.get_quat()))
+                # Free-joint dofs: world linear velocity, body-frame angular velocity.
+                vel[start:start + 3] = init.linear
+                vel[start + 3:start + 6] = rot.T @ np.asarray(init.angular)
+            e.set_dofs_velocity(vel)
+        self._tau = torch.zeros(e.n_dofs, dtype=gs.tc_float, device=gs.device)
+
+    def settings(self) -> dict:
+        return {"engine": "genesis", "version": gs.__version__, "precision": "float64",
+                "device": str(gs.device), **self.rigid_opts}
+
+    def effective_model(self) -> dict:
+        solver = self.entity.solver
+        mass = _np(solver.get_links_mass(self.link_global))
+        return {n: {"mass": float(mass[i])} for i, n in enumerate(self.scene.bodies)}
+
+    def state(self) -> dict:
+        solver = self.entity.solver
+        idx = self.link_global
+        pos = _np(solver.get_links_pos(idx))
+        quat = _np(solver.get_links_quat(idx))
+        com = pos + np.array([quat_to_mat(q) @ c for q, c in
+                              zip(quat, _np(solver.get_links_COM(idx)), strict=True)])
+        lin = _np(solver.get_links_vel(idx, ref=gs.link_ref_frame.link_COM))
+        ang = _np(solver.get_links_ang(idx))
+        q, qd = _np(self.entity.get_qpos()), _np(self.entity.get_dofs_velocity())
+        return {"pos": pos, "com": com, "quat": quat, "linvel": lin, "angvel": ang,
+                "q": q[self.qs] if self.qs else np.zeros(0),
+                "qd": qd[self.dofs] if self.dofs else np.zeros(0)}
+
+    def step(self, tau: np.ndarray) -> None:
+        if self.dofs:
+            self._tau.zero_()
+            self._tau[self.dofs] = self.torch.as_tensor(tau, dtype=gs.tc_float, device=gs.device)
+            self.entity.control_dofs_force(self._tau)
+        self.gs_scene.step()
+
+    def contacts(self) -> dict:
+        c = self.entity.get_contacts()
+        a = c["link_a"].cpu().numpy().astype(int)
+        b = c["link_b"].cpu().numpy().astype(int)
+        pos = _np(c["position"]).reshape(-1, 3)
+        force = _np(c["force_b"]).reshape(-1, 3)
+        net = np.zeros((len(self.links), 3))
+        for i in range(len(a)):
+            if b[i] in self.track:
+                net[self.track[b[i]]] += force[i]
+            if a[i] in self.track:
+                net[self.track[a[i]]] += _np(c["force_a"][i])
+        dist = _np(c["penetration"]).reshape(-1) * -1 if "penetration" in c else np.zeros(len(a))
+        return {"a": a, "b": b, "pos": pos, "force": force, "dist": dist, "net": net}
+
+
 def smoke(path: Path, steps: int = 1000) -> dict:
     import torch
 

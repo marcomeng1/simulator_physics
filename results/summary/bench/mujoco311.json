@@ -1,0 +1,289 @@
+{
+  "workloads": {
+    "slide": {
+      "runs": [
+        {
+          "mode": "mj_step",
+          "threads": 1,
+          "setup_s": 0.046495107002556324,
+          "worlds": 1,
+          "steps": 1000,
+          "trials_s": [
+            0.0025010230019688606,
+            0.0025156799238175154,
+            0.002507945988327265
+          ],
+          "warmup_s": 0.002535418141633272,
+          "world_steps_per_s": 398732.66994357173,
+          "rtf_per_world": 398.7326699435717,
+          "gpu_memory_mib": null
+        },
+        {
+          "mode": "rollout",
+          "threads": 1,
+          "worlds": 256,
+          "steps": 1000,
+          "trials_s": [
+            0.5995496409013867,
+            0.5950676260981709,
+            0.5940088219940662
+          ],
+          "warmup_s": 0.5981503741350025,
+          "world_steps_per_s": 430203.2051022157,
+          "rtf_per_world": 1.68048126993053,
+          "gpu_memory_mib": null
+        },
+        {
+          "mode": "rollout",
+          "threads": 8,
+          "worlds": 256,
+          "steps": 1000,
+          "trials_s": [
+            0.08113640802912414,
+            0.08649707003496587,
+            0.08151460019871593
+          ],
+          "warmup_s": 0.08289371989667416,
+          "world_steps_per_s": 3140541.6867153165,
+          "rtf_per_world": 12.267740963731706,
+          "gpu_memory_mib": null
+        },
+        {
+          "mode": "rollout",
+          "threads": 16,
+          "worlds": 256,
+          "steps": 1000,
+          "trials_s": [
+            0.04856352601200342,
+            0.047371799824759364,
+            0.048154013929888606
+          ],
+          "warmup_s": 0.049279103986918926,
+          "world_steps_per_s": 5316275.40692104,
+          "rtf_per_world": 20.766700808285314,
+          "gpu_memory_mib": null
+        },
+        {
+          "mode": "rollout",
+          "threads": 32,
+          "worlds": 256,
+          "steps": 1000,
+          "trials_s": [
+            0.035655291052535176,
+            0.03513142396695912,
+            0.03553664707578719
+          ],
+          "warmup_s": 0.037902565905824304,
+          "world_steps_per_s": 7203831.004485086,
+          "rtf_per_world": 28.139964861269867,
+          "gpu_memory_mib": null
+        }
+      ],
+      "equivalence": {}
+    },
+    "drop": {
+      "runs": [
+        {
+          "mode": "mj_step",
+          "threads": 1,
+          "setup_s": 0.024827535962685943,
+          "worlds": 1,
+          "steps": 1000,
+          "trials_s": [
+            0.002235342049971223,
+            0.002229321049526334,
+            0.002214612904936075
+          ],
+          "warmup_s": 0.0022802569437772036,
+          "world_steps_per_s": 448567.0649422482,
+          "rtf_per_world": 448.56706494224824,
+          "gpu_memory_mib": null
+        },
+        {
+          "mode": "rollout",
+          "threads": 1,
+          "worlds": 256,
+          "steps": 1000,
+          "trials_s": [
+            0.5019557741470635,
+            0.49911548290401697,
+            0.5049229869619012
+          ],
+          "warmup_s": 0.5057794791646302,
+          "world_steps_per_s": 510005.09045842127,
+          "rtf_per_world": 1.9922073846032082,
+          "gpu_memory_mib": null
+        },
+        {
+          "mode": "rollout",
+          "threads": 8,
+          "worlds": 256,
+          "steps": 1000,
+          "trials_s": [
+            0.06773164798505604,
+            0.06800247891806066,
+            0.06835548300296068
+          ],
+          "warmup_s": 0.06830704119056463,
+          "world_steps_per_s": 3764568.646217534,
+          "rtf_per_world": 14.70534627428724,
+          "gpu_memory_mib": null
+        },
+        {
+          "mode": "rollout",
+          "threads": 16,
+          "worlds": 256,
+          "steps": 1000,
+          "trials_s": [
+            0.03723494801670313,
+            0.03864960395731032,
+            0.03853452694602311
+          ],
+          "warmup_s": 0.03885620296932757,
+          "world_steps_per_s": 6643392.829464072,
+          "rtf_per_world": 25.950753240094034,
+          "gpu_memory_mib": null
+        },
+        {
+          "mode": "rollout",
+          "threads": 32,
+          "worlds": 256,
+          "steps": 1000,
+          "trials_s": [
+            0.030324886087328196,
+            0.030772129073739052,
+            0.029625748051330447
+          ],
+          "warmup_s": 0.03223233995959163,
+          "world_steps_per_s": 8441911.348414734,
+          "rtf_per_world": 32.97621620474506,
+          "gpu_memory_mib": null
+        }
+      ],
+      "equivalence": {}
+    },
+    "panda": {
+      "runs": [
+        {
+          "mode": "mj_step",
+          "threads": 1,
+          "setup_s": 0.03103998303413391,
+          "worlds": 1,
+          "steps": 1000,
+          "trials_s": [
+            0.0036587240174412727,
+            0.003637474961578846,
+            0.00364206382073462
+          ],
+          "warmup_s": 0.0036170859821140766,
+          "world_steps_per_s": 274569.59823353554,
+          "rtf_per_world": 274.56959823353554,
+          "gpu_memory_mib": null
+        },
+        {
+          "mode": "rollout",
+          "threads": 1,
+          "worlds": 256,
+          "steps": 1000,
+          "trials_s": [
+            0.8482010648585856,
+            0.8418283672071993,
+            0.8422359868418425
+          ],
+          "warmup_s": 0.8467294499278069,
+          "world_steps_per_s": 303952.81607466197,
+          "rtf_per_world": 1.1873156877916484,
+          "gpu_memory_mib": null
+        },
+        {
+          "mode": "rollout",
+          "threads": 8,
+          "worlds": 256,
+          "steps": 1000,
+          "trials_s": [
+            0.11282396293245256,
+            0.11301138577982783,
+            0.11280991695821285
+          ],
+          "warmup_s": 0.1188059258274734,
+          "world_steps_per_s": 2269021.521192857,
+          "rtf_per_world": 8.863365317159596,
+          "gpu_memory_mib": null
+        },
+        {
+          "mode": "rollout",
+          "threads": 16,
+          "worlds": 256,
+          "steps": 1000,
+          "trials_s": [
+            0.05964341596700251,
+            0.06238733697682619,
+            0.05962741584517062
+          ],
+          "warmup_s": 0.06344384816475213,
+          "world_steps_per_s": 4292175.35329685,
+          "rtf_per_world": 16.766309973815822,
+          "gpu_memory_mib": null
+        },
+        {
+          "mode": "rollout",
+          "threads": 32,
+          "worlds": 256,
+          "steps": 1000,
+          "trials_s": [
+            0.055621447041630745,
+            0.05544975306838751,
+            0.05422427388839424
+          ],
+          "warmup_s": 0.05695656198076904,
+          "world_steps_per_s": 4616792.426185723,
+          "rtf_per_world": 18.034345414787982,
+          "gpu_memory_mib": null
+        }
+      ],
+      "equivalence": {}
+    },
+    "push": {
+      "runs": [
+        {
+          "mode": "mj_step",
+          "threads": 1,
+          "setup_s": 0.10387702309526503,
+          "worlds": 1,
+          "steps": 1000,
+          "trials_s": [
+            0.021823916118592024,
+            0.021861216984689236,
+            0.021827482851222157
+          ],
+          "warmup_s": 0.022848506923764944,
+          "world_steps_per_s": 45813.803030614145,
+          "rtf_per_world": 45.813803030614146,
+          "gpu_memory_mib": null
+        }
+      ],
+      "equivalence": {}
+    }
+  },
+  "environment": {
+    "route": "mujoco311",
+    "python": "3.12.3",
+    "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+    "cpu": "x86_64",
+    "cpu_count": 32,
+    "gpus": [
+      {
+        "name": "NVIDIA GeForce RTX 5090",
+        "driver": "580.178.04",
+        "memory": "32607 MiB"
+      }
+    ],
+    "git_commit": "dec5e92eff7c79ad1bae13716de06d8e111ceff3",
+    "git_dirty": true,
+    "packages": {
+      "simbench": "0.1.0",
+      "numpy": "2.5.4",
+      "mujoco": "3.11.0"
+    }
+  }
+}
