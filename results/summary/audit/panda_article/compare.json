@@ -1,0 +1,139 @@
+{
+  "tolerances": {
+    "mass": 1e-06,
+    "com": 1e-06,
+    "inertia": 1e-06,
+    "joint_axis": 1e-06,
+    "joint_range": 1e-06,
+    "armature": 1e-07,
+    "damping": 1e-07,
+    "frictionloss": 1e-07,
+    "fk_pos": 1e-05,
+    "fk_rot": 0.0001
+  },
+  "routes": [
+    {
+      "route": "genesis",
+      "reference": "mujoco4",
+      "missing": [],
+      "max_abs_diff": {
+        "mass": 0.0,
+        "com": 0.0,
+        "inertia": 0.0,
+        "joint_axis": 2.220446049250313e-16,
+        "joint_range": 0.0,
+        "armature": 0.0,
+        "damping": 0.0,
+        "frictionloss": 0.0,
+        "fk_pos": 6.301894886419484e-16,
+        "fk_rot": 1.2707083321416676e-15
+      },
+      "worst_at": {
+        "joint_axis": "joint2",
+        "fk_pos": "config 0 right_finger",
+        "fk_rot": "config 4 link7"
+      },
+      "fail": []
+    },
+    {
+      "route": "mjwarp4",
+      "reference": "mujoco4",
+      "missing": [],
+      "max_abs_diff": {
+        "mass": 8.346557622829209e-08,
+        "com": 2.588748937437657e-09,
+        "inertia": 2.5785918622567294e-08,
+        "joint_axis": 0.0,
+        "joint_range": 5.7220459037665705e-08,
+        "armature": 0.0,
+        "damping": 0.0,
+        "frictionloss": 0.0,
+        "fk_pos": 1.9632734623223538e-07,
+        "fk_rot": 4.564570161199507e-07
+      },
+      "worst_at": {
+        "mass": "link4",
+        "com": "link3",
+        "inertia": "link1",
+        "joint_range": "joint6",
+        "fk_pos": "config 0 left_finger",
+        "fk_rot": "config 2 link7"
+      },
+      "fail": []
+    },
+    {
+      "route": "mujoco311",
+      "reference": "mujoco4",
+      "missing": [],
+      "max_abs_diff": {
+        "mass": 0.0,
+        "com": 0.0,
+        "inertia": 4.569767472172026e-07,
+        "joint_axis": 0.0,
+        "joint_range": 0.0,
+        "armature": 0.0,
+        "damping": 0.0,
+        "frictionloss": 0.0,
+        "fk_pos": 5.551115123125783e-17,
+        "fk_rot": 0.0
+      },
+      "worst_at": {
+        "inertia": "link1",
+        "fk_pos": "config 3 link3"
+      },
+      "fail": []
+    },
+    {
+      "route": "newton-mjmodel",
+      "reference": "mujoco4",
+      "missing": [],
+      "max_abs_diff": {
+        "mass": 8.346557622829209e-08,
+        "com": 2.588748937437657e-09,
+        "inertia": 2.490997352833091e-08,
+        "joint_axis": 0.0,
+        "joint_range": 2.764656956699696e-07,
+        "armature": 0.0,
+        "damping": 0.0,
+        "frictionloss": 0.0,
+        "fk_pos": 2.402558736810177e-07,
+        "fk_rot": 4.0838973462215596e-08
+      },
+      "worst_at": {
+        "mass": "link4",
+        "com": "link3",
+        "inertia": "link1",
+        "joint_range": "joint4",
+        "fk_pos": "config 0 left_finger",
+        "fk_rot": "config 0 right_finger"
+      },
+      "fail": []
+    },
+    {
+      "route": "newton",
+      "reference": "mujoco4",
+      "missing": [],
+      "max_abs_diff": {
+        "mass": 8.346557622829209e-08,
+        "com": 2.588748937437657e-09,
+        "inertia": 2.4909974305487026e-08,
+        "joint_axis": 0.0,
+        "joint_range": 5.7220459037665705e-08,
+        "armature": 0.0,
+        "damping": 0.0,
+        "frictionloss": 0.0,
+        "fk_pos": 9.601371868079838e-07,
+        "fk_rot": 5.114807968224374e-07
+      },
+      "worst_at": {
+        "mass": "link4",
+        "com": "link3",
+        "inertia": "link1",
+        "joint_range": "joint6",
+        "fk_pos": "config 4 right_finger",
+        "fk_rot": "config 4 right_finger"
+      },
+      "fail": []
+    }
+  ]
+}

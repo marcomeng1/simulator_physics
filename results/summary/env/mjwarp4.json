@@ -1,0 +1,46 @@
+{
+  "route": "mjwarp4",
+  "python": "3.12.3",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "cpu": "x86_64",
+  "cpu_count": 32,
+  "gpus": [
+    {
+      "name": "NVIDIA GeForce RTX 5090",
+      "driver": "580.178.04",
+      "memory": "32607 MiB"
+    }
+  ],
+  "git_commit": null,
+  "git_dirty": true,
+  "packages": {
+    "simbench": "0.1.0",
+    "numpy": "2.5.4",
+    "mujoco": "4.0.0",
+    "mujoco-core": "4.0.0",
+    "mujoco-warp": "4.0.0",
+    "warp-lang": "1.19.0"
+  },
+  "smoke": {
+    "panda": {
+      "device": "cuda:0",
+      "precision": "float32",
+      "nq": 9,
+      "nv": 9,
+      "nbody": 12,
+      "steps": 1000,
+      "steps_per_s": 305.9853796496227,
+      "finite": true
+    },
+    "panda_article": {
+      "device": "cuda:0",
+      "precision": "float32",
+      "nq": 7,
+      "nv": 7,
+      "nbody": 12,
+      "steps": 1000,
+      "steps_per_s": 548.509752155381,
+      "finite": true
+    }
+  }
+}

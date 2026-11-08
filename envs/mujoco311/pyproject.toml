@@ -1,0 +1,12 @@
+[project]
+name = "route-mujoco311"
+version = "0.1.0"
+description = "MuJoCo 3.11 CPU, float64: the article's baseline"
+requires-python = "==3.12.*"
+dependencies = ["simbench", "mujoco==3.11.0"]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+simbench = { path = "../../packages/simbench", editable = true }

@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+.venv/
+.ruff_cache/
+.pytest_cache/
+*.egg-info/
+
+# Fetched inputs (reproducible from lock files via `make fetch`)
+assets/menagerie/
+assets/generated/
+reference/article/
+
+# Raw run outputs; summaries are committed under results/summary/
+results/raw/
+
+web/node_modules/
+web/dist/

@@ -1,0 +1,43 @@
+{
+  "route": "mujoco311",
+  "python": "3.12.3",
+  "platform": "Linux-7.0.0-38-generic-x86_64-with-glibc2.39",
+  "cpu": "x86_64",
+  "cpu_count": 32,
+  "gpus": [
+    {
+      "name": "NVIDIA GeForce RTX 5090",
+      "driver": "580.178.04",
+      "memory": "32607 MiB"
+    }
+  ],
+  "git_commit": null,
+  "git_dirty": true,
+  "packages": {
+    "simbench": "0.1.0",
+    "numpy": "2.5.4",
+    "mujoco": "3.11.0"
+  },
+  "smoke": {
+    "panda": {
+      "device": "cpu",
+      "precision": "float64",
+      "nq": 9,
+      "nv": 9,
+      "nbody": 12,
+      "steps": 1000,
+      "steps_per_s": 74606.25395898192,
+      "finite": true
+    },
+    "panda_article": {
+      "device": "cpu",
+      "precision": "float64",
+      "nq": 7,
+      "nv": 7,
+      "nbody": 12,
+      "steps": 1000,
+      "steps_per_s": 231949.55849861013,
+      "finite": true
+    }
+  }
+}
