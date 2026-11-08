@@ -26,7 +26,7 @@ from simbench.trace import Trace
 WEB = REPO / "web"
 DATA = WEB / "data"
 MAX_FRAMES = 700
-MAX_FACES = 12000
+MAX_FACES = 40000
 POS_SCALE, QUAT_SCALE, FORCE_SCALE = 5e-5, 1 / 32767, 0.01
 
 ROUTE_LABELS = {"mujoco311": "MuJoCo 3.11 CPU", "mujoco4": "MuJoCo 4.0 CPU",
@@ -42,9 +42,11 @@ EXTRA_VARIANTS = {"stack": ["dt1ms-offset24mm"], "push": ["dt1ms-w80mm"],
                   "insertion": ["dt1ms-c100-tilted-guided", "dt1ms-c100-offset",
                                 "dt1ms-c500-aligned"],
                   "ball-compress": ["dt0.05ms-y0.03"],
-                  "ball-grasp": ["dt0.05ms-e2N-y0.03", "dt0.05ms-e1N", "dt0.05ms-e1.1N"],
+                  "ball-grasp": ["dt0.05ms-e2N", "dt0.05ms-e1N-stiff", "dt0.05ms-e2N-y0.03",
+                                 "dt0.05ms-e1N", "dt0.05ms-e1.1N"],
                   "hinge-plastic": ["dt1ms-elastic"],
-                  "card-catch": ["dt1ms-v1-speculative", "dt1ms-v1-w30",
+                  "card-catch": ["dt1ms-v1-soft", "dt1ms-v3", "dt1ms-v3-speculative",
+                                 "dt1ms-v1-speculative", "dt1ms-v1-w30",
                                  "dt1ms-v1-w30-speculative", "dt1ms-v10-speculative"],
                   "tumble": ["dt10ms-rk4", "dt2ms-euler"], "sheet": ["dt0.1ms-elastic"],
                   "twist": ["dt1ms-disc-iw", "dt1ms-disc-hydro-iw", "dt1ms-square"],
@@ -90,8 +92,12 @@ def _overrides(scene: str, variant: str) -> dict:
 
 def decimate(vert: np.ndarray, face: np.ndarray, max_faces: int = MAX_FACES):
     """Vertex clustering on a grid, coarsened until at most `max_faces` remain."""
-    cells = 96
+    if len(face) <= max_faces:
+        return vert, face
+    src_vert, src_face = vert, face
+    cells = 400
     while len(face) > max_faces and cells >= 8:
+        vert, face = src_vert, src_face
         lo, hi = vert.min(axis=0), vert.max(axis=0)
         key = np.floor((vert - lo) / ((hi - lo).max() / cells + 1e-12)).astype(np.int64)
         _, cluster, counts = np.unique(key, axis=0, return_inverse=True, return_counts=True)
@@ -102,7 +108,7 @@ def decimate(vert: np.ndarray, face: np.ndarray, max_faces: int = MAX_FACES):
         f = f[(f[:, 0] != f[:, 1]) & (f[:, 1] != f[:, 2]) & (f[:, 0] != f[:, 2])]
         keep = np.unique(np.sort(f, axis=1), axis=0, return_index=True)[1]
         vert, face = merged / counts[:, None], f[np.sort(keep)]
-        cells = cells * 2 // 3
+        cells = int(cells * 0.85)
     return vert, face
 
 

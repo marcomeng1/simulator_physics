@@ -254,11 +254,16 @@
       <p class="short" data-replay="ball-compress|dt0.05ms"><b>In short:</b> 4.0's ball is softer than 3.11's by design (the
         elastic-constant fix), and CPU and GPU now agree within about 5%.</p>
       <h3 id="grasp">Elastic ball: Panda grasp across finger effort</h3>
-      <p class="muted">Close, lift 80 mm, hold, lower and open. Cells give the hold lift, or
-        when the mesh first went invalid.</p>
+      <p class="muted prose">Close, lift 80 mm, hold, lower and open. Cells give the hold lift,
+        or when the mesh first went invalid. With the article's 10 ms pad contact
+        (<code>solref 0.01 1</code>) a pad sinks far enough into 4.0's softer ball to push
+        one surface vertex through its tetrahedron at first touch; a 2 ms contact
+        (<code>solref 0.002 1</code>) prevents it. Below about 1.05 N per finger
+        (friction 0.5, 105 g ball) the grip cannot hold the ball on any engine.</p>
       <div id="def-grasp"></div>
-      <p class="short" data-replay="ball-grasp|dt0.05ms-e2N"><b>In short:</b> MuJoCo-Warp 4.0 holds the ball; MuJoCo 4.0 CPU lifts
-        it too but inverts a tetrahedron at first touch, failing the validity rule.</p>
+      <p class="short" data-replay="ball-grasp|dt0.05ms-e2N-stiff"><b>In short:</b> with a
+        2 ms pad contact all three MuJoCo builds lift the ball validly at 2 N; the article's
+        softer 10 ms contact makes MuJoCo 4.0 CPU invert a tetrahedron at first touch.</p>
       <h3 id="plastic-hinge">Plastic hinge spring (<code>springyield</code>)</h3>
       <p class="muted">A 2 N·m/rad joint spring with a 5° yield is bent to about 9.5° and
         released. Ideal plasticity rests at peak − yield; an elastic spring returns to 0.</p>
@@ -326,15 +331,20 @@
 
       <h3 id="card">Speculative contacts: a playing card on a 1 mm plate</h3>
       <p class="muted prose">An 88 × 63 × 0.3 mm, 1.8 g card is released flat 5 mm above a
-        1 mm thick plate with a downward speed. Standard collision checks only the poses at
-        each step, so a card that moves more than about half the combined thickness
-        (0.65 mm) in one step ends up past the plate's mid-plane and is pushed out of the
-        far side. 4.0's <code>speculative</code> flag predicts the contact before it happens.
-        It exists only on MuJoCo 4.0 CPU (MuJoCo-Warp 4.0 does not implement it).</p>
+        1 mm thick plate with a downward speed. Once the card's centre passes the plate's
+        mid-plane, half the combined thickness (0.65 mm) down, the contact normal flips and
+        pushes it out of the far side. Two things get it there. A soft contact lets it sink
+        too far before stopping it: with the article's 10 ms time constant
+        (<code>solref 0.01 1</code>) it falls through even at 0.3 m/s, so this scene uses two
+        timesteps (<code>solref 0.002 1</code> at 1 ms), the stiffest MuJoCo recommends. And a
+        step longer than that half thickness skips past the plate, which only 4.0's
+        <code>speculative</code> flag handles by predicting the contact before it happens.
+        The flag exists only on MuJoCo 4.0 CPU (MuJoCo-Warp 4.0 does not implement it).</p>
       <div id="card-matrix"></div>
       <div id="card-chart" class="chart-box"></div>
-      <p class="short" data-replay="card-catch|dt1ms-v1-speculative"><b>In short:</b> speculative contacts stop thin objects tunnelling,
-        but only on MuJoCo 4.0 CPU and not for a spinning card.</p>
+      <p class="short" data-replay="card-catch|dt1ms-v3-speculative"><b>In short:</b> with a
+        stiff contact every engine catches the card up to 1 m/s; faster than about 0.65 mm per
+        step, only MuJoCo 4.0 CPU's speculative contacts do.</p>
 
       <h3 id="tumble">Fourth-order RK4: a T-handle tumbling about its middle axis</h3>
       <p class="muted prose">A free T-handle spun about its intermediate principal axis

@@ -177,19 +177,8 @@ export class Viewer {
       mesh.receiveShadow = true;
       statics.add(mesh);
     }
-    if (!replay.geoms.some((g) => g.type === "plane")) {
-      const bottom = statics.children.length ? new THREE.Box3().setFromObject(statics).min.z : 0;
-      const mat = new THREE.MeshStandardMaterial({ color: 0x1b2027, roughness: 0.75 });
-      mat.userData = { map: this.checker.clone(), extent: [2, 2] };
-      this.floors.push(mat);
-      const floor = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat);
-      floor.position.z = Math.min(0, bottom) - 0.001;
-      floor.receiveShadow = true;
-      statics.add(floor);
-    }
     this.root.add(statics);
     this.statics = statics;
-    this.setStudio(this.studio);
 
     this.routes = {};
     for (const name of Object.keys(replay.routes)) {
@@ -236,7 +225,36 @@ export class Viewer {
       this.routes[name] = { name, group, bodies, arrows, trail, flex, data: replay.routes[name] };
     }
     this.seek(0);
+    if (!replay.geoms.some((g) => g.type === "plane")) this.addFloor();
     this.frameCamera();
+    this.setStudio(this.studio);
+  }
+
+  // Scenes without a ground plane get a floor below everything that moves in the replay;
+  // bodies falling more than 0.3 m below the fixed geometry are treated as leaving the scene.
+  addFloor() {
+    const fixed = this.statics.children.length
+      ? new THREE.Box3().setFromObject(this.statics).min.z : 0;
+    const base = Math.min(0, fixed);
+    let bottom = base;
+    for (const r of Object.values(this.routes)) {
+      const { frames, nb, com } = r.data;
+      r.bodies.forEach((b, i) => {
+        const below = b.children.length
+          ? com[i * 3 + 2] - new THREE.Box3().setFromObject(b).min.z : 0;
+        let low = Infinity;
+        for (let f = 0; f < frames; f++) low = Math.min(low, com[(f * nb + i) * 3 + 2]);
+        const z = low - below;
+        if (z > base - 0.3) bottom = Math.min(bottom, z);
+      });
+    }
+    const mat = new THREE.MeshStandardMaterial({ color: 0x1b2027, roughness: 0.75 });
+    mat.userData = { map: this.checker.clone(), extent: [2, 2] };
+    this.floors.push(mat);
+    const floor = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), mat);
+    floor.position.z = bottom - 0.002;
+    floor.receiveShadow = true;
+    this.statics.add(floor);
   }
 
   makeTrails(data, color, skip) {

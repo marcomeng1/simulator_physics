@@ -108,20 +108,6 @@ const span = (xs) => (!xs.length ? "—" : Math.min(...xs) === Math.max(...xs) ?
 const pct = (a, b) => (a && b ? Math.abs(1 - b / a) * 100 : null);
 const plateLoad = (r, v = "dt0.05ms") => metric("ball-compress", v, r, "hold_plate_load_N");
 
-// Lowest finger effort from which every larger tested effort stays valid.
-function validFrom(route) {
-  const efforts = Object.entries(get(SUMMARY, "phase6", "ball-grasp") ?? {})
-    .filter(([v]) => /^dt0\.05ms-e[\d.]+N$/.test(v))
-    .map(([v, rows]) => [parseFloat(v.match(/e([\d.]+)N/)[1]), rows[route]?.metrics?.completed])
-    .filter(([, c]) => c != null).sort((a, b) => b[0] - a[0]);
-  let low = null;
-  for (const [e, ok] of efforts) {
-    if (!ok) break;
-    low = e;
-  }
-  return low;
-}
-
 // `tab#anchor`: switch tab, then scroll the anchor into view.
 function goto(target) {
   const [tab, anchor] = target.split("#");
@@ -144,7 +130,8 @@ const cardCols = () => CARD_ROUTES.map(([r, v]) => ({
   label: v ? "MuJoCo 4.0 + speculative" : label(r), color: COLORS[r] }));
 const CARD_CASES = [["dt1ms-v0.3", "0.3 m/s"], ["dt1ms-v1", "1 m/s"], ["dt1ms-v3", "3 m/s"],
                     ["dt1ms-v10", "10 m/s"], ["dt2ms-v1", "1 m/s, 2 ms step"],
-                    ["dt1ms-v1-w30", "1 m/s + 30 rad/s spin"]];
+                    ["dt1ms-v1-w30", "1 m/s + 30 rad/s spin"],
+                    ["dt1ms-v1-soft", "1 m/s, article's 10 ms contact"]];
 function cardCell(variant, route, suffix) {
   const row = get(variantRows("card-catch", variant + suffix), route);
   if (!row) return suffix && route === "mujoco4" ? null : { text: "—", tone: "muted" };
@@ -285,10 +272,13 @@ function overview() {
     },
     {
       topic: "New in 4.0: speculative contacts",
-      claim: "Thin parts tunnel on every engine; only MuJoCo 4.0 CPU's speculative contacts stop it.",
-      replay: ["card-catch", "dt1ms-v1-speculative"],
-      text: "A 0.3 mm card falls through a 1 mm plate at any realistic speed on every engine. "
-        + "MuJoCo 4.0's speculative contacts catch it, but only on the CPU and not while it spins.",
+      claim: "A stiff contact catches a thin card on every engine; only speculative contacts "
+        + "catch a fast one.",
+      replay: ["card-catch", "dt1ms-v3-speculative"],
+      text: "A 0.3 mm card on a 1 mm plate is caught at 0.3–1 m/s on all five engines when the "
+        + "contact time constant is two timesteps; with the article's 10 ms it sinks past the "
+        + "plate's mid-plane and falls through even at 0.3 m/s. From 2 mm of travel per step "
+        + "(3 m/s at 1 ms) only MuJoCo 4.0 CPU's speculative contacts catch it.",
       chart: () => matrix(CARD_CASES.slice(0, 4).concat([CARD_CASES[5]]).map(([, t]) => t),
         CARD_ROUTES.map(([r, v]) => ({ label: v ? "4.0 + spec." : SHORT[r], color: COLORS[r] })),
         (i, j) => {
@@ -396,12 +386,14 @@ function overview() {
     ["Screwing, knobs, in-hand turning", "Point contacts over-resist twist. Randomise friction "
       + "downwards, or use Newton's hydroelastic contact with MuJoCo's invweight0.",
     "scenarios#twist", ["twist", "dt1ms-disc-hydro-iw"]],
-    ["Thin parts (cards, sheet metal)", "Use MuJoCo 4.0 CPU with speculative contacts; "
-      + "elsewhere keep v·dt below half the combined thickness.", "mujoco4#card", ["card-catch", "dt1ms-v1-speculative"]],
+    ["Thin parts (cards, sheet metal)", "Set the contact time constant to two timesteps and "
+      + "keep v·dt below half the combined thickness; beyond that, MuJoCo 4.0 CPU with "
+      + "speculative contacts.", "mujoco4#card", ["card-catch", "dt1ms-v3-speculative"]],
     ["Throwing, flying, tumbling", "Use RK4 on MuJoCo 4.0 CPU or a smaller step; Euler and "
       + "implicitfast drift degrees within seconds.", "mujoco4#tumble", ["tumble", "dt10ms-rk4"]],
-    ["Soft and plastic objects", "MuJoCo 4.0 CPU only, and check tetrahedron validity; "
-      + "Newton and Genesis need their own soft-body solvers.", "scenarios#deform", ["ball-grasp", "dt0.05ms-e2N"]],
+    ["Soft and plastic objects", "MuJoCo 4.0 (CPU or MuJoCo-Warp) with a stiff pad contact "
+      + "(time constant 2 ms), and check tetrahedron validity; Newton and Genesis need their "
+      + "own soft-body solvers.", "scenarios#deform", ["ball-grasp", "dt0.05ms-e2N-stiff"]],
   ];
   $("#advice").replaceChildren(...advice.map(([h, t, go, rp]) => el("li", {},
     el("strong", {}, h), el("span", {}, t), " ", link(go, "test →"),
@@ -428,9 +420,12 @@ function beyond() {
   }
   const g = (r, k) => metric("ball-grasp", "dt0.05ms-e2N", r, k);
   if (g("mujoco4", "invalid_frames")) {
-    out.push([`MuJoCo 4.0 CPU inverts a tetrahedron for ${g("mujoco4", "invalid_frames")} `
-      + "frames when the pads touch the soft ball, failing the article's validity rule at "
-      + `every effort. MuJoCo-Warp 4.0 is valid from ${num(validFrom("mjwarp4"))} N.`,
+    const ok = ["mujoco311", "mujoco4", "mjwarp4"].every((r) =>
+      metric("ball-grasp", "dt0.05ms-e2N-stiff", r, "completed"));
+    out.push(["With the article's 10 ms pad contact, MuJoCo 4.0 CPU's softer (corrected) ball "
+      + `lets a pad push a surface vertex through its tetrahedron for ${g("mujoco4",
+        "invalid_frames")} frames at first touch, failing the validity rule. `
+      + (ok ? "A 2 ms contact keeps all three MuJoCo builds valid at 2 N." : ""),
     "scenarios#grasp", ["ball-grasp", "dt0.05ms-e2N"]]);
   }
   out.push(["At yield strain 0.03 the plastic ball slumps under its own weight before it is "
@@ -926,17 +921,17 @@ function cardSection() {
   el("p", { class: "muted" }, "Click a cell for its replay. 'Through at N ms' is when the card's "
     + "centre passed below the plate inside its footprint."));
   const z = (v, r) => metric("card-catch", v, r, "height_mm");
-  const series = [...ROUTES.map((r) => ({ label: label(r), color: COLORS[r], r, v: "dt1ms-v1" })),
+  const series = [...ROUTES.map((r) => ({ label: label(r), color: COLORS[r], r, v: "dt1ms-v3" })),
                   { label: "4.0 + speculative", color: "#ffe066", r: "mujoco4",
-                    v: "dt1ms-v1-speculative" }]
+                    v: "dt1ms-v3-speculative" }]
     .map((s) => ({ ...s, points: (z(s.v, s.r) ?? []).slice(0, 21).map((h, k) => [k, h]),
                    marker: true })).filter((s) => s.points.length);
-  $("#card-chart").replaceChildren(lines(series, { xlabel: "time [ms], 1 m/s release, 1 ms step",
+  $("#card-chart").replaceChildren(lines(series, { xlabel: "time [ms], 3 m/s release, 1 ms step",
     ylabel: "card centre above plate top [mm]", ymin: -8, ymax: 6, xmin: 0, xmax: 20,
     hline: { value: -1, label: "plate bottom (1 mm plate)", color: "#ff6b6b" }, height: 280 }),
   el("p", { class: "muted" }, "Without speculative contacts the five engines trace the same "
     + "falling line, so they overlap as one."),
-  replayLink("card-catch", "dt1ms-v1", "Open the card replay (MuJoCo 4.0 vs speculative) →"));
+  replayLink("card-catch", "dt1ms-v3", "Open the 3 m/s card replay →"));
 }
 
 function tumbleSection() {
@@ -989,10 +984,12 @@ function defCompress() {
 function defGrasp() {
   const P = get(SUMMARY, "phase6", "ball-grasp") ?? {};
   const effort = (v) => parseFloat(v.match(/e([\d.]+)N/)[1]);
-  const vs = Object.keys(P).filter((v) => /^dt0\.05ms-e[\d.]+N$/.test(v))
-    .sort((a, b) => effort(b) - effort(a));
+  const stiff = (v) => v.endsWith("-stiff");
+  const vs = Object.keys(P).filter((v) => /^dt0\.05ms-e[\d.]+N(-stiff)?$/.test(v))
+    .sort((a, b) => stiff(b) - stiff(a) || effort(b) - effort(a));
   const cols = ["mujoco311", "mujoco4", "mjwarp4", "article:mujoco_cpu", "article:mujoco_warp"];
-  $("#def-grasp").replaceChildren(matrix(vs.map((v) => `${effort(v)} N`),
+  $("#def-grasp").replaceChildren(matrix(vs.map((v) => `${effort(v)} N · `
+    + (stiff(v) ? "2 ms contact" : "article's 10 ms")),
     cols.map((r) => ({ label: label(r), color: COLORS[r] })), (i, j) => {
       const row = P[vs[i]][cols[j]];
       if (!row) return null;

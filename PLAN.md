@@ -189,6 +189,14 @@ traces are scored with the same metric code.
   - Effort sweep: 3.11 holds from 1.1 N up and MuJoCo-Warp 4.0 from 1.5 N, while 4.0
     CPU inverts a tetrahedron at every effort from 1 to 2 N (at 1.5 N only after the
     hold).
+  - Cause of the 2 N inversion: 4.0's corrected ball is softer, and with the article's
+    10 ms pad contact (`solref 0.01 1`) a pad pushes one surface vertex through its
+    tetrahedron. Any of these removes it on 4.0: the legacy constants, a 1 mm flex
+    radius, a 2 ms contact, or 5× the material damping.
+  - With a 2 ms pad contact (`-stiff` variants, now the headline), 2 N is valid on all
+    three builds: 3.11 67.5 mm, 4.0 66.7 mm, MuJoCo-Warp 4.0 65.2 mm. At 1.5 N 4.0
+    lifts 66.3 mm but inverts at 2.97 s while lowering. At 1 N every build drops the
+    ball: two pads at friction 0.5 need about 1.03 N each to hold 105 g.
 - Controller tuning (27 candidates on our Phase 3 push layout, not the article's):
   - MuJoCo 4.0 picks p0.5-d1.4-t4 and 3.11 picks p0.5-d1-t4, each by under 0.4% effort
     over the runner-up. Newton picks p0.5-d1.4-t4 (0.12%) and Genesis p0.5-d1-t4
@@ -233,13 +241,16 @@ traces are scored with the same metric code.
 ### Other MuJoCo 4.0 features (`mj4new.json`)
 - Thin card catch (speculative contacts): an 88 × 63 × 0.3 mm, 1.8 g card released
   5 mm above a 1 mm static plate.
-  - Without speculative contacts it falls through on every route, at 0.3, 1, 3 and
-    10 m/s at 1 ms, and at 1 m/s at 2 ms. Box–box contact is only found at the step
-    poses. Once penetration passes half the combined thickness (0.65 mm), the normal
-    flips and the card is pushed out of the far side.
-  - MuJoCo 4.0 with `enable="SPECULATIVE"` catches it at every speed (rest gap
-    −0.0025 mm, peak penetration 0.05–0.40 mm). A card spinning at 30 rad/s still
-    goes through at 10 ms.
+  - Once penetration passes half the combined thickness (0.65 mm), the box–box normal
+    flips and the card is pushed out of the far side. Two causes get it there:
+    - Soft contact. With the article's 10 ms time constant (`solref 0.01 1`), the
+      contact is found (penetration 0.23 mm at first touch at 0.3 m/s) but barely slows
+      the card, which falls through on every route even at 0.3 m/s (`-soft` variants).
+      The scene therefore uses two timesteps (`solref 0.002 1` at 1 ms).
+    - Long steps. With that stiff contact all five routes catch the card at 0.3 and
+      1 m/s, also spinning at 30 rad/s. At 3 and 10 m/s (1 ms) and at 1 m/s with 2 ms
+      steps (2 mm or more per step) it falls through on every route.
+  - MuJoCo 4.0 with `enable="SPECULATIVE"` catches it in every case.
   - MuJoCo-Warp 4.0 does not implement the flag. Newton and Genesis have no equivalent.
 - Tumbling T-handle (fourth-order RK4 for free bodies): a T-handle with no gravity and
   inertia (1, 4, 4.8)e-4 kg·m², spun at 6 rad/s about its intermediate axis for 4 s.

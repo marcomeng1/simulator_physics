@@ -96,6 +96,8 @@ def cmd_run_plan(args) -> None:
     for run in PLANS[args.plan]:
         if args.scene and run.scene not in args.scene:
             continue
+        if args.tag and run.tag not in args.tag:
+            continue
         if run.routes is not None and args.route not in run.routes:
             continue
         for seed in run.seeds:
@@ -197,6 +199,7 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--route", required=True)
     p.add_argument("--plan", required=True)
     p.add_argument("--scene", nargs="*", help="restrict to these scenes")
+    p.add_argument("--tag", nargs="*", help="restrict to runs with these tags")
     p.set_defaults(func=cmd_run_plan)
 
     p = sub.add_parser("tune", help="Phase 6 push controller tuning and held-out evaluation")

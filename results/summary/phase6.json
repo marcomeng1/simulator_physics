@@ -615,6 +615,99 @@
         }
       }
     },
+    "dt0.05ms-e1.5N-stiff": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.0116945,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": null,
+          "completed": true,
+          "invalid_frames": 0,
+          "ungated_hold_lift_mm": 67.2602,
+          "dent_mm": 1.00239,
+          "frames": 2250,
+          "failure_phase": null,
+          "hold_lift_mm": 67.2602,
+          "hold_centroid_lift_mm": 67.3289,
+          "sustained_lift": true,
+          "max_lift_mm": 68.3474,
+          "min_lift_mm": -5.89885,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": 1.57895
+        }
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": 2.972,
+          "completed": false,
+          "invalid_frames": 146,
+          "ungated_hold_lift_mm": 66.284,
+          "dent_mm": 0.309203,
+          "frames": 2250,
+          "failure_phase": "during lowering",
+          "hold_lift_mm": 66.284,
+          "hold_centroid_lift_mm": 66.3587,
+          "sustained_lift": true,
+          "max_lift_mm": 67.4386,
+          "min_lift_mm": -6.36921,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": 1.58879
+        }
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.0167257,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": null,
+          "completed": true,
+          "invalid_frames": 0,
+          "ungated_hold_lift_mm": 63.8595,
+          "dent_mm": 0.321394,
+          "frames": 2250,
+          "failure_phase": null,
+          "hold_lift_mm": 63.8595,
+          "hold_centroid_lift_mm": 63.9181,
+          "sustained_lift": true,
+          "max_lift_mm": 65.9402,
+          "min_lift_mm": -6.3329,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": 1.5715
+        }
+      }
+    },
     "dt0.05ms-e1N": {
       "mujoco311": {
         "status": "ok",
@@ -732,6 +825,99 @@
         }
       }
     },
+    "dt0.05ms-e1N-stiff": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.0699583,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": 2.818,
+          "completed": false,
+          "invalid_frames": 299,
+          "ungated_hold_lift_mm": -2.8095,
+          "dent_mm": 1.16442,
+          "frames": 2250,
+          "failure_phase": "during lowering",
+          "hold_lift_mm": -2.8095,
+          "hold_centroid_lift_mm": -2.82847,
+          "sustained_lift": false,
+          "max_lift_mm": 2.64042,
+          "min_lift_mm": -11.8138,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": 0.0
+        }
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": 1.16,
+          "completed": false,
+          "invalid_frames": 1656,
+          "ungated_hold_lift_mm": -3.39105,
+          "dent_mm": 0.202667,
+          "frames": 2250,
+          "failure_phase": "before hold",
+          "hold_lift_mm": null,
+          "hold_centroid_lift_mm": null,
+          "sustained_lift": false,
+          "max_lift_mm": 0.186326,
+          "min_lift_mm": -6.36921,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": null
+        }
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.10173,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": 1.354,
+          "completed": false,
+          "invalid_frames": 833,
+          "ungated_hold_lift_mm": -3.21869,
+          "dent_mm": 0.618346,
+          "frames": 2250,
+          "failure_phase": "before hold",
+          "hold_lift_mm": null,
+          "hold_centroid_lift_mm": null,
+          "sustained_lift": false,
+          "max_lift_mm": 3.04711,
+          "min_lift_mm": -6.3331,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": null
+        }
+      }
+    },
     "dt0.05ms-e2N": {
       "mujoco311": {
         "status": "ok",
@@ -846,6 +1032,99 @@
           "completed": false,
           "invalid_at_s": 2.525,
           "hold_lift_mm": 60.0039
+        }
+      }
+    },
+    "dt0.05ms-e2N-stiff": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.0128045,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": null,
+          "completed": true,
+          "invalid_frames": 0,
+          "ungated_hold_lift_mm": 67.4853,
+          "dent_mm": 0.908649,
+          "frames": 2250,
+          "failure_phase": null,
+          "hold_lift_mm": 67.4853,
+          "hold_centroid_lift_mm": 67.5617,
+          "sustained_lift": true,
+          "max_lift_mm": 68.5669,
+          "min_lift_mm": -5.89885,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": 2.05695
+        }
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": null,
+          "completed": true,
+          "invalid_frames": 0,
+          "ungated_hold_lift_mm": 66.7391,
+          "dent_mm": 0.803068,
+          "frames": 2250,
+          "failure_phase": null,
+          "hold_lift_mm": 66.7391,
+          "hold_centroid_lift_mm": 66.8268,
+          "sustained_lift": true,
+          "max_lift_mm": 67.9265,
+          "min_lift_mm": -6.36921,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": 2.0721
+        }
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.0161926,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": null,
+          "completed": true,
+          "invalid_frames": 0,
+          "ungated_hold_lift_mm": 65.2172,
+          "dent_mm": 0.39218,
+          "frames": 2250,
+          "failure_phase": null,
+          "hold_lift_mm": 65.2172,
+          "hold_centroid_lift_mm": 65.2872,
+          "sustained_lift": true,
+          "max_lift_mm": 66.8226,
+          "min_lift_mm": -6.40355,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": 2.04731
         }
       }
     }

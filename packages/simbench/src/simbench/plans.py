@@ -141,6 +141,9 @@ PLANS: dict[str, list[Run]] = {
         # and a halved step, then the Panda grasp across the article's effort limits.
         Run("ball-compress", {"dt": 5e-5}, seeds=(0, 1), routes=FLEX),
         Run("ball-compress", {"dt": 2.5e-5}, routes=FLEX),
+        # The article's 10 ms pad-ball contact against a 2 ms one (`-stiff`).
+        *[Run("ball-grasp", {"dt": 5e-5, "effort_N": e, "contact_tc": 0.002},
+              tag=f"e{e:g}N-stiff", routes=FLEX) for e in (1.0, 1.5, 2.0)],
         *[Run("ball-grasp", {"dt": 5e-5, "effort_N": e}, tag=f"e{e:g}N", routes=FLEX)
           for e in (2.0, 1.0, 1.05, 1.1, 1.15, 1.5)],
     ],
@@ -164,6 +167,9 @@ PLANS: dict[str, list[Run]] = {
             Run("card-catch", {"dt": dt, "speed": v, "spin": w}, tag=_card_tag(v, w)),
             *_option_runs("card-catch", {"dt": dt, "speed": v, "spin": w}, _card_tag(v, w),
                           [("speculative", {"enable": ["SPECULATIVE"]}, MJ4)])]],
+        # The article's 10 ms contact time constant instead of two timesteps.
+        *[Run("card-catch", {"dt": 0.001, "speed": v, "contact_tc": 0.01},
+              tag=f"v{v:g}-soft") for v in (0.3, 1.0)],
         *[Run("tumble", {"dt": dt, "integrator": "RK4"}, tag="rk4")
           for dt in (0.01, 0.005, 0.002, 0.001)],
         *[Run("tumble", {"dt": dt, "integrator": integ}, tag=integ.lower())
@@ -201,5 +207,5 @@ PRIMARY = {"slide": "dt2ms", "drop": "dt1ms", "hinge": "dt1ms", "collision-chain
            "insertion": "dt1ms-c100-tilted", "ball-compress": "dt0.05ms",
            "hinge-plastic": "dt1ms-y5deg", "card-catch": "dt1ms-v1",
            "tumble": "dt2ms-rk4", "sheet": "dt0.1ms-yb0.002",
-           "ball-grasp": "dt0.05ms-e2N", "twist": "dt1ms-disc",
+           "ball-grasp": "dt0.05ms-e2N-stiff", "twist": "dt1ms-disc",
            "g1-walk": "dt2ms-flat-v0.6"}

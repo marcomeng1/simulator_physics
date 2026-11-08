@@ -66,7 +66,7 @@ def ball_bodies() -> list[str]:
 
 
 def _add_ball(root: ET.Element, center, young: float = YOUNG, poisson: float = POISSON,
-              yield_strain: float = 0.0) -> None:
+              yield_strain: float = 0.0, solref: str = SOLREF) -> None:
     mesh = ball_mesh()
     world = root.find("worldbody")
     for name, v, mass in zip(ball_bodies(), mesh["vertices"], mesh["mass"], strict=True):
@@ -82,7 +82,7 @@ def _add_ball(root: ET.Element, center, young: float = YOUNG, poisson: float = P
                          rgba="0.9 0.45 0.55 1")
     # Pads and statics only: no flex self-collision, as in the article.
     ET.SubElement(flex, "contact", contype=str(contype), conaffinity=str(1 | 4), condim="3",
-                  friction="0.5 0 0", solref=SOLREF, solimp=SOLIMP, selfcollide="none")
+                  friction="0.5 0 0", solref=solref, solimp=SOLIMP, selfcollide="none")
     # `yield` (von Mises return mapping, MuJoCo >= 4.0) is only written when plastic, so
     # the elastic ball still compiles on 3.11.
     ET.SubElement(flex, "elasticity", young=repr(young), poisson=repr(poisson),
@@ -157,14 +157,17 @@ def grasp_spec() -> dict:
             "finger_segments": [[0.3, 0.8, [CLOSED, CLOSED]], [3.3, 3.7, [OPEN, OPEN]]]}
 
 
-def grasp(dt: float = DT, effort_N: float = 2.0, yield_strain: float = 0.0) -> Scene:
+def grasp(dt: float = DT, effort_N: float = 2.0, yield_strain: float = 0.0,
+          contact_tc: float | None = None) -> Scene:
+    """`contact_tc` [s] replaces the article's 10 ms pad-ball contact time constant."""
     spec = grasp_spec()
     tape = tapes.load(spec)
     tree = ET.fromstring(_mjcf("pads", dt))
     ET.SubElement(tree.find("worldbody"), "geom", name="table", type="box",
                   pos=_fmt(TABLE_POS), size=_fmt(TABLE_HALF), rgba="0.55 0.5 0.45 1",
                   **contact_attrs("static"))
-    _add_ball(tree, BALL_CENTER, yield_strain=yield_strain)
+    solref = SOLREF if contact_tc is None else f"{contact_tc!r} 1"
+    _add_ball(tree, BALL_CENTER, yield_strain=yield_strain, solref=solref)
     ET.indent(tree)
     limit = LIMIT.copy()
     limit[7:] = effort_N
@@ -173,6 +176,8 @@ def grasp(dt: float = DT, effort_N: float = 2.0, yield_strain: float = 0.0) -> S
         "dt": dt, "effort_N": effort_N, "tape_spec": spec, "tape": tapes.spec_sha(spec),
         "kp": KP.tolist(), "kd": KD.tolist(), "limit": limit.tolist(), "ctrl_dt": CTRL_DT,
         "table_top": TABLE_POS[2] + TABLE_HALF[2], "hold_window": HOLD_WINDOW, "lift": LIFT}
+    if contact_tc is not None:
+        params["contact_solref"] = solref
     return Scene(name="ball-grasp", mjcf=ET.tostring(tree, encoding="unicode"), dt=dt,
                  duration=spec["duration"], bodies=[*PANDA_BODIES, *ball_bodies()],
                  joints=ARM_JOINTS + FINGER_JOINTS, joint_init=_hold(tape),
