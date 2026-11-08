@@ -34,8 +34,11 @@ def simulate(route: str, scene: Scene, seed: int = 0, tag: str = "",
                       "frames": 0, "environment": environment(route)}, {})
     build_s = time.perf_counter() - start
 
-    rec = TraceBuilder(scene.steps, len(scene.bodies), len(scene.joints))
+    stride = scene.stride
+    rec = TraceBuilder(-(-scene.steps // stride), len(scene.bodies), len(scene.joints))
     status, error = "ok", None
+    # Contact-aware controllers see each step's contacts and may stop the run.
+    observe = getattr(scene.controller, "observe", None)
     start = time.perf_counter()
     for k in range(scene.steps):
         t = k * scene.dt
@@ -43,13 +46,20 @@ def simulate(route: str, scene: Scene, seed: int = 0, tag: str = "",
         if not all(np.all(np.isfinite(state[key])) for key in ("pos", "quat", "linvel")):
             status, error = "nonfinite", f"non-finite state at t={t:.6f}s"
             break
-        tau = scene.effort_at(t, state["q"], state["qd"])
+        tau = scene.effort_at(t, state["q"], state["qd"], state)
         try:
             sim.step(tau)
         except Exception as exc:  # engine-level numerical failures are results, not crashes
             status, error = "error", f"{type(exc).__name__} at t={t:.6f}s: {exc}"
             break
-        rec.record(k, t, state, tau, sim.contacts())
+        if observe is None and k % stride:
+            continue
+        contacts = sim.contacts()
+        if k % stride == 0:
+            rec.record(k // stride, t, state, tau, contacts)
+        if observe is not None and (stop := observe(t, contacts, sim.contact_names)):
+            status, error = stop
+            break
     loop_s = time.perf_counter() - start
 
     meta = {

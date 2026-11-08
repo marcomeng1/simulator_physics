@@ -22,6 +22,7 @@ class Run:
 
 CPU = ("mujoco311", "mujoco4")
 MJ4 = ("mujoco4",)
+FLEX = ("mujoco311", "mujoco4", "mjwarp4")
 
 
 def _option_runs(scene, overrides, base_tag, variants):
@@ -42,6 +43,25 @@ CONTACT_OPTIONS = [
 ]
 JACOBIAN = [("jac-dense", {"jacobian": "DENSE"}, CPU), ("jac-sparse", {"jacobian": "SPARSE"}, CPU)]
 DETERMINISTIC = {"mjwarp4": {"deterministic": True}, "newton": {"deterministic": "RUN_TO_RUN"}}
+
+CARD_CASES = [(0.001, v, 0.0) for v in (0.3, 1.0, 3.0, 10.0)] + [(0.002, 1.0, 0.0),
+                                                                (0.001, 1.0, 30.0)]
+
+
+_IW, _HYDRO = {"mujoco_invweight": True}, {"contacts": "hydroelastic", "naconmax": 12000,
+                                           "njmax": 40000}
+NEWTON_CONTACTS = [
+    ("iw", _IW),
+    ("point-iw", {"contacts": "newton"} | _IW),
+    ("hydro", _HYDRO),
+    ("hydro-iw", _HYDRO | _IW),
+    ("hydro-full-iw", _HYDRO | _IW | {"reduce": False, "kh": 1e10}),
+]
+
+
+def _card_tag(speed: float, spin: float) -> str:
+    return f"v{speed:g}" + (f"-w{spin:g}" if spin else "")
+
 
 PLANS: dict[str, list[Run]] = {
     "phase1": [
@@ -103,9 +123,83 @@ PLANS: dict[str, list[Run]] = {
               routes=("genesis",), base=f"dt{dt * 1e3:g}ms")
           for scene, dt in (("drop", 0.001), ("slide", 0.002))],
     ],
+    # Article section 4: the crowded sweep's three unchanged-input repeats.
+    "phase6": [
+        Run("sweep", {"dt": 0.001}, seeds=(0, 1, 2)),
+        *_option_runs("sweep", {"dt": 0.001}, "", JACOBIAN),
+        Run("sweep", {"dt": 0.001}, seeds=(0, 1), tag="det", sim=DETERMINISTIC["mjwarp4"],
+            routes=("mjwarp4",), base="dt1ms"),
+        # Precision insertion: 3 clearances x 3 approaches x 3 repeats, plus the
+        # contact-guided reruns of the tight offset and tilted cases.
+        *[Run("insertion", {"dt": 0.001, "clearance_mm": c, "case": case}, seeds=(0, 1, 2),
+              tag=f"c{c * 1e3:03.0f}-{case}")
+          for c in (0.10, 0.25, 0.50) for case in ("aligned", "offset", "tilted")],
+        *[Run("insertion", {"dt": 0.001, "clearance_mm": 0.10, "case": case, "guided": True},
+              seeds=(0, 1, 2), tag=f"c100-{case}-guided", base=f"dt1ms-c100-{case}")
+          for case in ("offset", "tilted")],
+        # Deformable ball (MuJoCo flex routes only): compression control with a repeat
+        # and a halved step, then the Panda grasp across the article's effort limits.
+        Run("ball-compress", {"dt": 5e-5}, seeds=(0, 1), routes=FLEX),
+        Run("ball-compress", {"dt": 2.5e-5}, routes=FLEX),
+        *[Run("ball-grasp", {"dt": 5e-5, "effort_N": e}, tag=f"e{e:g}N", routes=FLEX)
+          for e in (2.0, 1.0, 1.05, 1.1, 1.15, 1.5)],
+    ],
+    # MuJoCo 4.0 elasto-plasticity (joint springyield, flex yield) and the 4.0 fix of the
+    # 3D flex elastic constants. Every route gets the plastic models, so routes without
+    # plasticity show whether they reject or silently ignore it.
+    "plastic": [
+        Run("hinge-plastic", {"dt": 0.001, "yield_deg": 0.0}, tag="elastic"),
+        Run("hinge-plastic", {"dt": 0.001, "yield_deg": 5.0}, tag="y5deg"),
+        *[Run("ball-compress", {"dt": 5e-5, "yield_strain": y}, tag=f"y{y:g}", routes=FLEX)
+          for y in (0.01, 0.03, 0.1)],
+        Run("ball-compress", {"dt": 5e-5, "legacy": True}, tag="legacy",
+            routes=("mujoco4", "mjwarp4")),
+        *[Run("ball-grasp", {"dt": 5e-5, "effort_N": 2.0, "yield_strain": y},
+              tag=f"e2N-y{y:g}", routes=FLEX) for y in (0.03, 0.1)],
+    ],
+    # Other MuJoCo 4.0 changes: speculative contacts on a thin card, fourth-order RK4
+    # orientations on a tumbling free body, and 2D shell bending plasticity.
+    "mj4new": [
+        *[r for dt, v, w in CARD_CASES for r in [
+            Run("card-catch", {"dt": dt, "speed": v, "spin": w}, tag=_card_tag(v, w)),
+            *_option_runs("card-catch", {"dt": dt, "speed": v, "spin": w}, _card_tag(v, w),
+                          [("speculative", {"enable": ["SPECULATIVE"]}, MJ4)])]],
+        *[Run("tumble", {"dt": dt, "integrator": "RK4"}, tag="rk4")
+          for dt in (0.01, 0.005, 0.002, 0.001)],
+        *[Run("tumble", {"dt": dt, "integrator": integ}, tag=integ.lower())
+          for integ in ("Euler", "implicitfast") for dt in (0.002, 0.001)],
+        Run("sheet", {"dt": 1e-4, "yield_bend": 0.0}, tag="elastic", routes=FLEX),
+        *[Run("sheet", {"dt": 1e-4, "yield_bend": y}, tag=f"yb{y:g}", routes=FLEX)
+          for y in (0.004, 0.003, 0.002)],
+    ],
+    # Flat-on-flat patch contact: pinch-and-twist slip torque against the uniform-pressure
+    # limit, point contacts on every route against Newton's hydroelastic patches.
+    "patch": [
+        *[r for shape in ("disc", "square") for r in [
+            Run("twist", {"dt": 0.001, "shape": shape}, tag=shape),
+            Run("twist", {"dt": 0.001, "shape": shape, "multiccd": True},
+                tag=f"{shape}-multiccd", routes=MJ4, base=f"dt1ms-{shape}"),
+            Run("twist", {"dt": 0.001, "shape": shape, "condim": 6,
+                          "torsion": 2 / 3 * 0.5 * 0.02},
+                tag=f"{shape}-condim6", routes=("mujoco4", "mjwarp4"), base=f"dt1ms-{shape}"),
+            *[Run("twist", {"dt": 0.001, "shape": shape}, tag=f"{shape}-{name}",
+                  sim=sim, routes=("newton",), base=f"dt1ms-{shape}")
+              for name, sim in NEWTON_CONTACTS]]],
+    ],
+    # Unitree G1 with its pretrained walking policy on contact-parameter terrains.
+    "terrain": [
+        Run("g1-walk", {"dt": 0.002, "terrain": terrain, "speed": speed},
+            tag=f"{terrain}-v{speed:g}")
+        for terrain in ("flat", "glass", "sand", "mud", "sponge") for speed in (0.3, 0.6, 0.9)
+    ],
 }
 
 # The variant each scene's headline comparison uses (the article's main figure).
 PRIMARY = {"slide": "dt2ms", "drop": "dt1ms", "hinge": "dt1ms", "collision-chain": "dt0.5ms",
            "panda-effort": "dt1ms", "panda-tracking": "dt1ms", "grasp": "dt1ms",
-           "stack": "dt1ms-offset20mm", "push": "dt1ms-w90mm"}
+           "stack": "dt1ms-offset20mm", "push": "dt1ms-w90mm", "sweep": "dt1ms",
+           "insertion": "dt1ms-c100-tilted", "ball-compress": "dt0.05ms",
+           "hinge-plastic": "dt1ms-y5deg", "card-catch": "dt1ms-v1",
+           "tumble": "dt2ms-rk4", "sheet": "dt0.1ms-yb0.002",
+           "ball-grasp": "dt0.05ms-e2N", "twist": "dt1ms-disc",
+           "g1-walk": "dt2ms-flat-v0.6"}

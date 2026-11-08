@@ -1,0 +1,4673 @@
+{
+  "ball-compress": {
+    "dt0.025ms": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.00112187,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": null,
+          "completed": true,
+          "invalid_frames": 0,
+          "frames": 750,
+          "hold_plate_load_N": 2.35519,
+          "hold_extent_mm": 48.5144,
+          "plate_gap_mm": 48.2,
+          "final_extent_mm": 59.8717,
+          "permanent_set_mm": 0.128313,
+          "peak_plate_load_N": 2.37371
+        }
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": null,
+          "completed": true,
+          "invalid_frames": 0,
+          "frames": 750,
+          "hold_plate_load_N": 2.13151,
+          "hold_extent_mm": 48.4858,
+          "plate_gap_mm": 48.2,
+          "final_extent_mm": 59.9924,
+          "permanent_set_mm": 0.00764191,
+          "peak_plate_load_N": 2.13792
+        }
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.000872343,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": null,
+          "completed": true,
+          "invalid_frames": 0,
+          "frames": 750,
+          "hold_plate_load_N": 2.01958,
+          "hold_extent_mm": 49.1574,
+          "plate_gap_mm": 48.2,
+          "final_extent_mm": 60.0009,
+          "permanent_set_mm": -0.000942498,
+          "peak_plate_load_N": 2.02871
+        }
+      }
+    },
+    "dt0.05ms": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0,
+          1
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 0.00109132,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": null,
+          "completed": true,
+          "invalid_frames": 0,
+          "frames": 750,
+          "hold_plate_load_N": 2.35511,
+          "hold_extent_mm": 48.5144,
+          "plate_gap_mm": 48.2,
+          "final_extent_mm": 59.8706,
+          "permanent_set_mm": 0.129377,
+          "peak_plate_load_N": 2.37339
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "completed": true,
+            "hold_plate_load_N": 2.35511,
+            "hold_extent_mm": 48.5144,
+            "permanent_set_mm": 0.129377
+          },
+          {
+            "status": "ok",
+            "completed": true,
+            "hold_plate_load_N": 2.35511,
+            "hold_extent_mm": 48.5144,
+            "permanent_set_mm": 0.129377
+          }
+        ]
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0,
+          1
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": null,
+          "completed": true,
+          "invalid_frames": 0,
+          "frames": 750,
+          "hold_plate_load_N": 2.13152,
+          "hold_extent_mm": 48.4858,
+          "plate_gap_mm": 48.2,
+          "final_extent_mm": 59.9858,
+          "permanent_set_mm": 0.0141919,
+          "peak_plate_load_N": 2.13801
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "completed": true,
+            "hold_plate_load_N": 2.13152,
+            "hold_extent_mm": 48.4858,
+            "permanent_set_mm": 0.0141919
+          },
+          {
+            "status": "ok",
+            "completed": true,
+            "hold_plate_load_N": 2.13152,
+            "hold_extent_mm": 48.4858,
+            "permanent_set_mm": 0.0141919
+          }
+        ]
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0,
+          1
+        ],
+        "seed_spread_m": 4.397785134142622e-05,
+        "path_diff_vs_mujoco4_m": 0.000901183,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": null,
+          "completed": true,
+          "invalid_frames": 0,
+          "frames": 750,
+          "hold_plate_load_N": 2.01961,
+          "hold_extent_mm": 49.1573,
+          "plate_gap_mm": 48.2,
+          "final_extent_mm": 60.0036,
+          "permanent_set_mm": -0.00360608,
+          "peak_plate_load_N": 2.03239
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "completed": true,
+            "hold_plate_load_N": 2.01961,
+            "hold_extent_mm": 49.1573,
+            "permanent_set_mm": -0.00360608
+          },
+          {
+            "status": "ok",
+            "completed": true,
+            "hold_plate_load_N": 2.01951,
+            "hold_extent_mm": 49.1574,
+            "permanent_set_mm": 0.000210479
+          }
+        ]
+      },
+      "article:mujoco_cpu": {
+        "status": "published",
+        "versions": {
+          "mujoco_cpu": null
+        },
+        "label": "MuJoCo 3.11 (article)",
+        "metrics": {
+          "completed": true,
+          "invalid_at_s": null,
+          "hold_plate_load_N": 2.15052,
+          "hold_extent_mm": 49.326,
+          "final_extent_mm": 59.971
+        }
+      },
+      "article:mujoco_warp": {
+        "status": "published",
+        "versions": {
+          "mujoco_warp": null
+        },
+        "label": "MuJoCo-Warp (article)",
+        "metrics": {
+          "completed": true,
+          "invalid_at_s": null,
+          "hold_plate_load_N": 1.63078,
+          "hold_extent_mm": 53.6761,
+          "final_extent_mm": 59.96
+        }
+      }
+    }
+  },
+  "ball-grasp": {
+    "dt0.05ms-e1.05N": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 1.84077,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": 2.82,
+          "completed": false,
+          "invalid_frames": 57,
+          "ungated_hold_lift_mm": 1.77334,
+          "dent_mm": 0.894575,
+          "frames": 2250,
+          "failure_phase": "during lowering",
+          "hold_lift_mm": 1.77334,
+          "hold_centroid_lift_mm": 1.78575,
+          "sustained_lift": false,
+          "max_lift_mm": 11.7656,
+          "min_lift_mm": -10.5648,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": 0.0
+        }
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": 1.166,
+          "completed": false,
+          "invalid_frames": 1199,
+          "ungated_hold_lift_mm": 0.873819,
+          "dent_mm": 0.471351,
+          "frames": 2250,
+          "failure_phase": "before hold",
+          "hold_lift_mm": null,
+          "hold_centroid_lift_mm": null,
+          "sustained_lift": false,
+          "max_lift_mm": 0.0152337,
+          "min_lift_mm": -6.51009,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": null
+        }
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.867755,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": 1.574,
+          "completed": false,
+          "invalid_frames": 948,
+          "ungated_hold_lift_mm": 2.41568,
+          "dent_mm": 0.95373,
+          "frames": 2250,
+          "failure_phase": "before hold",
+          "hold_lift_mm": null,
+          "hold_centroid_lift_mm": null,
+          "sustained_lift": false,
+          "max_lift_mm": 9.89278,
+          "min_lift_mm": -10.2749,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": null
+        }
+      }
+    },
+    "dt0.05ms-e1.15N": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.145711,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": null,
+          "completed": true,
+          "invalid_frames": 0,
+          "ungated_hold_lift_mm": 65.9656,
+          "dent_mm": 0.792264,
+          "frames": 2250,
+          "failure_phase": null,
+          "hold_lift_mm": 65.9656,
+          "hold_centroid_lift_mm": 66.0153,
+          "sustained_lift": true,
+          "max_lift_mm": 67.3433,
+          "min_lift_mm": -6.04794,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": 1.25998
+        }
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": 1.286,
+          "completed": false,
+          "invalid_frames": 1560,
+          "ungated_hold_lift_mm": 6.20145,
+          "dent_mm": -0.619244,
+          "frames": 2250,
+          "failure_phase": "before hold",
+          "hold_lift_mm": null,
+          "hold_centroid_lift_mm": null,
+          "sustained_lift": false,
+          "max_lift_mm": 6.44193,
+          "min_lift_mm": -6.51009,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": null
+        }
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 7.4785,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": 2.208,
+          "completed": false,
+          "invalid_frames": 1144,
+          "ungated_hold_lift_mm": 47.411,
+          "dent_mm": 1.12921,
+          "frames": 2250,
+          "failure_phase": "during hold",
+          "hold_lift_mm": 47.411,
+          "hold_centroid_lift_mm": 47.448,
+          "sustained_lift": true,
+          "max_lift_mm": 58.5021,
+          "min_lift_mm": -7.55676,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": 1.01047
+        }
+      }
+    },
+    "dt0.05ms-e1.1N": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 2.97224,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": null,
+          "completed": true,
+          "invalid_frames": 0,
+          "ungated_hold_lift_mm": 60.6589,
+          "dent_mm": -0.161457,
+          "frames": 2250,
+          "failure_phase": null,
+          "hold_lift_mm": 60.6589,
+          "hold_centroid_lift_mm": 60.705,
+          "sustained_lift": true,
+          "max_lift_mm": 62.5394,
+          "min_lift_mm": -6.04794,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": 1.20632
+        }
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": 1.202,
+          "completed": false,
+          "invalid_frames": 1620,
+          "ungated_hold_lift_mm": 2.52686,
+          "dent_mm": 1.76828,
+          "frames": 2250,
+          "failure_phase": "before hold",
+          "hold_lift_mm": null,
+          "hold_centroid_lift_mm": null,
+          "sustained_lift": false,
+          "max_lift_mm": 1.02753,
+          "min_lift_mm": -6.51009,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": null
+        }
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 3.0042,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": 1.488,
+          "completed": false,
+          "invalid_frames": 1506,
+          "ungated_hold_lift_mm": 6.26172,
+          "dent_mm": -0.401098,
+          "frames": 2250,
+          "failure_phase": "before hold",
+          "hold_lift_mm": null,
+          "hold_centroid_lift_mm": null,
+          "sustained_lift": false,
+          "max_lift_mm": 22.8613,
+          "min_lift_mm": -6.59081,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": null
+        }
+      }
+    },
+    "dt0.05ms-e1.5N": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.017133,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": null,
+          "completed": true,
+          "invalid_frames": 0,
+          "ungated_hold_lift_mm": 67.0979,
+          "dent_mm": 1.0643,
+          "frames": 2250,
+          "failure_phase": null,
+          "hold_lift_mm": 67.0979,
+          "hold_centroid_lift_mm": 67.1567,
+          "sustained_lift": true,
+          "max_lift_mm": 68.4409,
+          "min_lift_mm": -6.04794,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": 1.57084
+        }
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": 3.032,
+          "completed": false,
+          "invalid_frames": 76,
+          "ungated_hold_lift_mm": 65.6621,
+          "dent_mm": 0.348807,
+          "frames": 2250,
+          "failure_phase": "during lowering",
+          "hold_lift_mm": 65.6621,
+          "hold_centroid_lift_mm": 65.7352,
+          "sustained_lift": true,
+          "max_lift_mm": 67.0139,
+          "min_lift_mm": -6.51009,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": 1.58683
+        }
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.0174806,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": null,
+          "completed": true,
+          "invalid_frames": 0,
+          "ungated_hold_lift_mm": 62.7867,
+          "dent_mm": -0.281708,
+          "frames": 2250,
+          "failure_phase": null,
+          "hold_lift_mm": 62.7867,
+          "hold_centroid_lift_mm": 62.8426,
+          "sustained_lift": true,
+          "max_lift_mm": 65.1368,
+          "min_lift_mm": -6.5906,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": 1.57188
+        }
+      }
+    },
+    "dt0.05ms-e1N": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.0625129,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": 2.826,
+          "completed": false,
+          "invalid_frames": 166,
+          "ungated_hold_lift_mm": -2.88871,
+          "dent_mm": 0.455341,
+          "frames": 2250,
+          "failure_phase": "during lowering",
+          "hold_lift_mm": -2.88871,
+          "hold_centroid_lift_mm": -2.90623,
+          "sustained_lift": false,
+          "max_lift_mm": 1.96339,
+          "min_lift_mm": -12.1176,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": 0.0
+        }
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": 1.204,
+          "completed": false,
+          "invalid_frames": 1627,
+          "ungated_hold_lift_mm": -3.12925,
+          "dent_mm": -0.81351,
+          "frames": 2250,
+          "failure_phase": "before hold",
+          "hold_lift_mm": null,
+          "hold_centroid_lift_mm": null,
+          "sustained_lift": false,
+          "max_lift_mm": 0.0498884,
+          "min_lift_mm": -6.51009,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": null
+        }
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.225885,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": 1.946,
+          "completed": false,
+          "invalid_frames": 1085,
+          "ungated_hold_lift_mm": -1.98362,
+          "dent_mm": 0.25003,
+          "frames": 2250,
+          "failure_phase": "during hold",
+          "hold_lift_mm": null,
+          "hold_centroid_lift_mm": null,
+          "sustained_lift": false,
+          "max_lift_mm": 3.75605,
+          "min_lift_mm": -8.55892,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": 0.0
+        }
+      },
+      "article:mujoco_cpu": {
+        "status": "published",
+        "versions": {
+          "mujoco_cpu": null
+        },
+        "label": "MuJoCo 3.11 (article)",
+        "metrics": {
+          "completed": false,
+          "invalid_at_s": 1.345,
+          "hold_lift_mm": null
+        }
+      },
+      "article:mujoco_warp": {
+        "status": "published",
+        "versions": {
+          "mujoco_warp": null
+        },
+        "label": "MuJoCo-Warp (article)",
+        "metrics": {
+          "completed": false,
+          "invalid_at_s": 1.335,
+          "hold_lift_mm": null
+        }
+      }
+    },
+    "dt0.05ms-e2N": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.0164265,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": null,
+          "completed": true,
+          "invalid_frames": 0,
+          "ungated_hold_lift_mm": 67.5212,
+          "dent_mm": 0.973956,
+          "frames": 2250,
+          "failure_phase": null,
+          "hold_lift_mm": 67.5212,
+          "hold_centroid_lift_mm": 67.585,
+          "sustained_lift": true,
+          "max_lift_mm": 68.8012,
+          "min_lift_mm": -6.04794,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": 2.04827
+        }
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": 0.59,
+          "completed": false,
+          "invalid_frames": 6,
+          "ungated_hold_lift_mm": 66.2471,
+          "dent_mm": 0.808083,
+          "frames": 2250,
+          "failure_phase": "before hold",
+          "hold_lift_mm": null,
+          "hold_centroid_lift_mm": null,
+          "sustained_lift": false,
+          "max_lift_mm": 0.0152337,
+          "min_lift_mm": -6.51009,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": null
+        }
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.0222146,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "invalid_at_s": null,
+          "completed": true,
+          "invalid_frames": 0,
+          "ungated_hold_lift_mm": 63.8022,
+          "dent_mm": 0.812372,
+          "frames": 2250,
+          "failure_phase": null,
+          "hold_lift_mm": 63.8022,
+          "hold_centroid_lift_mm": 63.8634,
+          "sustained_lift": true,
+          "max_lift_mm": 65.7918,
+          "min_lift_mm": -6.7232,
+          "max_arm_limit_violation_rad": 0.0,
+          "hold_pad_force_N": 2.04705
+        }
+      },
+      "article:mujoco_cpu": {
+        "status": "published",
+        "versions": {
+          "mujoco_cpu": null
+        },
+        "label": "MuJoCo 3.11 (article)",
+        "metrics": {
+          "completed": true,
+          "invalid_at_s": null,
+          "hold_lift_mm": 65.5669
+        }
+      },
+      "article:mujoco_warp": {
+        "status": "published",
+        "versions": {
+          "mujoco_warp": null
+        },
+        "label": "MuJoCo-Warp (article)",
+        "metrics": {
+          "completed": false,
+          "invalid_at_s": 2.525,
+          "hold_lift_mm": 60.0039
+        }
+      }
+    }
+  },
+  "insertion": {
+    "dt1ms-c100-aligned": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 5.46789e-13,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0178,
+          "final_lateral_mm": 0.00035156,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0178,
+          "final_lateral_mm": 0.00035156,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 3.20248e-06,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9996,
+          "max_depth_mm": 20.0178,
+          "final_lateral_mm": 0.000712829,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9996,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9996,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9996,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 3.29953e-06,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9997,
+          "max_depth_mm": 20.018,
+          "final_lateral_mm": 0.000277335,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 4000
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9997,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9997,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9997,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "genesis": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "genesis-world": "1.4.5",
+          "quadrants": "1.3.3",
+          "torch": "2.14.1+cu130"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 1.22283e-15,
+        "notes": [
+          "genesis import set armature=[0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; overridden to MJCF [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+        ],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0178,
+          "final_lateral_mm": 0.00035156,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      }
+    },
+    "dt1ms-c100-offset": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 1.27006e-05,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9798,
+          "max_depth_mm": 19.9799,
+          "final_lateral_mm": 0.0900096,
+          "stop_time_s": null,
+          "peak_contact_N": 8.13372,
+          "peak_hand_moment_Nm": 0.348514,
+          "peak_penetration_um": 11.4031,
+          "contact_frames": 1231
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9798,
+            "peak_contact_N": 8.13372,
+            "peak_penetration_um": 11.4031
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9798,
+            "peak_contact_N": 8.13372,
+            "peak_penetration_um": 11.4031
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9798,
+            "peak_contact_N": 8.13372,
+            "peak_penetration_um": 11.4031
+          }
+        ]
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9798,
+          "max_depth_mm": 19.9799,
+          "final_lateral_mm": 0.0901247,
+          "stop_time_s": null,
+          "peak_contact_N": 8.13373,
+          "peak_hand_moment_Nm": 0.348515,
+          "peak_penetration_um": 11.4037,
+          "contact_frames": 1231
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9798,
+            "peak_contact_N": 8.13373,
+            "peak_penetration_um": 11.4037
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9798,
+            "peak_contact_N": 8.13373,
+            "peak_penetration_um": 11.4037
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9798,
+            "peak_contact_N": 8.13373,
+            "peak_penetration_um": 11.4037
+          }
+        ]
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 1.0679596640978201e-05,
+        "path_diff_vs_mujoco4_m": 1.41939e-05,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9909,
+          "max_depth_mm": 19.9911,
+          "final_lateral_mm": 0.0904891,
+          "stop_time_s": null,
+          "peak_contact_N": 8.13221,
+          "peak_hand_moment_Nm": 0.348282,
+          "peak_penetration_um": 11.3961,
+          "contact_frames": 1210
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9909,
+            "peak_contact_N": 8.13221,
+            "peak_penetration_um": 11.3961
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.991,
+            "peak_contact_N": 8.13221,
+            "peak_penetration_um": 11.3961
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.986,
+            "peak_contact_N": 8.13219,
+            "peak_penetration_um": 11.3961
+          }
+        ]
+      },
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 1.2490555775485872e-05,
+        "path_diff_vs_mujoco4_m": 1.2755e-05,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9775,
+          "max_depth_mm": 19.9809,
+          "final_lateral_mm": 0.090312,
+          "stop_time_s": null,
+          "peak_contact_N": 8.05125,
+          "peak_hand_moment_Nm": 0.348062,
+          "peak_penetration_um": 11.2963,
+          "contact_frames": 4000
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9775,
+            "peak_contact_N": 8.05125,
+            "peak_penetration_um": 11.2963
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9837,
+            "peak_contact_N": 8.05122,
+            "peak_penetration_um": 11.2963
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9864,
+            "peak_contact_N": 8.05122,
+            "peak_penetration_um": 11.2963
+          }
+        ]
+      },
+      "genesis": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "genesis-world": "1.4.5",
+          "quadrants": "1.3.3",
+          "torch": "2.14.1+cu130"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 3.08102e-05,
+        "notes": [
+          "genesis import set armature=[0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; overridden to MJCF [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+        ],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9792,
+          "max_depth_mm": 19.9798,
+          "final_lateral_mm": 0.0900538,
+          "stop_time_s": null,
+          "peak_contact_N": 5.13781,
+          "peak_hand_moment_Nm": 0.220264,
+          "peak_penetration_um": 21.6229,
+          "contact_frames": 2812
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9792,
+            "peak_contact_N": 5.13781,
+            "peak_penetration_um": 21.6229
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9792,
+            "peak_contact_N": 5.13781,
+            "peak_penetration_um": 21.6229
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9792,
+            "peak_contact_N": 5.13781,
+            "peak_penetration_um": 21.6229
+          }
+        ]
+      }
+    },
+    "dt1ms-c100-offset-guided": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 2.46176e-05,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0036,
+          "max_depth_mm": 20.0091,
+          "final_lateral_mm": 0.100037,
+          "stop_time_s": null,
+          "peak_contact_N": 8.13372,
+          "peak_hand_moment_Nm": 0.348514,
+          "peak_penetration_um": 11.439,
+          "contact_frames": 1034
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0036,
+            "peak_contact_N": 8.13372,
+            "peak_penetration_um": 11.439
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0036,
+            "peak_contact_N": 8.13372,
+            "peak_penetration_um": 11.439
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0036,
+            "peak_contact_N": 8.13372,
+            "peak_penetration_um": 11.439
+          }
+        ]
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0037,
+          "max_depth_mm": 20.0094,
+          "final_lateral_mm": 0.100056,
+          "stop_time_s": null,
+          "peak_contact_N": 8.13373,
+          "peak_hand_moment_Nm": 0.348515,
+          "peak_penetration_um": 11.4395,
+          "contact_frames": 1056
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0037,
+            "peak_contact_N": 8.13373,
+            "peak_penetration_um": 11.4395
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0037,
+            "peak_contact_N": 8.13373,
+            "peak_penetration_um": 11.4395
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0037,
+            "peak_contact_N": 8.13373,
+            "peak_penetration_um": 11.4395
+          }
+        ]
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 3.4666161023295417e-06,
+        "path_diff_vs_mujoco4_m": 1.13256e-05,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0031,
+          "max_depth_mm": 20.0098,
+          "final_lateral_mm": 0.100127,
+          "stop_time_s": null,
+          "peak_contact_N": 8.13223,
+          "peak_hand_moment_Nm": 0.348283,
+          "peak_penetration_um": 11.4409,
+          "contact_frames": 987
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0031,
+            "peak_contact_N": 8.13223,
+            "peak_penetration_um": 11.4409
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0062,
+            "peak_contact_N": 8.13223,
+            "peak_penetration_um": 11.4409
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0062,
+            "peak_contact_N": 8.13221,
+            "peak_penetration_um": 11.4409
+          }
+        ]
+      },
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 1.678858575425671e-05,
+        "path_diff_vs_mujoco4_m": 1.3739e-05,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0034,
+          "max_depth_mm": 20.0102,
+          "final_lateral_mm": 0.0998602,
+          "stop_time_s": null,
+          "peak_contact_N": 8.05125,
+          "peak_hand_moment_Nm": 0.348062,
+          "peak_penetration_um": 11.3642,
+          "contact_frames": 4000
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0034,
+            "peak_contact_N": 8.05125,
+            "peak_penetration_um": 11.3642
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0042,
+            "peak_contact_N": 8.05125,
+            "peak_penetration_um": 11.3642
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0065,
+            "peak_contact_N": 8.05124,
+            "peak_penetration_um": 11.3642
+          }
+        ]
+      },
+      "genesis": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "genesis-world": "1.4.5",
+          "quadrants": "1.3.3",
+          "torch": "2.14.1+cu130"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 3.30796e-05,
+        "notes": [
+          "genesis import set armature=[0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; overridden to MJCF [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+        ],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0038,
+          "max_depth_mm": 20.0091,
+          "final_lateral_mm": 0.100008,
+          "stop_time_s": null,
+          "peak_contact_N": 5.13781,
+          "peak_hand_moment_Nm": 0.220264,
+          "peak_penetration_um": 21.6233,
+          "contact_frames": 2793
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0038,
+            "peak_contact_N": 5.13781,
+            "peak_penetration_um": 21.6233
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0038,
+            "peak_contact_N": 5.13781,
+            "peak_penetration_um": 21.6233
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0038,
+            "peak_contact_N": 5.13781,
+            "peak_penetration_um": 21.6233
+          }
+        ]
+      }
+    },
+    "dt1ms-c100-tilted": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 0.00023758,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": false,
+          "final_depth_mm": 13.6658,
+          "max_depth_mm": 13.6658,
+          "final_lateral_mm": 0.102967,
+          "stop_time_s": null,
+          "peak_contact_N": 20.8851,
+          "peak_hand_moment_Nm": 0.419646,
+          "peak_penetration_um": 4.12436,
+          "contact_frames": 2027
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": false,
+            "final_depth_mm": 13.6658,
+            "peak_contact_N": 20.8851,
+            "peak_penetration_um": 4.12436
+          },
+          {
+            "status": "ok",
+            "depth_reached": false,
+            "final_depth_mm": 13.6658,
+            "peak_contact_N": 20.8851,
+            "peak_penetration_um": 4.12436
+          },
+          {
+            "status": "ok",
+            "depth_reached": false,
+            "final_depth_mm": 13.6658,
+            "peak_contact_N": 20.8851,
+            "peak_penetration_um": 4.12436
+          }
+        ]
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": false,
+          "final_depth_mm": 13.7288,
+          "max_depth_mm": 13.7288,
+          "final_lateral_mm": 0.103004,
+          "stop_time_s": null,
+          "peak_contact_N": 25.5446,
+          "peak_hand_moment_Nm": 0.441254,
+          "peak_penetration_um": 4.38587,
+          "contact_frames": 2030
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": false,
+            "final_depth_mm": 13.7288,
+            "peak_contact_N": 25.5446,
+            "peak_penetration_um": 4.38587
+          },
+          {
+            "status": "ok",
+            "depth_reached": false,
+            "final_depth_mm": 13.7288,
+            "peak_contact_N": 25.5446,
+            "peak_penetration_um": 4.38587
+          },
+          {
+            "status": "ok",
+            "depth_reached": false,
+            "final_depth_mm": 13.7288,
+            "peak_contact_N": 25.5446,
+            "peak_penetration_um": 4.38587
+          }
+        ]
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.000123511079839757,
+        "path_diff_vs_mujoco4_m": 0.000217299,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": false,
+          "final_depth_mm": 13.769,
+          "max_depth_mm": 13.769,
+          "final_lateral_mm": 0.102601,
+          "stop_time_s": null,
+          "peak_contact_N": 16.4974,
+          "peak_hand_moment_Nm": 0.360593,
+          "peak_penetration_um": 5.16932,
+          "contact_frames": 2032
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": false,
+            "final_depth_mm": 13.769,
+            "peak_contact_N": 16.4974,
+            "peak_penetration_um": 5.16932
+          },
+          {
+            "status": "ok",
+            "depth_reached": false,
+            "final_depth_mm": 13.7587,
+            "peak_contact_N": 17.1413,
+            "peak_penetration_um": 4.1427
+          },
+          {
+            "status": "ok",
+            "depth_reached": false,
+            "final_depth_mm": 13.7936,
+            "peak_contact_N": 16.6957,
+            "peak_penetration_um": 4.81267
+          }
+        ]
+      },
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.00012487256164268816,
+        "path_diff_vs_mujoco4_m": 0.00024019,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": false,
+          "final_depth_mm": 13.7627,
+          "max_depth_mm": 13.7627,
+          "final_lateral_mm": 0.105306,
+          "stop_time_s": null,
+          "peak_contact_N": 21.1997,
+          "peak_hand_moment_Nm": 0.419159,
+          "peak_penetration_um": 3.83305,
+          "contact_frames": 4000
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": false,
+            "final_depth_mm": 13.7627,
+            "peak_contact_N": 21.1997,
+            "peak_penetration_um": 3.83305
+          },
+          {
+            "status": "ok",
+            "depth_reached": false,
+            "final_depth_mm": 13.7556,
+            "peak_contact_N": 20.2757,
+            "peak_penetration_um": 4.64628
+          },
+          {
+            "status": "ok",
+            "depth_reached": false,
+            "final_depth_mm": 13.7545,
+            "peak_contact_N": 19.851,
+            "peak_penetration_um": 4.35653
+          }
+        ]
+      },
+      "genesis": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "genesis-world": "1.4.5",
+          "quadrants": "1.3.3",
+          "torch": "2.14.1+cu130"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 0.000109324,
+        "notes": [
+          "genesis import set armature=[0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; overridden to MJCF [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+        ],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": false,
+          "final_depth_mm": 13.7404,
+          "max_depth_mm": 13.7404,
+          "final_lateral_mm": 0.103044,
+          "stop_time_s": null,
+          "peak_contact_N": 9.41227,
+          "peak_hand_moment_Nm": 0.0848669,
+          "peak_penetration_um": 1.86619,
+          "contact_frames": 2390
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": false,
+            "final_depth_mm": 13.7404,
+            "peak_contact_N": 9.41227,
+            "peak_penetration_um": 1.86619
+          },
+          {
+            "status": "ok",
+            "depth_reached": false,
+            "final_depth_mm": 13.7404,
+            "peak_contact_N": 9.41227,
+            "peak_penetration_um": 1.86619
+          },
+          {
+            "status": "ok",
+            "depth_reached": false,
+            "final_depth_mm": 13.7404,
+            "peak_contact_N": 9.41227,
+            "peak_penetration_um": 1.86619
+          }
+        ]
+      },
+      "article:physx": {
+        "status": "published",
+        "versions": {
+          "physx": null
+        },
+        "path_diff_vs_mujoco4_m": null,
+        "metrics": {
+          "frames": 200,
+          "completed": false,
+          "depth_reached": false,
+          "final_depth_mm": 12.2384,
+          "max_depth_mm": 12.2384,
+          "final_lateral_mm": 0.101618,
+          "stop_time_s": 1.992,
+          "peak_contact_N": 125.831
+        }
+      },
+      "article:newton_mjwarp": {
+        "status": "published",
+        "versions": {
+          "newton_mjwarp": null
+        },
+        "path_diff_vs_mujoco4_m": null,
+        "metrics": {
+          "frames": 400,
+          "completed": true,
+          "depth_reached": false,
+          "final_depth_mm": 15.3036,
+          "max_depth_mm": 15.3038,
+          "final_lateral_mm": 0.102054,
+          "stop_time_s": null,
+          "peak_contact_N": 17.3167
+        }
+      },
+      "article:mujoco_cpu": {
+        "status": "published",
+        "versions": {
+          "mujoco_cpu": null
+        },
+        "path_diff_vs_mujoco4_m": null,
+        "metrics": {
+          "frames": 400,
+          "completed": true,
+          "depth_reached": false,
+          "final_depth_mm": 15.3168,
+          "max_depth_mm": 15.3168,
+          "final_lateral_mm": 0.103052,
+          "stop_time_s": null,
+          "peak_contact_N": 16.5703
+        }
+      },
+      "article:genesis": {
+        "status": "published",
+        "versions": {
+          "genesis": null
+        },
+        "path_diff_vs_mujoco4_m": null,
+        "metrics": {
+          "frames": 400,
+          "completed": true,
+          "depth_reached": false,
+          "final_depth_mm": 15.681,
+          "max_depth_mm": 15.681,
+          "final_lateral_mm": 0.103116,
+          "stop_time_s": null,
+          "peak_contact_N": 10.8144
+        }
+      }
+    },
+    "dt1ms-c100-tilted-guided": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 0.000181942,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.8757,
+          "max_depth_mm": 19.8757,
+          "final_lateral_mm": 0.100713,
+          "stop_time_s": null,
+          "peak_contact_N": 19.8573,
+          "peak_hand_moment_Nm": 0.33054,
+          "peak_penetration_um": 3.66637,
+          "contact_frames": 1994
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.8757,
+            "peak_contact_N": 19.8573,
+            "peak_penetration_um": 3.66637
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.8757,
+            "peak_contact_N": 19.8573,
+            "peak_penetration_um": 3.66637
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.8757,
+            "peak_contact_N": 19.8573,
+            "peak_penetration_um": 3.66637
+          }
+        ]
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.8776,
+          "max_depth_mm": 19.8776,
+          "final_lateral_mm": 0.100717,
+          "stop_time_s": null,
+          "peak_contact_N": 22.2005,
+          "peak_hand_moment_Nm": 0.339422,
+          "peak_penetration_um": 4.41332,
+          "contact_frames": 1969
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.8776,
+            "peak_contact_N": 22.2005,
+            "peak_penetration_um": 4.41332
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.8776,
+            "peak_contact_N": 22.2005,
+            "peak_penetration_um": 4.41332
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.8776,
+            "peak_contact_N": 22.2005,
+            "peak_penetration_um": 4.41332
+          }
+        ]
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.00011573958859700065,
+        "path_diff_vs_mujoco4_m": 9.6133e-05,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.8888,
+          "max_depth_mm": 19.8888,
+          "final_lateral_mm": 0.100817,
+          "stop_time_s": null,
+          "peak_contact_N": 21.3517,
+          "peak_hand_moment_Nm": 0.336263,
+          "peak_penetration_um": 3.37963,
+          "contact_frames": 2000
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.8888,
+            "peak_contact_N": 21.3517,
+            "peak_penetration_um": 3.37963
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.8921,
+            "peak_contact_N": 19.6534,
+            "peak_penetration_um": 3.10457
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.8915,
+            "peak_contact_N": 21.9264,
+            "peak_penetration_um": 3.93715
+          }
+        ]
+      },
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.00014005802358967902,
+        "path_diff_vs_mujoco4_m": 0.000166736,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.8664,
+          "max_depth_mm": 19.8664,
+          "final_lateral_mm": 0.101692,
+          "stop_time_s": null,
+          "peak_contact_N": 20.114,
+          "peak_hand_moment_Nm": 0.316912,
+          "peak_penetration_um": 3.68571,
+          "contact_frames": 4000
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.8664,
+            "peak_contact_N": 20.114,
+            "peak_penetration_um": 3.68571
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.8784,
+            "peak_contact_N": 19.4398,
+            "peak_penetration_um": 2.99001
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.8702,
+            "peak_contact_N": 20.8886,
+            "peak_penetration_um": 3.64473
+          }
+        ]
+      },
+      "genesis": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "genesis-world": "1.4.5",
+          "quadrants": "1.3.3",
+          "torch": "2.14.1+cu130"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 0.000193848,
+        "notes": [
+          "genesis import set armature=[0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; overridden to MJCF [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+        ],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.8373,
+          "max_depth_mm": 19.8373,
+          "final_lateral_mm": 0.100751,
+          "stop_time_s": null,
+          "peak_contact_N": 4.77678,
+          "peak_hand_moment_Nm": 0.0828149,
+          "peak_penetration_um": 1.16112,
+          "contact_frames": 2389
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.8373,
+            "peak_contact_N": 4.77678,
+            "peak_penetration_um": 1.16112
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.8373,
+            "peak_contact_N": 4.77678,
+            "peak_penetration_um": 1.16112
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.8373,
+            "peak_contact_N": 4.77678,
+            "peak_penetration_um": 1.16112
+          }
+        ]
+      },
+      "article:physx": {
+        "status": "published",
+        "versions": {
+          "physx": null
+        },
+        "path_diff_vs_mujoco4_m": null,
+        "metrics": {
+          "frames": 200,
+          "completed": false,
+          "depth_reached": false,
+          "final_depth_mm": 12.244,
+          "max_depth_mm": 12.244,
+          "final_lateral_mm": 0.101594,
+          "stop_time_s": 1.992,
+          "peak_contact_N": 46.3168
+        }
+      },
+      "article:newton_mjwarp": {
+        "status": "published",
+        "versions": {
+          "newton_mjwarp": null
+        },
+        "path_diff_vs_mujoco4_m": null,
+        "metrics": {
+          "frames": 400,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9332,
+          "max_depth_mm": 19.9338,
+          "final_lateral_mm": 0.0708432,
+          "stop_time_s": null,
+          "peak_contact_N": 15.9387
+        }
+      },
+      "article:mujoco_cpu": {
+        "status": "published",
+        "versions": {
+          "mujoco_cpu": null
+        },
+        "path_diff_vs_mujoco4_m": null,
+        "metrics": {
+          "frames": 400,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9544,
+          "max_depth_mm": 19.9544,
+          "final_lateral_mm": 0.0702636,
+          "stop_time_s": null,
+          "peak_contact_N": 14.2561
+        }
+      },
+      "article:genesis": {
+        "status": "published",
+        "versions": {
+          "genesis": null
+        },
+        "path_diff_vs_mujoco4_m": null,
+        "metrics": {
+          "frames": 400,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9563,
+          "max_depth_mm": 19.9563,
+          "final_lateral_mm": 0.0723343,
+          "stop_time_s": null,
+          "peak_contact_N": 3.5888
+        }
+      }
+    },
+    "dt1ms-c250-aligned": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 5.46789e-13,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0178,
+          "final_lateral_mm": 0.00035156,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0178,
+          "final_lateral_mm": 0.00035156,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 3.20248e-06,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9996,
+          "max_depth_mm": 20.0178,
+          "final_lateral_mm": 0.000712829,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9996,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9996,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9996,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 3.29953e-06,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9997,
+          "max_depth_mm": 20.018,
+          "final_lateral_mm": 0.000277335,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 4000
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9997,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9997,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9997,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "genesis": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "genesis-world": "1.4.5",
+          "quadrants": "1.3.3",
+          "torch": "2.14.1+cu130"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 1.22283e-15,
+        "notes": [
+          "genesis import set armature=[0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; overridden to MJCF [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+        ],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0178,
+          "final_lateral_mm": 0.00035156,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      }
+    },
+    "dt1ms-c250-offset": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 5.81227e-06,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0164,
+          "final_lateral_mm": 0.24963,
+          "stop_time_s": null,
+          "peak_contact_N": 1.40801,
+          "peak_hand_moment_Nm": 0.188583,
+          "peak_penetration_um": 0.337105,
+          "contact_frames": 234
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 1.40801,
+            "peak_penetration_um": 0.337105
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 1.40801,
+            "peak_penetration_um": 0.337105
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 1.40801,
+            "peak_penetration_um": 0.337105
+          }
+        ]
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0165,
+          "final_lateral_mm": 0.249637,
+          "stop_time_s": null,
+          "peak_contact_N": 1.29512,
+          "peak_hand_moment_Nm": 0.185363,
+          "peak_penetration_um": 0.256133,
+          "contact_frames": 243
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 1.29512,
+            "peak_penetration_um": 0.256133
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 1.29512,
+            "peak_penetration_um": 0.256133
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 1.29512,
+            "peak_penetration_um": 0.256133
+          }
+        ]
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 1.669252469582716e-08,
+        "path_diff_vs_mujoco4_m": 1.46147e-05,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0004,
+          "max_depth_mm": 20.0165,
+          "final_lateral_mm": 0.249993,
+          "stop_time_s": null,
+          "peak_contact_N": 1.30918,
+          "peak_hand_moment_Nm": 0.187374,
+          "peak_penetration_um": 0.431655,
+          "contact_frames": 211
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0004,
+            "peak_contact_N": 1.30918,
+            "peak_penetration_um": 0.431655
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0004,
+            "peak_contact_N": 1.30918,
+            "peak_penetration_um": 0.431655
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0004,
+            "peak_contact_N": 1.30918,
+            "peak_penetration_um": 0.431655
+          }
+        ]
+      },
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 1.69248e-05,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0007,
+          "max_depth_mm": 20.0167,
+          "final_lateral_mm": 0.249711,
+          "stop_time_s": null,
+          "peak_contact_N": 1.34822,
+          "peak_hand_moment_Nm": 0.190173,
+          "peak_penetration_um": 0.468921,
+          "contact_frames": 4000
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0007,
+            "peak_contact_N": 1.34822,
+            "peak_penetration_um": 0.468921
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0007,
+            "peak_contact_N": 1.34822,
+            "peak_penetration_um": 0.468921
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0007,
+            "peak_contact_N": 1.34822,
+            "peak_penetration_um": 0.468921
+          }
+        ]
+      },
+      "genesis": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "genesis-world": "1.4.5",
+          "quadrants": "1.3.3",
+          "torch": "2.14.1+cu130"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 2.09833e-05,
+        "notes": [
+          "genesis import set armature=[0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; overridden to MJCF [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+        ],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0165,
+          "final_lateral_mm": 0.249641,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0137107,
+          "peak_hand_moment_Nm": 0.001962,
+          "peak_penetration_um": 0.083486,
+          "contact_frames": 1656
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0137107,
+            "peak_penetration_um": 0.083486
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0137107,
+            "peak_penetration_um": 0.083486
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0137107,
+            "peak_penetration_um": 0.083486
+          }
+        ]
+      }
+    },
+    "dt1ms-c250-tilted": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 6.86098e-06,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9945,
+          "max_depth_mm": 19.9949,
+          "final_lateral_mm": 0.0887336,
+          "stop_time_s": null,
+          "peak_contact_N": 1.27452,
+          "peak_hand_moment_Nm": 0.165178,
+          "peak_penetration_um": 0.451689,
+          "contact_frames": 1057
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9945,
+            "peak_contact_N": 1.27452,
+            "peak_penetration_um": 0.451689
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9945,
+            "peak_contact_N": 1.27452,
+            "peak_penetration_um": 0.451689
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9945,
+            "peak_contact_N": 1.27452,
+            "peak_penetration_um": 0.451689
+          }
+        ]
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9945,
+          "max_depth_mm": 19.9949,
+          "final_lateral_mm": 0.0889261,
+          "stop_time_s": null,
+          "peak_contact_N": 1.28118,
+          "peak_hand_moment_Nm": 0.166051,
+          "peak_penetration_um": 0.48307,
+          "contact_frames": 1058
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9945,
+            "peak_contact_N": 1.28118,
+            "peak_penetration_um": 0.48307
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9945,
+            "peak_contact_N": 1.28118,
+            "peak_penetration_um": 0.48307
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9945,
+            "peak_contact_N": 1.28118,
+            "peak_penetration_um": 0.48307
+          }
+        ]
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 1.30073e-05,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0044,
+          "max_depth_mm": 20.0044,
+          "final_lateral_mm": 0.0887475,
+          "stop_time_s": null,
+          "peak_contact_N": 1.25231,
+          "peak_hand_moment_Nm": 0.164001,
+          "peak_penetration_um": 0.665383,
+          "contact_frames": 1028
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0044,
+            "peak_contact_N": 1.25231,
+            "peak_penetration_um": 0.665383
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0044,
+            "peak_contact_N": 1.25231,
+            "peak_penetration_um": 0.665383
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0044,
+            "peak_contact_N": 1.25231,
+            "peak_penetration_um": 0.665383
+          }
+        ]
+      },
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 8.69402e-06,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0019,
+          "max_depth_mm": 20.0019,
+          "final_lateral_mm": 0.0892918,
+          "stop_time_s": null,
+          "peak_contact_N": 1.26543,
+          "peak_hand_moment_Nm": 0.164204,
+          "peak_penetration_um": 0.587864,
+          "contact_frames": 4000
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0019,
+            "peak_contact_N": 1.26543,
+            "peak_penetration_um": 0.587864
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0019,
+            "peak_contact_N": 1.26543,
+            "peak_penetration_um": 0.587864
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0019,
+            "peak_contact_N": 1.26543,
+            "peak_penetration_um": 0.587864
+          }
+        ]
+      },
+      "genesis": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "genesis-world": "1.4.5",
+          "quadrants": "1.3.3",
+          "torch": "2.14.1+cu130"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 1.32873e-05,
+        "notes": [
+          "genesis import set armature=[0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; overridden to MJCF [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+        ],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9944,
+          "max_depth_mm": 19.995,
+          "final_lateral_mm": 0.0887595,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0756768,
+          "peak_hand_moment_Nm": 0.00946215,
+          "peak_penetration_um": 0.816646,
+          "contact_frames": 1822
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9944,
+            "peak_contact_N": 0.0756768,
+            "peak_penetration_um": 0.816646
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9944,
+            "peak_contact_N": 0.0756768,
+            "peak_penetration_um": 0.816646
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9944,
+            "peak_contact_N": 0.0756768,
+            "peak_penetration_um": 0.816646
+          }
+        ]
+      }
+    },
+    "dt1ms-c500-aligned": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 5.46789e-13,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0178,
+          "final_lateral_mm": 0.00035156,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0178,
+          "final_lateral_mm": 0.00035156,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 3.20248e-06,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9996,
+          "max_depth_mm": 20.0178,
+          "final_lateral_mm": 0.000712829,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9996,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9996,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9996,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 3.29953e-06,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9997,
+          "max_depth_mm": 20.018,
+          "final_lateral_mm": 0.000277335,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 4000
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9997,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9997,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9997,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "genesis": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "genesis-world": "1.4.5",
+          "quadrants": "1.3.3",
+          "torch": "2.14.1+cu130"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 1.22283e-15,
+        "notes": [
+          "genesis import set armature=[0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; overridden to MJCF [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+        ],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0178,
+          "final_lateral_mm": 0.00035156,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      }
+    },
+    "dt1ms-c500-offset": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 5.46216e-13,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0178,
+          "final_lateral_mm": 0.24965,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0178,
+          "final_lateral_mm": 0.24965,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 3.30953e-06,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9995,
+          "max_depth_mm": 20.0178,
+          "final_lateral_mm": 0.250644,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9995,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9995,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9995,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 3.36012e-06,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9997,
+          "max_depth_mm": 20.018,
+          "final_lateral_mm": 0.25004,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 4000
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9997,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9997,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9997,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "genesis": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "genesis-world": "1.4.5",
+          "quadrants": "1.3.3",
+          "torch": "2.14.1+cu130"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 1.02407e-15,
+        "notes": [
+          "genesis import set armature=[0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; overridden to MJCF [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+        ],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0178,
+          "final_lateral_mm": 0.24965,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      }
+    },
+    "dt1ms-c500-tilted": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 5.45533e-13,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0179,
+          "final_lateral_mm": 0.00034933,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0179,
+          "final_lateral_mm": 0.00034933,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 3.25833e-06,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9995,
+          "max_depth_mm": 20.018,
+          "final_lateral_mm": 0.00069333,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9995,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9995,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9995,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 3.41416e-06,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9997,
+          "max_depth_mm": 20.0181,
+          "final_lateral_mm": 0.000244261,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 4000
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9997,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9997,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 19.9997,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      },
+      "genesis": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "genesis-world": "1.4.5",
+          "quadrants": "1.3.3",
+          "torch": "2.14.1+cu130"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 9.84286e-16,
+        "notes": [
+          "genesis import set armature=[0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; overridden to MJCF [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+        ],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0179,
+          "final_lateral_mm": 0.00034933,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          },
+          {
+            "status": "ok",
+            "depth_reached": true,
+            "final_depth_mm": 20.0,
+            "peak_contact_N": 0.0,
+            "peak_penetration_um": 0.0
+          }
+        ]
+      }
+    }
+  },
+  "sweep": {
+    "dt1ms": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 10.7247,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 12500,
+          "collected": 11,
+          "collected_ids": [
+            "object_01",
+            "object_02",
+            "object_04",
+            "object_05",
+            "object_06",
+            "object_07",
+            "object_08",
+            "object_09",
+            "object_10",
+            "object_11",
+            "object_14"
+          ],
+          "fallen": 3,
+          "left_outside": 1,
+          "max_arm_limit_violation_rad": 0.0,
+          "peak_paddle_contact_N": 19.0395,
+          "paddle_static_contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "collected": 11,
+            "fallen": 3,
+            "left_outside": 1,
+            "peak_paddle_contact_N": 19.0395
+          },
+          {
+            "status": "ok",
+            "collected": 11,
+            "fallen": 3,
+            "left_outside": 1,
+            "peak_paddle_contact_N": 19.0395
+          },
+          {
+            "status": "ok",
+            "collected": 11,
+            "fallen": 3,
+            "left_outside": 1,
+            "peak_paddle_contact_N": 19.0395
+          }
+        ]
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 12500,
+          "collected": 10,
+          "collected_ids": [
+            "object_02",
+            "object_04",
+            "object_05",
+            "object_06",
+            "object_07",
+            "object_08",
+            "object_09",
+            "object_10",
+            "object_11",
+            "object_14"
+          ],
+          "fallen": 3,
+          "left_outside": 2,
+          "max_arm_limit_violation_rad": 0.0,
+          "peak_paddle_contact_N": 19.6811,
+          "paddle_static_contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "collected": 10,
+            "fallen": 3,
+            "left_outside": 2,
+            "peak_paddle_contact_N": 19.6811
+          },
+          {
+            "status": "ok",
+            "collected": 10,
+            "fallen": 3,
+            "left_outside": 2,
+            "peak_paddle_contact_N": 19.6811
+          },
+          {
+            "status": "ok",
+            "collected": 10,
+            "fallen": 3,
+            "left_outside": 2,
+            "peak_paddle_contact_N": 19.6811
+          }
+        ]
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 17.20086177964749,
+        "path_diff_vs_mujoco4_m": 19.8939,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 12500,
+          "collected": 10,
+          "collected_ids": [
+            "object_02",
+            "object_04",
+            "object_05",
+            "object_06",
+            "object_07",
+            "object_08",
+            "object_09",
+            "object_10",
+            "object_11",
+            "object_14"
+          ],
+          "fallen": 3,
+          "left_outside": 2,
+          "max_arm_limit_violation_rad": 0.0,
+          "peak_paddle_contact_N": 61.8861,
+          "paddle_static_contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "collected": 10,
+            "fallen": 3,
+            "left_outside": 2,
+            "peak_paddle_contact_N": 61.8861
+          },
+          {
+            "status": "ok",
+            "collected": 10,
+            "fallen": 3,
+            "left_outside": 2,
+            "peak_paddle_contact_N": 9.96704
+          },
+          {
+            "status": "ok",
+            "collected": 10,
+            "fallen": 3,
+            "left_outside": 2,
+            "peak_paddle_contact_N": 16.7651
+          }
+        ]
+      },
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 51.658516266805464,
+        "path_diff_vs_mujoco4_m": 12.9101,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 12500,
+          "collected": 6,
+          "collected_ids": [
+            "object_05",
+            "object_06",
+            "object_07",
+            "object_08",
+            "object_09",
+            "object_14"
+          ],
+          "fallen": 3,
+          "left_outside": 6,
+          "max_arm_limit_violation_rad": 0.0,
+          "peak_paddle_contact_N": 104.606,
+          "paddle_static_contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "collected": 6,
+            "fallen": 3,
+            "left_outside": 6,
+            "peak_paddle_contact_N": 104.606
+          },
+          {
+            "status": "ok",
+            "collected": 5,
+            "fallen": 2,
+            "left_outside": 8,
+            "peak_paddle_contact_N": 50.2455
+          },
+          {
+            "status": "ok",
+            "collected": 7,
+            "fallen": 3,
+            "left_outside": 5,
+            "peak_paddle_contact_N": 47.2478
+          }
+        ]
+      },
+      "genesis": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "genesis-world": "1.4.5",
+          "quadrants": "1.3.3",
+          "torch": "2.14.1+cu130"
+        },
+        "seeds": [
+          0,
+          1,
+          2
+        ],
+        "seed_spread_m": 0.0,
+        "path_diff_vs_mujoco4_m": 169.982,
+        "notes": [
+          "genesis import set armature=[0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1]; overridden to MJCF [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]"
+        ],
+        "error": null,
+        "metrics": {
+          "frames": 12500,
+          "collected": 11,
+          "collected_ids": [
+            "object_01",
+            "object_02",
+            "object_04",
+            "object_05",
+            "object_06",
+            "object_07",
+            "object_08",
+            "object_09",
+            "object_10",
+            "object_11",
+            "object_14"
+          ],
+          "fallen": 2,
+          "left_outside": 2,
+          "max_arm_limit_violation_rad": 0.0,
+          "peak_paddle_contact_N": 100.151,
+          "paddle_static_contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "collected": 11,
+            "fallen": 2,
+            "left_outside": 2,
+            "peak_paddle_contact_N": 100.151
+          },
+          {
+            "status": "ok",
+            "collected": 11,
+            "fallen": 2,
+            "left_outside": 2,
+            "peak_paddle_contact_N": 100.151
+          },
+          {
+            "status": "ok",
+            "collected": 11,
+            "fallen": 2,
+            "left_outside": 2,
+            "peak_paddle_contact_N": 100.151
+          }
+        ]
+      },
+      "article:physx": {
+        "status": "published",
+        "versions": {
+          "physx": null
+        },
+        "path_diff_vs_mujoco4_m": null,
+        "metrics": {
+          "frames": 626,
+          "collected": 9,
+          "collected_ids": [
+            "object_02",
+            "object_05",
+            "object_06",
+            "object_07",
+            "object_08",
+            "object_09",
+            "object_10",
+            "object_11",
+            "object_14"
+          ],
+          "fallen": 2,
+          "left_outside": 4,
+          "max_arm_limit_violation_rad": null
+        }
+      },
+      "article:newton_mjwarp": {
+        "status": "published",
+        "versions": {
+          "newton_mjwarp": null
+        },
+        "path_diff_vs_mujoco4_m": null,
+        "metrics": {
+          "frames": 626,
+          "collected": 11,
+          "collected_ids": [
+            "object_01",
+            "object_02",
+            "object_04",
+            "object_05",
+            "object_06",
+            "object_07",
+            "object_08",
+            "object_09",
+            "object_10",
+            "object_11",
+            "object_14"
+          ],
+          "fallen": 3,
+          "left_outside": 1,
+          "max_arm_limit_violation_rad": null
+        }
+      },
+      "article:mujoco_cpu": {
+        "status": "published",
+        "versions": {
+          "mujoco_cpu": null
+        },
+        "path_diff_vs_mujoco4_m": null,
+        "metrics": {
+          "frames": 626,
+          "collected": 10,
+          "collected_ids": [
+            "object_01",
+            "object_02",
+            "object_04",
+            "object_05",
+            "object_06",
+            "object_07",
+            "object_08",
+            "object_09",
+            "object_10",
+            "object_14"
+          ],
+          "fallen": 3,
+          "left_outside": 2,
+          "max_arm_limit_violation_rad": null
+        }
+      },
+      "article:genesis": {
+        "status": "published",
+        "versions": {
+          "genesis": null
+        },
+        "path_diff_vs_mujoco4_m": null,
+        "metrics": {
+          "frames": 626,
+          "collected": 10,
+          "collected_ids": [
+            "object_02",
+            "object_04",
+            "object_05",
+            "object_06",
+            "object_07",
+            "object_08",
+            "object_09",
+            "object_10",
+            "object_11",
+            "object_14"
+          ],
+          "fallen": 3,
+          "left_outside": 2,
+          "max_arm_limit_violation_rad": null
+        }
+      },
+      "article:physx#2": {
+        "status": "published",
+        "versions": {
+          "physx": null
+        },
+        "path_diff_vs_mujoco4_m": null,
+        "metrics": {
+          "frames": 626,
+          "collected": 9,
+          "collected_ids": [
+            "object_02",
+            "object_05",
+            "object_06",
+            "object_07",
+            "object_08",
+            "object_09",
+            "object_10",
+            "object_11",
+            "object_14"
+          ],
+          "fallen": 2,
+          "left_outside": 4,
+          "max_arm_limit_violation_rad": null
+        }
+      },
+      "article:newton_mjwarp#2": {
+        "status": "published",
+        "versions": {
+          "newton_mjwarp": null
+        },
+        "path_diff_vs_mujoco4_m": null,
+        "metrics": {
+          "frames": 626,
+          "collected": 8,
+          "collected_ids": [
+            "object_02",
+            "object_05",
+            "object_06",
+            "object_07",
+            "object_08",
+            "object_09",
+            "object_10",
+            "object_11"
+          ],
+          "fallen": 3,
+          "left_outside": 4,
+          "max_arm_limit_violation_rad": null
+        }
+      },
+      "article:mujoco_cpu#2": {
+        "status": "published",
+        "versions": {
+          "mujoco_cpu": null
+        },
+        "path_diff_vs_mujoco4_m": null,
+        "metrics": {
+          "frames": 626,
+          "collected": 10,
+          "collected_ids": [
+            "object_01",
+            "object_02",
+            "object_04",
+            "object_05",
+            "object_06",
+            "object_07",
+            "object_08",
+            "object_09",
+            "object_10",
+            "object_14"
+          ],
+          "fallen": 3,
+          "left_outside": 2,
+          "max_arm_limit_violation_rad": null
+        }
+      },
+      "article:genesis#2": {
+        "status": "published",
+        "versions": {
+          "genesis": null
+        },
+        "path_diff_vs_mujoco4_m": null,
+        "metrics": {
+          "frames": 626,
+          "collected": 8,
+          "collected_ids": [
+            "object_04",
+            "object_05",
+            "object_06",
+            "object_07",
+            "object_08",
+            "object_09",
+            "object_11",
+            "object_14"
+          ],
+          "fallen": 3,
+          "left_outside": 4,
+          "max_arm_limit_violation_rad": null
+        }
+      }
+    },
+    "dt1ms-det": {
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0,
+          1
+        ],
+        "seed_spread_m": 12.154006159389086,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 12500,
+          "collected": 10,
+          "collected_ids": [
+            "object_02",
+            "object_04",
+            "object_05",
+            "object_06",
+            "object_07",
+            "object_08",
+            "object_09",
+            "object_10",
+            "object_11",
+            "object_14"
+          ],
+          "fallen": 3,
+          "left_outside": 2,
+          "max_arm_limit_violation_rad": 0.0,
+          "peak_paddle_contact_N": 13.8888,
+          "paddle_static_contact_frames": 0
+        },
+        "seed_metrics": [
+          {
+            "status": "ok",
+            "collected": 10,
+            "fallen": 3,
+            "left_outside": 2,
+            "peak_paddle_contact_N": 13.8888
+          },
+          {
+            "status": "ok",
+            "collected": 10,
+            "fallen": 3,
+            "left_outside": 2,
+            "peak_paddle_contact_N": 15.9521
+          }
+        ]
+      }
+    },
+    "dt1ms-jac-dense": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 14.2904,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 12500,
+          "collected": 10,
+          "collected_ids": [
+            "object_02",
+            "object_04",
+            "object_05",
+            "object_06",
+            "object_07",
+            "object_08",
+            "object_09",
+            "object_10",
+            "object_11",
+            "object_14"
+          ],
+          "fallen": 3,
+          "left_outside": 2,
+          "max_arm_limit_violation_rad": 0.0,
+          "peak_paddle_contact_N": 11.6891,
+          "paddle_static_contact_frames": 0
+        }
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 12500,
+          "collected": 10,
+          "collected_ids": [
+            "object_02",
+            "object_04",
+            "object_05",
+            "object_06",
+            "object_07",
+            "object_08",
+            "object_09",
+            "object_10",
+            "object_11",
+            "object_14"
+          ],
+          "fallen": 3,
+          "left_outside": 2,
+          "max_arm_limit_violation_rad": 0.0,
+          "peak_paddle_contact_N": 10.7481,
+          "paddle_static_contact_frames": 0
+        }
+      }
+    },
+    "dt1ms-jac-sparse": {
+      "mujoco311": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.11.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 10.7247,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 12500,
+          "collected": 11,
+          "collected_ids": [
+            "object_01",
+            "object_02",
+            "object_04",
+            "object_05",
+            "object_06",
+            "object_07",
+            "object_08",
+            "object_09",
+            "object_10",
+            "object_11",
+            "object_14"
+          ],
+          "fallen": 3,
+          "left_outside": 1,
+          "max_arm_limit_violation_rad": 0.0,
+          "peak_paddle_contact_N": 19.0395,
+          "paddle_static_contact_frames": 0
+        }
+      },
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 12500,
+          "collected": 10,
+          "collected_ids": [
+            "object_02",
+            "object_04",
+            "object_05",
+            "object_06",
+            "object_07",
+            "object_08",
+            "object_09",
+            "object_10",
+            "object_11",
+            "object_14"
+          ],
+          "fallen": 3,
+          "left_outside": 2,
+          "max_arm_limit_violation_rad": 0.0,
+          "peak_paddle_contact_N": 19.6811,
+          "paddle_static_contact_frames": 0
+        }
+      }
+    }
+  }
+}

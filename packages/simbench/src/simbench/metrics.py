@@ -95,6 +95,17 @@ def hinge_metrics(tr: Trace) -> dict:
             "final_angle_rad": float(tr.q[-1, 0])}
 
 
+def hinge_plastic_metrics(tr: Trace) -> dict:
+    """Ideal elasto-plasticity: the spring rest angle ends at peak - yield (0 if elastic)."""
+    y = tr.meta["params"]["yield_rad"]
+    q = tr.q[:, 0]
+    expected = max(q.max() - y, 0.0) if y else 0.0
+    return {"frames": len(tr.t), "peak_angle_deg": float(np.degrees(q.max())),
+            "final_angle_deg": float(np.degrees(q[-1])),
+            "expected_final_deg": float(np.degrees(expected)),
+            "final_error_deg": float(np.degrees(q[-1] - expected))}
+
+
 def chain_metrics(tr: Trace) -> dict:
     out = {"frames": len(tr.t)}
     for name in tr.bodies:
@@ -232,7 +243,15 @@ def push_metrics(tr: Trace) -> dict:
     passed = [o for o in objects if final[o][0] >= target]
     pad = sum(np.linalg.norm(contact_force_on(tr, o, FINGERS), axis=1) for o in objects)
     h = tr.body("hand")
-    return {"frames": len(tr.t), "all_passed": len(passed) == 3, "passed_count": len(passed),
+    start = {o: tr.com[0, tr.body(o), 0] for o in objects}
+    progress = min(min((final[o][0] - start[o]) / (target - start[o]), 1.0) for o in objects)
+    tuning = {}
+    if "limit" in p and tr.tau.shape[1] >= 7:
+        # Selection score: squared arm effort normalised by the limits, episode mean.
+        effort = (tr.tau[:, :7] / np.asarray(p["limit"][:7])) ** 2
+        tuning = {"mean_norm_sq_effort": float(effort.mean())}
+    return tuning | {"frames": len(tr.t), "all_passed": len(passed) == 3,
+            "passed_count": len(passed), "min_progress_capped": float(progress),
             "final_positions_m": final,
             "max_pad_push_N": float(pad.max()),
             "final_hand_travel_mm": float((tr.pos[-1, h, 0] - tr.pos[0, h, 0]) * 1e3),
@@ -244,14 +263,324 @@ def push_metrics(tr: Trace) -> dict:
             "max_arm_limit_violation_rad": _arm_limit_violation(tr)}
 
 
+def sweep_metrics(tr: Trace) -> dict:
+    """Article criterion: object centre inside the tray footprint at the end of the run."""
+    p = tr.meta["params"]
+    objects = [b for b in tr.bodies if b.startswith("object_")]
+    (tx, ty, tz), (sx, sy, sz) = p["tray"]["pos"], p["tray"]["size"]
+    final = np.array([tr.com[-1, tr.body(o)] for o in objects])
+    in_tray = ((np.abs(final[:, 0] - tx) <= sx / 2) & (np.abs(final[:, 1] - ty) <= sy / 2)
+               & (final[:, 2] >= tz + sz / 2 - 0.005))
+    fallen = final[:, 2] < p["table_top"] - 0.05
+    out = {"frames": len(tr.t), "collected": int(in_tray.sum()),
+           "collected_ids": [o for o, c in zip(objects, in_tray, strict=True) if c],
+           "fallen": int(fallen.sum()),
+           "left_outside": int((~in_tray & ~fallen).sum()),
+           "max_arm_limit_violation_rad": _arm_limit_violation(tr)}
+    if "contact_names" in tr.meta:
+        paddle = np.linalg.norm(contact_force_on(tr, "paddle", tuple(objects)), axis=1)
+        static = np.linalg.norm(contact_force_on(tr, "paddle", ("world",)), axis=1)
+        out |= {"peak_paddle_contact_N": float(paddle.max()),
+                "paddle_static_contact_frames": int((static > 0).sum())}
+    return out
+
+
+def insertion_depth(tr: Trace) -> tuple[np.ndarray, np.ndarray]:
+    """Peg tip depth below the bore top and its distance from the bore axis [m]."""
+    p = tr.meta["params"]
+    hand = tr.body("hand")
+    rot = np.array([quat_to_mat(q) for q in tr.quat[:, hand]])
+    tip = tr.pos[:, hand] + rot @ np.asarray(p["peg_tip_hand"])
+    origin = np.asarray(p["bore_origin"])
+    return origin[2] - tip[:, 2], np.linalg.norm(tip[:, :2] - origin[:2], axis=1)
+
+
+def insertion_metrics(tr: Trace) -> dict:
+    """Article criterion: depth >= 19 mm throughout the last 0.25 s of a completed run."""
+    p = tr.meta["params"]
+    depth, lateral = insertion_depth(tr)
+    steps = int(round(p["duration"] / p["dt"]))
+    completed = tr.meta.get("status") == "ok" and len(tr.t) == steps
+    tail = tr.t >= p["duration"] - p["pass_window_s"] - 1e-9
+    out = {"frames": len(tr.t), "completed": completed,
+           "depth_reached": bool(completed and depth[tail].min() >= p["depth_pass_m"]),
+           "final_depth_mm": float(depth[-1] * 1e3), "max_depth_mm": float(depth.max() * 1e3),
+           "final_lateral_mm": float(lateral[-1] * 1e3),
+           "stop_time_s": None if completed else float(tr.t[-1])}
+    if "contact_names" in tr.meta:
+        names = tr.meta["contact_names"]
+        peg = names.index("peg") if "peg" in names else -1
+        sel = (tr.c_a == peg) | (tr.c_b == peg)
+        sign = np.where(tr.c_b[sel] == peg, 1.0, -1.0)[:, None]
+        f = tr.c_force[sel] * sign
+        frames = tr.c_frame[sel]
+        force, moment = np.zeros((len(tr.t), 3)), np.zeros((len(tr.t), 3))
+        np.add.at(force, frames, f)
+        np.add.at(moment, frames, np.cross(tr.c_pos[sel] - tr.pos[frames, tr.body("hand")], f))
+        out |= {"peak_contact_N": float(np.linalg.norm(force, axis=1).max()),
+                "peak_hand_moment_Nm": float(np.linalg.norm(moment, axis=1).max()),
+                "peak_penetration_um": float(max(0.0, -tr.c_dist[sel].min(initial=0.0)) * 1e6),
+                "contact_frames": int(len(np.unique(frames)))}
+    else:  # published bundles: net peg contact force sampled every 10 ms
+        out["peak_contact_N"] = float(np.linalg.norm(tr.contact_net[:, tr.body("peg")],
+                                                     axis=1).max())
+    return out
+
+
+def ball_vertices(tr: Trace) -> np.ndarray:
+    return tr.pos[:, [i for i, b in enumerate(tr.bodies) if b.startswith("ball_")]]
+
+
+def invalid_frames(tr: Trace) -> np.ndarray:
+    """Article geometry gate per frame: a non-finite vertex or an inverted tet."""
+    v = ball_vertices(tr)
+    tets = np.asarray(tr.meta["params"]["tets"])
+    a, b, c, d = (v[:, tets[:, i]] for i in range(4))
+    vol = np.einsum("nti,nti->nt", np.cross(b - a, c - a), d - a) / 6
+    return ~np.isfinite(v).all(axis=(1, 2)) | (vol * np.sign(vol[0]) <= 0).any(axis=1)
+
+
+def _invalid_meta(tr: Trace) -> tuple[int, dict]:
+    """Frames up to the first invalid one; the article stops runs there."""
+    bad = invalid_frames(tr)
+    hit = np.nonzero(bad)[0]
+    n = int(hit[0]) if len(hit) else len(tr.t)
+    stop = float(tr.t[n]) if len(hit) else None
+    if stop is None and tr.meta.get("status") != "ok":
+        stop = float(tr.t[-1])
+    return n, {"invalid_at_s": stop, "completed": stop is None and len(tr.t) > 0,
+               "invalid_frames": int(bad.sum())}
+
+
+def ball_compress_metrics(tr: Trace) -> dict:
+    n, out = _invalid_meta(tr)
+    v = ball_vertices(tr)[:n]
+    t = tr.t[:n]
+    load = np.abs(tr.contact_net[:n, tr.body("plate_hi"), 2])
+    hold = (t >= 0.6 - 1e-9) & (t <= 0.8 + 1e-9)
+    extent = np.ptp(v[:, :, 2], axis=1)
+    p = tr.meta["params"]
+    gap = 2 * (p["plate_gap0"] - p["squeeze"] - p["plate_half"][2])
+    return out | {"frames": len(tr.t),
+                  "hold_plate_load_N": float(load[hold].mean()) if hold.any() else None,
+                  "hold_extent_mm": float(extent[hold].mean() * 1e3) if hold.any() else None,
+                  "plate_gap_mm": gap * 1e3,
+                  "final_extent_mm": float(extent[-1] * 1e3),
+                  "permanent_set_mm": float((extent[0] - extent[-1]) * 1e3)
+                  if out["completed"] else None,
+                  "peak_plate_load_N": float(load.max())}
+
+
+def ball_grasp_metrics(tr: Trace) -> dict:
+    """Lift is the mass-weighted COM rise; the run is judged up to its first invalid frame."""
+    p = tr.meta["params"]
+    n, out = _invalid_meta(tr)
+    mass = np.asarray(p["node_mass"])
+    v_all = ball_vertices(tr)
+    lift_all = (v_all[:, :, 2] - v_all[0, :, 2]) @ mass / mass.sum() * 1e3
+    v, t, lift = v_all[:n], tr.t[:n], lift_all[:n]
+    centroid = (v[:, :, 2].mean(axis=1) - v[0, :, 2].mean()) * 1e3
+    t0, t1 = p["hold_window"]
+    hold = (t >= t0 - 1e-9) & (t <= t1 + 1e-9)
+    hold_all = (tr.t >= t0 - 1e-9) & (tr.t <= t1 + 1e-9)
+    if hold_all.any() and np.isfinite(lift_all[hold_all]).all():
+        out["ungated_hold_lift_mm"] = float(lift_all[hold_all].mean())
+    # Width lost across the fingers (hand y) after release: the plastic dent.
+    width = np.ptp(v_all[:, :, 1], axis=1)
+    out["dent_mm"] = (float((width[0] - width[-1]) * 1e3)
+                      if tr.meta["status"] == "ok" and np.isfinite(width).all() else None)
+    full_hold = len(t) and t[-1] >= t1 - 1e-9
+    stop = out["invalid_at_s"]
+    phase = (None if stop is None else "before hold" if stop < t0 else
+             "during hold" if stop <= 2.3 else "during lowering" if stop <= 3.1 else
+             "during release")
+    hold_lift = float(lift[hold].mean()) if full_hold and hold.any() else None
+    out |= {"frames": len(tr.t), "failure_phase": phase,
+            "hold_lift_mm": hold_lift,
+            "hold_centroid_lift_mm": float(centroid[hold].mean()) if full_hold and hold.any()
+            else None,
+            "sustained_lift": bool(hold_lift is not None and hold_lift >= 40.0),
+            "max_lift_mm": float(lift.max()) if len(lift) else None,
+            "min_lift_mm": float(lift.min()) if len(lift) else None,
+            "max_arm_limit_violation_rad": _arm_limit_violation(tr)}
+    if "contact_names" in tr.meta and "ball" in tr.meta["contact_names"]:
+        pads = np.linalg.norm(contact_force_on(tr, "left_finger", ("ball",)), axis=1)[:n]
+        out["hold_pad_force_N"] = float(pads[hold].mean()) if hold.any() else None
+    return out
+
+
+def card_metrics(tr: Trace) -> dict:
+    """Outcome of the thin card: caught on the plate, tunneled through it, or off its edge."""
+    p = tr.meta["params"]
+    pos = tr.pos[:, tr.body("card")]
+    inside = (np.abs(pos[:, :2]) < p["plate_half_xy"]).all(axis=1)
+    below = (pos[:, 2] < p["plate_bottom"]) & inside
+    rest = pos[-1, 2] - p["plate_top"] - p["card_half"][2]
+    if below.any():
+        outcome = "tunneled"
+    elif inside[-1] and abs(rest) < 2e-3:
+        outcome = "caught"
+    else:
+        outcome = "off plate"
+    k = int(np.argmax(below)) if below.any() else len(tr.t)
+    pen = p["plate_top"] + p["card_half"][2] - pos[:k, 2]
+    return {"frames": len(tr.t), "outcome": outcome, "caught": outcome == "caught",
+            "tunnel_at_s": float(tr.t[k]) if below.any() else None,
+            "rest_gap_mm": float(rest * 1e3) if outcome == "caught" else None,
+            "max_penetration_mm": float(pen.max() * 1e3) if k else None,
+            "impact_speed": float(np.sqrt(p["speed"]**2 + 2 * 9.81 * 0.005)),
+            "height_mm": ((pos[tr.t <= 0.06, 2] - p["plate_top"]) * 1e3).round(3).tolist()}
+
+
+def _qmul(a: np.ndarray, b: np.ndarray) -> np.ndarray:
+    w1, x1, y1, z1 = a
+    w2, x2, y2, z2 = b
+    return np.array([w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2, w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2,
+                     w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2, w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2])
+
+
+def tumble_reference(params: dict, t: np.ndarray, h: float = 1e-4) -> np.ndarray:
+    """Independent torque-free rigid-body solve (RK4 on Euler's equations and q) [w x y z]."""
+    inertia = np.array(params["inertia"])
+
+    def f(state):
+        q, w = state[:4], state[4:]
+        return np.concatenate([0.5 * _qmul(q, np.r_[0.0, w]),
+                               np.cross(inertia * w, w) / inertia])
+
+    state = np.r_[1.0, 0.0, 0.0, 0.0, params["omega0"]]
+    out, now = np.zeros((len(t), 4)), 0.0
+    for i, target in enumerate(t):
+        while now < target - 1e-12:
+            step = min(h, target - now)
+            k1 = f(state)
+            k2 = f(state + step / 2 * k1)
+            k3 = f(state + step / 2 * k2)
+            k4 = f(state + step * k3)
+            state = state + step / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
+            state[:4] /= np.linalg.norm(state[:4])
+            now += step
+        out[i] = state[:4]
+    return out
+
+
+def tumble_metrics(tr: Trace) -> dict:
+    """Orientation error vs the reference, and drift of world angular momentum and energy."""
+    p = tr.meta["params"]
+    b = tr.body("handle")
+    quat, w = tr.quat[:, b], tr.angvel[:, b]
+    ref = tumble_reference(p, tr.t)
+    err = np.degrees(2 * np.arccos(np.clip(np.abs((quat * ref).sum(axis=1)), 0, 1)))
+    inertia = np.array(p["inertia"])
+    rot = np.stack([quat_to_mat(q) for q in quat])
+    w_body = np.einsum("nji,nj->ni", rot, w)
+    ang_mom = np.einsum("nij,nj->ni", rot, inertia * w_body)
+    energy = 0.5 * (inertia * w_body**2).sum(axis=1)
+    return {"frames": len(tr.t), "final_error_deg": float(err[-1]),
+            "max_error_deg": float(err.max()),
+            "momentum_drift": float(np.linalg.norm(ang_mom - ang_mom[0], axis=1).max()
+                                    / np.linalg.norm(ang_mom[0])),
+            "energy_drift": float(np.abs(energy / energy[0] - 1).max()),
+            "error_deg": err[:: max(1, len(err) // 200)].round(6).tolist()}
+
+
+def sheet_metrics(tr: Trace) -> dict:
+    """Tip deflection of the strip under the press and the permanent set after release."""
+    p = tr.meta["params"]
+    tip = tr.pos[:, [tr.body(n) for n in p["tip_bodies"]], 2].mean(axis=1)
+    if not np.isfinite(tip).all():
+        bad = int(np.argmax(~np.isfinite(tip)))
+        return {"frames": len(tr.t), "invalid_at_s": float(tr.t[bad]), "held_tip_mm": None,
+                "permanent_set_mm": None}
+    hold = int(np.argmin(np.abs(tr.t - p["hold_t"])))
+    tail = tr.t >= tr.t[-1] - 0.2
+    return {"frames": len(tr.t), "invalid_at_s": None,
+            "held_tip_mm": float(-tip[hold] * 1e3), "peak_tip_mm": float(-tip.min() * 1e3),
+            "permanent_set_mm": float(-tip[tail].mean() * 1e3),
+            "tip_mm": (-tip[:: max(1, len(tip) // 200)] * 1e3).round(3).tolist()}
+
+
+def twist_metrics(tr: Trace) -> dict:
+    """Slip torque: the applied twist torque when the puck has turned 1 degree."""
+    p = tr.meta["params"]
+    angle, torque = np.degrees(tr.q[:, 2]), tr.tau[:, 2]
+    if not np.isfinite(angle).all():
+        return {"frames": len(tr.t), "slip_torque_Nm": None, "slip_ratio": None}
+    held = tr.t >= p["settle"]
+    slipped = np.flatnonzero(held & (np.abs(angle) > 1.0))
+    slip = float(torque[slipped[0]]) if len(slipped) else None
+    puck = tr.meta["contact_names"].index("puck")
+    on = (tr.c_a == puck) | (tr.c_b == puck)
+    frames = tr.c_frame[on & (tr.c_frame < int(np.argmax(held)) + 50)]
+    per_frame = np.bincount(frames, minlength=len(tr.t))[held][:50] if len(frames) else [0]
+    squeeze = np.abs(tr.qd[:, :2]).max(axis=1)
+    if len(slipped):
+        held = held & (tr.t < tr.t[slipped[0]])
+    return {"frames": len(tr.t), "slip_torque_Nm": slip,
+            "slip_torque_ref_Nm": p["slip_torque_ref"],
+            "slip_ratio": slip / p["slip_torque_ref"] if slip is not None else None,
+            "slip_at_s": float(tr.t[slipped[0]]) if len(slipped) else None,
+            "contacts_per_step": float(np.mean(per_frame)),
+            "pad_speed_max": float(squeeze[held].max()),
+            "angle_deg": angle[:: max(1, len(angle) // 200)].round(4).tolist(),
+            "torque_Nm": torque[:: max(1, len(torque) // 200)].round(5).tolist()}
+
+
+def walk_metrics(tr: Trace) -> dict:
+    """G1 walking: fall time, tracking, drift, foot sinkage and slip, cost of transport."""
+    p = tr.meta["params"]
+    base = tr.pos[:, tr.body("pelvis")]
+    if not len(tr.t) or not np.isfinite(base).all():
+        return {"frames": len(tr.t), "fell": None}
+    down = np.flatnonzero(base[:, 2] < 0.5)
+    fell_at = float(tr.t[down[0]]) if len(down) else None
+    up = tr.t < (fell_at if fell_at is not None else np.inf)
+    t, x = tr.t[up], base[up]
+    rec_dt = float(tr.t[1] - tr.t[0])
+    window = t >= 2.0
+    speed = (x[window][-1, 0] - x[window][0, 0]) / (t[window][-1] - t[window][0]) \
+        if window.sum() > 50 else None
+    feet = [tr.body(f) for f in FEET]
+    loaded = np.linalg.norm(tr.contact_net[up][:, feet], axis=2) > 50.0
+    horizontal = np.linalg.norm(tr.linvel[up][:, feet, :2], axis=2)
+    frames = np.flatnonzero(up)
+    on = np.isin(tr.c_frame, frames)
+    pen = np.zeros(len(tr.t))
+    np.maximum.at(pen, tr.c_frame[on], -tr.c_dist[on])
+    distance = float(x[-1, 0] - x[0, 0])
+    work = float(np.abs(tr.tau[up] * tr.qd[up]).sum() * rec_dt)
+    step = max(1, len(tr.t) // 250)
+    return {"frames": len(tr.t), "fell": fell_at is not None, "fell_at_s": fell_at,
+            "distance_m": distance, "speed_ratio": speed / p["speed"] if speed else None,
+            "lateral_drift_m": float(abs(x[-1, 1] - x[0, 1])),
+            "base_height_m": float(x[:, 2].mean()),
+            "sink_mm": float(np.median(pen[frames]) * 1e3),
+            "foot_slip_mm_s": float(horizontal[loaded].mean() * 1e3) if loaded.any() else None,
+            "cost_of_transport": work / (p["mass"] * 9.81 * distance) if distance > 0.5 else None,
+            "x_m": base[::step, 0].round(4).tolist(), "z_m": base[::step, 2].round(4).tolist()}
+
+
+FEET = ["left_ankle_roll_link", "right_ankle_roll_link"]
+
+
 METRICS = {
+    "g1-walk": walk_metrics,
+    "twist": twist_metrics,
+    "card-catch": card_metrics,
+    "tumble": tumble_metrics,
+    "sheet": sheet_metrics,
     "slide": lambda tr: cube_metrics(tr, 0.1, 0.04),
     "drop": lambda tr: cube_metrics(tr, 0.1, 0.04),
     "hinge": hinge_metrics,
+    "hinge-plastic": hinge_plastic_metrics,
     "collision-chain": chain_metrics,
     "panda-effort": _arm_metrics,
     "panda-tracking": tracking_metrics,
     "grasp": grasp_metrics,
     "stack": stack_metrics,
     "push": push_metrics,
+    "sweep": sweep_metrics,
+    "insertion": insertion_metrics,
+    "ball-compress": ball_compress_metrics,
+    "ball-grasp": ball_grasp_metrics,
 }

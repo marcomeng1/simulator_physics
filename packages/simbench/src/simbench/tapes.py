@@ -11,6 +11,8 @@ Spec kinds
   cartesian  TCP waypoints joined by quintic straight lines at a fixed downward hand
              orientation, solved by damped least-squares IK at every control sample,
              plus independent quintic finger references.
+  samples    joint angles recovered from the link poses of a published article trace,
+             joined by a clamped cubic spline (rest to rest).
 """
 
 import hashlib
@@ -208,7 +210,79 @@ def _cartesian(spec: dict) -> dict[str, np.ndarray]:
             "ff": _inverse(m, d, qref, qdref, qddref), "tcp": tcp, "hand_rot": rot}
 
 
-GENERATORS = {"bias": _bias, "joint": _joint, "cartesian": _cartesian}
+def clamped_spline(x: np.ndarray, y: np.ndarray, t: np.ndarray):
+    """Cubic spline through (x, y) with zero end slopes; value, first and second derivative
+    at `t`. `y` may have several columns."""
+    n, h = len(x), np.diff(x)
+    a = np.zeros((n, n))
+    rhs = np.zeros((n, *y.shape[1:]))
+    slope = np.diff(y, axis=0) / h[:, None]
+    a[0, :2] = 2 * h[0], h[0]
+    rhs[0] = 6 * slope[0]
+    a[-1, -2:] = h[-1], 2 * h[-1]
+    rhs[-1] = -6 * slope[-1]
+    for i in range(1, n - 1):
+        a[i, i - 1:i + 2] = h[i - 1], 2 * (h[i - 1] + h[i]), h[i]
+        rhs[i] = 6 * (slope[i] - slope[i - 1])
+    m = np.linalg.solve(a, rhs)
+    i = np.clip(np.searchsorted(x, t, side="right") - 1, 0, n - 2)
+    hi, lo, up = h[i][:, None], (x[i + 1] - t)[:, None], (t - x[i])[:, None]
+    c0 = y[i] / hi - m[i] * hi / 6
+    c1 = y[i + 1] / hi - m[i + 1] * hi / 6
+    value = m[i] * lo**3 / (6 * hi) + m[i + 1] * up**3 / (6 * hi) + c0 * lo + c1 * up
+    first = -m[i] * lo**2 / (2 * hi) + m[i + 1] * up**2 / (2 * hi) - c0 + c1
+    second = m[i] * lo / hi + m[i + 1] * up / hi
+    return value, first, second
+
+
+def _qmul(a, b) -> np.ndarray:
+    w1, x1, y1, z1 = a
+    w2, x2, y2, z2 = b
+    return np.array([w1 * w2 - x1 * x2 - y1 * y2 - z1 * z2, w1 * x2 + x1 * w2 + y1 * z2 - z1 * y2,
+                     w1 * y2 - x1 * z2 + y1 * w2 + z1 * x2, w1 * z2 + x1 * y2 - y1 * x2 + z1 * w2])
+
+
+def recorded_joints(m, frames: list[dict]) -> np.ndarray:
+    """Arm and finger joint positions that reproduce recorded link poses (wxyz quats)."""
+    from simbench.readback import quat_to_mat
+
+    conj = np.array([1.0, -1.0, -1.0, -1.0])
+    out = np.zeros((len(frames), m.nq))
+    for k, frame in enumerate(frames):
+        pose = {b["id"]: b for b in frame["bodies"]}
+        for j in range(m.njnt):
+            bid = m.jnt_bodyid[j]
+            child, parent = pose[m.body(bid).name], pose[m.body(m.body_parentid[bid]).name]
+            if m.jnt_type[j] == 3:  # hinge: rotation about the axis left after the body offset
+                rel = _qmul(m.body_quat[bid] * conj, _qmul(
+                    np.asarray(parent["quaternion_wxyz"]) * conj, child["quaternion_wxyz"]))
+                out[k, m.jnt_qposadr[j]] = 2 * np.arctan2(rel[1:] @ m.jnt_axis[j], rel[0])
+            else:  # slide, in the parent frame
+                rot = quat_to_mat(parent["quaternion_wxyz"])
+                local = rot.T @ (np.subtract(child["position_m"], parent["position_m"]))
+                axis = quat_to_mat(m.body_quat[bid]) @ m.jnt_axis[j]
+                out[k, m.jnt_qposadr[j]] = (local - m.body_pos[bid]) @ axis
+    return out
+
+
+def _samples(spec: dict) -> dict[str, np.ndarray]:
+    from simbench.reference import load_bundle
+
+    m, d = _robot(spec["model"])
+    bundle = load_bundle(spec["bundle"])
+    frames = next(tr for tr in bundle["traces"] if tr["engine"] == spec["engine"])["frames"]
+    knots = np.array([f["time_s"] for f in frames])
+    knots[0] = 0.0  # the first sample (5 ms) is still at the initial rest pose
+    q = recorded_joints(m, frames)
+    t = control_times(spec)
+    qref, qdref, qddref = clamped_spline(knots, q, t)
+    fing = [m.jnt_qposadr[m.joint(j).id] for j in FINGER_JOINTS]
+    qref[:, fing], qdref[:, fing], qddref[:, fing] = spec["finger_hold"], 0.0, 0.0
+    return {"t": t, "qref": qref, "qdref": qdref, "qddref": qddref,
+            "ff": _inverse(m, d, qref, qdref, qddref), "knots": knots, "recorded": q}
+
+
+GENERATORS = {"bias": _bias, "joint": _joint, "cartesian": _cartesian, "samples": _samples}
 
 
 def generate(spec: dict) -> Path:

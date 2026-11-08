@@ -5,6 +5,7 @@ MjModel that SolverMuJoCo generates from it (what MuJoCo-Warp actually simulates
 """
 
 import time
+import xml.etree.ElementTree as ET
 from pathlib import Path
 
 import newton
@@ -23,10 +24,26 @@ JOINT_TYPES = {
 }
 
 
-def build(path: Path) -> newton.Model:
-    builder = newton.ModelBuilder()
+def _mjcf_gravity(path: Path) -> tuple[float, float, float] | None:
+    """add_mjcf does not read <option gravity>; scenes without it keep Newton's default."""
+    option = ET.parse(path).getroot().find("option")
+    g = option.get("gravity") if option is not None else None
+    return tuple(float(v) for v in g.split()) if g else None
+
+
+def build(path: Path, hydro: dict | None = None) -> newton.Model:
+    """`hydro` ({"kh", "sdf_resolution"}) makes every colliding volumetric shape hydroelastic."""
+    builder = newton.ModelBuilder(gravity=_mjcf_gravity(path))
     newton.solvers.SolverMuJoCo.register_custom_attributes(builder)
     builder.add_mjcf(str(path))
+    if hydro:
+        flags = newton.ShapeFlags
+        for i, f in enumerate(builder.shape_flags):
+            if f & flags.COLLIDE_SHAPES and builder.shape_type[i] not in (
+                    newton.GeoType.PLANE, newton.GeoType.HFIELD):
+                builder.shape_flags[i] = f | flags.HYDROELASTIC
+                builder.shape_material_kh[i] = hydro["kh"]
+                builder.shape_sdf_max_resolution[i] = hydro["sdf_resolution"]
     return builder.finalize()
 
 
@@ -135,19 +152,39 @@ class Sim:
     """
 
     def __init__(self, scene, seed: int = 0, naconmax: int = 256, njmax: int = 1024,
-                 **solver_options):
+                 contacts: str = "mujoco", kh: float = 1e11, sdf_resolution: int = 64,
+                 reduce: bool = True, mujoco_invweight: bool = False, **solver_options):
+        """`contacts`: "mujoco" (MuJoCo-Warp collision), "newton" (Newton's collision
+        pipeline, point contacts) or "hydroelastic" (Newton pipeline, SDF pressure patches).
+
+        `mujoco_invweight` replaces the body_invweight0 SolverMuJoCo generates with the
+        values MuJoCo compiles from the same MJCF. They set the constraint regularizer, and
+        Newton 1.7 gives a hinged body a translational weight where MuJoCo gives 0.
+        """
         import mujoco_warp as mjw
 
         self.mjw = mjw
         self.scene = scene
+        self.contact_mode = contacts
         path = scene.mjcf_path()
-        self.model = m = build(path)
-        opts = {"solver": "newton", "integrator": "euler", "cone": "elliptic",
-                "iterations": 100, "tolerance": 1e-10, "nconmax": naconmax, "njmax": njmax}
+        hydro = {"kh": kh, "sdf_resolution": sdf_resolution} if contacts == "hydroelastic" else None
+        self.model = m = build(path, hydro)
+        integrator = scene.params.get("integrator", "euler").lower()
+        opts = {"solver": "newton", "integrator": integrator, "cone": "elliptic",
+                "iterations": 100, "tolerance": 1e-10, "nconmax": naconmax, "njmax": njmax,
+                "use_mujoco_contacts": contacts == "mujoco"}
         opts.update(solver_options)
         if isinstance(opts.get("deterministic"), str):  # plans are JSON: "RUN_TO_RUN" etc.
             opts["deterministic"] = wp.DeterministicMode[opts["deterministic"]]
         self.solver = newton.solvers.SolverMuJoCo(m, **opts)
+        self.pipeline = self.newton_contacts = None
+        if contacts != "mujoco":
+            config = (newton.geometry.HydroelasticSDF.Config(reduce_contacts=reduce)
+                      if hydro else None)
+            self.pipeline = newton.CollisionPipeline(
+                m, reduce_contacts=reduce, rigid_contact_max=naconmax * 8,
+                sdf_hydroelastic_config=config)
+            self.newton_contacts = self.pipeline.contacts()
         self.dt = scene.dt
 
         body_index = {_short(label): b for b, label in enumerate(m.body_label)}
@@ -181,6 +218,15 @@ class Sim:
         self.contact_names = [short.get(mjm.body(b).name, mjm.body(b).name) or "world"
                               for b in range(mjm.nbody)]
         self.contact_names[0] = "world"
+        self.mujoco_invweight = mujoco_invweight
+        if mujoco_invweight:
+            import mujoco
+
+            ref = mujoco.MjModel.from_xml_path(str(path))
+            weights = self.solver.mjw_model.body_invweight0.numpy()
+            for b in range(1, mjm.nbody):
+                weights[:, b] = ref.body(self.contact_names[b]).invweight0
+            self.solver.mjw_model.body_invweight0.assign(weights)
         self.geom_body = mjm.geom_bodyid.copy()
         self.track = {self.contact_names.index(n): i for i, n in enumerate(scene.bodies)}
         self._ids = wp.array(np.arange(self.solver.mjw_data.naconmax, dtype=np.int32),
@@ -194,6 +240,7 @@ class Sim:
                 "mujoco_warp": getattr(self.mjw, "__version__", None), "precision": "float32",
                 "device": str(wp.get_device()),
                 "deterministic": int(getattr(self.solver.mjw_model.opt, "deterministic", 0)),
+                "contacts": self.contact_mode, "mujoco_invweight": self.mujoco_invweight,
                 **options(self.solver.mj_model)}
 
     def effective_model(self) -> dict:
@@ -218,7 +265,9 @@ class Sim:
         self._joint_f[:] = 0
         self._joint_f[self.qd_idx] = tau
         self.control.joint_f.assign(self._joint_f)
-        self.solver.step(self.s0, self.s1, self.control, None, self.dt)
+        if self.pipeline is not None:
+            self.pipeline.collide(self.s0, self.newton_contacts)
+        self.solver.step(self.s0, self.s1, self.control, self.newton_contacts, self.dt)
         self.s0, self.s1 = self.s1, self.s0
 
     def contacts(self) -> dict:

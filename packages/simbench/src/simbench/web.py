@@ -16,30 +16,59 @@ import shutil
 
 import numpy as np
 
-from simbench.paths import REPO, SUMMARY
+from simbench.paths import REPO, SUMMARY, UNITREE
 from simbench.plans import PLANS, PRIMARY
 from simbench.reference import BUNDLES, ENGINE_LABELS, article_traces
-from simbench.report import HEADLINE, ROUTE_ORDER, _load
+from simbench.report import ARTICLE_VARIANTS, HEADLINE, ROUTE_ORDER, _load
 from simbench.scenes import make
 from simbench.trace import Trace
 
 WEB = REPO / "web"
 DATA = WEB / "data"
 MAX_FRAMES = 700
+MAX_FACES = 12000
 POS_SCALE, QUAT_SCALE, FORCE_SCALE = 5e-5, 1 / 32767, 0.01
 
 ROUTE_LABELS = {"mujoco311": "MuJoCo 3.11 CPU", "mujoco4": "MuJoCo 4.0 CPU",
                 "mjwarp4": "MuJoCo-Warp 4.0", "newton": "Newton 1.7",
                 "genesis": "Genesis 1.4.5", **{f"article:{k}": v for k, v in
-                                               ENGINE_LABELS.items()}}
+                                               ENGINE_LABELS.items()},
+                **{f"article:{k}#2": v.replace("(article)", "(article, repeat 2)")
+                   for k, v in ENGINE_LABELS.items()}}
 
 # Replays shown on the site: primary variants plus the informative contrasts.
 EXTRA_VARIANTS = {"stack": ["dt1ms-offset24mm"], "push": ["dt1ms-w80mm"],
-                  "grasp": ["dt1ms-offset8mm"]}
+                  "grasp": ["dt1ms-offset8mm"],
+                  "insertion": ["dt1ms-c100-tilted-guided", "dt1ms-c100-offset",
+                                "dt1ms-c500-aligned"],
+                  "ball-compress": ["dt0.05ms-y0.03"],
+                  "ball-grasp": ["dt0.05ms-e2N-y0.03", "dt0.05ms-e1N", "dt0.05ms-e1.1N"],
+                  "hinge-plastic": ["dt1ms-elastic"],
+                  "card-catch": ["dt1ms-v1-speculative", "dt1ms-v1-w30",
+                                 "dt1ms-v1-w30-speculative", "dt1ms-v10-speculative"],
+                  "tumble": ["dt10ms-rk4", "dt2ms-euler"], "sheet": ["dt0.1ms-elastic"],
+                  "twist": ["dt1ms-disc-iw", "dt1ms-disc-hydro-iw", "dt1ms-square"],
+                  "g1-walk": [f"dt2ms-{t}-v0.6" for t in ("glass", "sand", "mud", "sponge")]}
+# Scenes from contact-free to contact-rich; the site's replay list and scenario ladder.
+LADDER = [("No contact", ["hinge", "tumble", "panda-effort", "panda-tracking"]),
+          ("One body on a surface", ["slide", "drop", "card-catch"]),
+          ("Multi-body impacts", ["collision-chain"]),
+          ("Grasping and stacking", ["grasp", "stack"]),
+          ("Multi-object manipulation", ["push", "insertion"]),
+          ("Patch contact", ["twist"]),
+          ("Crowded", ["sweep"]),
+          ("Deformable", ["ball-compress", "ball-grasp"]),
+          ("Elasto-plastic (new in 4.0)", ["hinge-plastic", "sheet"]),
+          ("Legged locomotion", ["g1-walk"])]
 TITLES = {"slide": "Sliding block", "drop": "Drop and settle", "hinge": "Hinged link",
+          "hinge-plastic": "Plastic hinge spring",
           "collision-chain": "Collision chain", "panda-effort": "Panda open-loop effort",
           "panda-tracking": "Panda joint tracking", "grasp": "Grasp and lift",
-          "stack": "Stacking", "push": "Channel push"}
+          "stack": "Stacking", "push": "Channel push", "sweep": "Crowded sweep",
+          "insertion": "Peg insertion", "ball-compress": "Ball compression",
+          "ball-grasp": "Soft-ball grasp", "card-catch": "Thin card catch",
+          "tumble": "Tumbling T-handle", "sheet": "Plastic sheet bend",
+          "twist": "Pinch and twist", "g1-walk": "G1 walking on terrain"}
 
 
 def _b64(a: np.ndarray, scale: float) -> str:
@@ -59,13 +88,31 @@ def _overrides(scene: str, variant: str) -> dict:
     raise KeyError(f"{scene}/{variant}")
 
 
+def decimate(vert: np.ndarray, face: np.ndarray, max_faces: int = MAX_FACES):
+    """Vertex clustering on a grid, coarsened until at most `max_faces` remain."""
+    cells = 96
+    while len(face) > max_faces and cells >= 8:
+        lo, hi = vert.min(axis=0), vert.max(axis=0)
+        key = np.floor((vert - lo) / ((hi - lo).max() / cells + 1e-12)).astype(np.int64)
+        _, cluster, counts = np.unique(key, axis=0, return_inverse=True, return_counts=True)
+        cluster = cluster.ravel()
+        merged = np.zeros((len(counts), 3))
+        np.add.at(merged, cluster, vert)
+        f = cluster[face]
+        f = f[(f[:, 0] != f[:, 1]) & (f[:, 1] != f[:, 2]) & (f[:, 0] != f[:, 2])]
+        keep = np.unique(np.sort(f, axis=1), axis=0, return_index=True)[1]
+        vert, face = merged / counts[:, None], f[np.sort(keep)]
+        cells = cells * 2 // 3
+    return vert, face
+
+
 def _mesh(m, mid: int, meshes: dict) -> str:
     """Content-addressed mesh entry in `meshes` (shared by all replays); returns its key."""
     va, vn = m.mesh_vertadr[mid], m.mesh_vertnum[mid]
     fa, fn = m.mesh_faceadr[mid], m.mesh_facenum[mid]
-    vert = m.mesh_vert[va:va + vn].ravel()
-    face = m.mesh_face[fa:fa + fn].ravel()
-    face = face.astype("<u2" if vn < 65536 else "<u4")
+    vert, face = decimate(m.mesh_vert[va:va + vn], m.mesh_face[fa:fa + fn])
+    vert, face = vert.ravel(), face.ravel()
+    face = face.astype("<u2" if len(vert) // 3 < 65536 else "<u4")
     key = hashlib.sha1(vert.tobytes() + face.tobytes()).hexdigest()[:12]
     if key not in meshes:
         scale = float(np.abs(vert).max()) / 32767 or 1.0
@@ -103,8 +150,13 @@ def geometry(scene_name: str, overrides: dict, meshes: dict) -> dict:
         if geom["type"] == "mesh" and mid >= 0:
             geom["mesh"] = _mesh(m, mid, meshes)
         geoms.append(geom)
-    return {"bodies": scene.bodies, "joints": scene.joints, "geoms": geoms, "dt": scene.dt,
-            "duration": scene.duration, "params": _jsonable(scene.params)}
+    out = {"bodies": scene.bodies, "joints": scene.joints, "geoms": geoms, "dt": scene.dt,
+           "duration": scene.duration, "params": _jsonable(scene.params)}
+    if m.nflex:  # deformable surface drawn from its vertex bodies' positions
+        prefix = scene.params.get("flex_prefix", "ball_")
+        out["flex"] = {"bodies": [i for i, b in enumerate(scene.bodies) if b.startswith(prefix)],
+                       "faces": scene.params["faces"], "rgba": m.flex_rgba[0].round(3).tolist()}
+    return out
 
 
 def _jsonable(value):
@@ -145,20 +197,39 @@ def replay(tr: Trace, bodies: list[str], stride: int) -> dict:
 def export_scene(scene: str, variant: str, meshes: dict) -> dict | None:
     overrides = _overrides(scene, variant)
     geo = geometry(scene, overrides, meshes)
-    stride = max(1, int(np.ceil(geo["duration"] / geo["dt"] / MAX_FRAMES)))
     routes = {}
     for route in ROUTE_ORDER:
         tr = _load(scene, variant, route)
         if tr is not None and tr.meta["status"] == "ok":
+            stride = max(1, int(np.ceil(len(tr.t) / MAX_FRAMES)))
             routes[route] = replay(tr, geo["bodies"], stride)
-    if PRIMARY.get(scene) == variant and scene in BUNDLES:
-        for tr in article_traces(scene).values():
+    bundle = (BUNDLES.get(scene) if PRIMARY.get(scene) == variant
+              else ARTICLE_VARIANTS.get(f"{scene}/{variant}"))
+    if bundle:
+        for tr in article_traces(scene, bundle).values():
+            stride = max(1, int(np.ceil(len(tr.t) / MAX_FRAMES)))
             routes[tr.meta["route"]] = replay(tr, geo["bodies"], stride)
     if not routes:
         return None
     return {"scene": scene, "variant": variant, "title": TITLES[scene], **geo,
-            "stride": stride, "routes": routes, "scales": {
+            "routes": routes, "scales": {
                 "pos": POS_SCALE, "quat": QUAT_SCALE, "force": FORCE_SCALE}}
+
+
+def ladder() -> list[dict]:
+    """Contact load of each scene's primary variant on MuJoCo 4.0 (native contacts)."""
+    out = []
+    for group, scenes in LADDER:
+        for scene in scenes:
+            tr = _load(scene, PRIMARY[scene], "mujoco4")
+            if tr is None or not tr.meta["frames"]:
+                continue
+            counts = (np.bincount(tr.c_frame, minlength=len(tr.t))
+                      if "c_frame" in tr.arrays and len(tr.c_frame) else np.zeros(1))
+            out.append({"group": group, "scene": scene, "title": TITLES[scene],
+                        "variant": PRIMARY[scene], "bodies": len(tr.bodies),
+                        "mean_contacts": float(counts.mean()), "peak_contacts": int(counts.max())})
+    return out
 
 
 def export() -> None:
@@ -186,8 +257,9 @@ def export() -> None:
     (DATA / "summary.json").write_text(json.dumps(summaries, separators=(",", ":")))
     (DATA / "index.json").write_text(json.dumps(
         {"replays": index, "routes": ROUTE_LABELS, "route_order": ROUTE_ORDER,
-         "headline": HEADLINE}, indent=1))
-    licence = REPO / "assets" / "menagerie" / "franka_emika_panda" / "LICENSE"
-    if licence.exists():
-        shutil.copy(licence, DATA / "PANDA-LICENSE")
+         "headline": HEADLINE, "ladder_groups": LADDER, "ladder": ladder()}, indent=1))
+    for licence, name in ((REPO / "assets" / "menagerie" / "franka_emika_panda" / "LICENSE",
+                           "PANDA-LICENSE"), (UNITREE / "LICENSE", "UNITREE-LICENSE")):
+        if licence.exists():
+            shutil.copy(licence, DATA / name)
     print(f"wrote {DATA.relative_to(REPO)} ({len(index)} replays, {len(summaries)} summaries)")

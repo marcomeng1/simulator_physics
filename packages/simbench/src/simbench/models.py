@@ -27,10 +27,18 @@ PAD_POS = (0.0, 0.004, 0.0445)
 TCP_POS = (0.0, 0.0, 0.0584 + PAD_POS[2])
 FRICTION = 0.5
 
+# Sweep paddle (article sweep protocol): rigid 150 g box, 220 mm wide, on the hand.
+# The mount is the article's recorded paddle pose in the hand frame.
+PADDLE_HALF = (0.006, 0.11, 0.026)
+PADDLE_POS = (0.0071094334, 0.0, 0.0869)
+PADDLE_MASS = 0.15
+PEG_GRIP = 0.0101  # finger opening that clears the 10 mm peg radius
+
 # Collision bits: pads touch objects; objects touch everything; statics touch objects.
+# The sweep paddle uses the pad bit but also touches statics.
 PAD, OBJECT, STATIC = 1, 2, 4
 MASKS = {"pad": (PAD, OBJECT), "object": (OBJECT, PAD | OBJECT | STATIC),
-         "static": (STATIC, OBJECT)}
+         "static": (STATIC, OBJECT), "paddle": (PAD, OBJECT | STATIC)}
 
 
 def contact_attrs(kind: str, friction: float = FRICTION) -> dict[str, str]:
@@ -53,6 +61,9 @@ def panda_tree(variant: str, out_dir: Path) -> ET.ElementTree:
     free: fingers welded open at 4 cm each (the article's free-space Panda).
     pads: fingers are independent slide joints (0-4 cm) with one analytic box pad each,
           the only robot geoms that collide; a `tcp` site sits between the pads.
+    paddle: finger slide joints without pads; a rigid paddle on the hand is the only
+          robot geom that collides (the article's sweep robot).
+    peg: fingers welded closed on a 20 mm peg; the insertion scene adds the peg body.
     """
     tree = ET.parse(PANDA_XML)
     root = tree.getroot()
@@ -84,15 +95,30 @@ def panda_tree(variant: str, out_dir: Path) -> ET.ElementTree:
             body.remove(body.find("joint"))
             pos = np.array([float(v) for v in body.get("pos", "0 0 0").split()])
             body.set("pos", _fmt(pos + np.array([0.0, FINGER_OPENING, 0.0])))
+        elif variant == "peg":
+            body.remove(body.find("joint"))
+            pos = np.array([float(v) for v in body.get("pos", "0 0 0").split()])
+            side = 1.0 if name == "left_finger" else -1.0
+            body.set("pos", _fmt(pos + np.array([0.0, side * PEG_GRIP, 0.0])))
         else:
             for geom in body.findall("geom"):
                 if geom.get("class", "").startswith("fingertip_pad_collision"):
                     body.remove(geom)
-            ET.SubElement(body, "geom", name=f"{name}_pad", type="box", size=_fmt(PAD_HALF),
-                          pos=_fmt(PAD_POS), rgba="0.9 0.5 0.1 1", **contact_attrs("pad"))
+            if variant == "pads":
+                ET.SubElement(body, "geom", name=f"{name}_pad", type="box",
+                              size=_fmt(PAD_HALF), pos=_fmt(PAD_POS), rgba="0.9 0.5 0.1 1",
+                              **contact_attrs("pad"))
+    hand = root.find(".//body[@name='hand']")
     if variant == "pads":
-        hand = root.find(".//body[@name='hand']")
         ET.SubElement(hand, "site", name="tcp", pos=_fmt(TCP_POS), size="0.005")
+    if variant == "paddle":
+        paddle = ET.SubElement(hand, "body", name="paddle", pos=_fmt(PADDLE_POS))
+        inertia = [PADDLE_MASS / 3 * (PADDLE_HALF[(i + 1) % 3] ** 2 + PADDLE_HALF[(i + 2) % 3] ** 2)
+                   for i in range(3)]
+        ET.SubElement(paddle, "inertial", pos="0 0 0", mass=repr(PADDLE_MASS),
+                      diaginertia=_fmt(inertia))
+        ET.SubElement(paddle, "geom", name="paddle_geom", type="box", size=_fmt(PADDLE_HALF),
+                      rgba="0.25 0.3 0.35 1", **contact_attrs("paddle"))
     return tree
 
 

@@ -3,8 +3,8 @@ MODELS := panda panda_article
 RUN = uv run --locked --project envs/$(1) simbench
 PORT ?= 8000
 
-.PHONY: sync fetch env-report audit tapes lint test phase1 phase2 phase3 phase4 versions \
-	bench web serve
+.PHONY: sync fetch env-report audit tapes lint test phase1 phase2 phase3 phase4 phase6 \
+	plastic mj4new patch terrain tuning versions bench web serve
 
 phase1 phase2:
 	@for r in $(ROUTES); do $(call RUN,$$r) run-plan --route $$r --plan $@ || exit 1; done
@@ -25,6 +25,31 @@ versions:
 phase4: tapes
 	@for r in $(ROUTES); do $(call RUN,$$r) run-plan --route $$r --plan $@ || exit 1; done
 	uv run --locked simbench report --plan $@
+
+# Sweep, insertion and deformable ball; flex scenes run only on the MuJoCo routes.
+phase6: tapes
+	@for r in $(ROUTES); do $(call RUN,$$r) run-plan --route $$r --plan $@ || exit 1; done
+	uv run --locked simbench report --plan $@
+
+# MuJoCo 4.0 elasto-plasticity (joint springyield, flex yield) on every route.
+plastic:
+	@for r in $(ROUTES); do $(call RUN,$$r) run-plan --route $$r --plan $@ || exit 1; done
+	uv run --locked simbench report --plan $@
+
+# Speculative contacts (thin card), RK4 orientations (tumbling handle), shell plasticity.
+mj4new:
+	@for r in $(ROUTES); do $(call RUN,$$r) run-plan --route $$r --plan $@ || exit 1; done
+	uv run --locked simbench report --plan $@
+
+# Pinch-and-twist slip torque: point contacts everywhere, hydroelastic patches on Newton.
+# G1 walking policy on contact-parameter terrains (needs `make fetch` for the robot).
+patch terrain:
+	@for r in $(ROUTES); do $(call RUN,$$r) run-plan --route $$r --plan $@ || exit 1; done
+	uv run --locked simbench report --plan $@
+
+# 27-candidate push grid per route -> results/summary/tuning/<route>.json
+tuning: tapes
+	@for r in $(ROUTES); do $(call RUN,$$r) tune --route $$r || exit 1; done
 
 # Takes about 15 minutes; run with the GPU otherwise idle.
 bench:

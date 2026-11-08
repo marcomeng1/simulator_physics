@@ -24,9 +24,10 @@ def _write(path: Path, data) -> None:
 
 
 def cmd_fetch(args) -> None:
-    from simbench.fetch import fetch_menagerie, fetch_reference
+    from simbench.fetch import fetch_menagerie, fetch_reference, fetch_unitree
 
     fetch_menagerie(update=args.update)
+    fetch_unitree(update=args.update)
     fetch_reference(update=args.update)
 
 
@@ -104,12 +105,13 @@ def cmd_run_plan(args) -> None:
             tr.save(stem)
             print(f"{args.route:<10} {stem.parent.parent.name}/{stem.parent.name} seed {seed}: "
                   f"{tr.meta['status']} ({tr.meta['frames']} frames, "
-                  f"{tr.meta['timing']['loop_s']:.1f} s)", flush=True)
+                  f"{tr.meta.get('timing', {}).get('loop_s', 0.0):.1f} s)"
+                  + (f" {tr.meta['error']}" if tr.meta["error"] else ""), flush=True)
 
 
 def cmd_make_tapes(args) -> None:
     from simbench import tapes
-    from simbench.scenes.panda import tape_specs
+    from simbench.scenes import tape_specs
 
     for spec in tape_specs():
         path = tapes.tape_path(spec)
@@ -151,13 +153,19 @@ def cmd_export_web(args) -> None:
     export()
 
 
+def cmd_tune(args) -> None:
+    from simbench.tuning import tune
+
+    tune(args.route)
+
+
 def cmd_report(args) -> None:
     from simbench import report
     from simbench.plans import PLANS
 
     if args.plan == "versions":
         report.version_report()
-    elif any(r.base for r in PLANS[args.plan]):
+    elif all(r.base for r in PLANS[args.plan]):
         report.sensitivity_report(args.plan)
     else:
         report.phase_report(args.plan)
@@ -167,7 +175,7 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="simbench")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    p = sub.add_parser("fetch", help="fetch the pinned Menagerie Panda and article reference files")
+    p = sub.add_parser("fetch", help="fetch the pinned Panda, G1 and article reference files")
     p.add_argument("--update", action="store_true", help="rewrite the lock files")
     p.set_defaults(func=cmd_fetch)
 
@@ -190,6 +198,10 @@ def main(argv: list[str] | None = None) -> None:
     p.add_argument("--plan", required=True)
     p.add_argument("--scene", nargs="*", help="restrict to these scenes")
     p.set_defaults(func=cmd_run_plan)
+
+    p = sub.add_parser("tune", help="Phase 6 push controller tuning and held-out evaluation")
+    p.add_argument("--route", required=True)
+    p.set_defaults(func=cmd_tune)
 
     p = sub.add_parser("make-tapes", help="generate the frozen Panda reference/feedforward tapes")
     p.add_argument("--force", action="store_true", help="regenerate existing tapes")

@@ -132,6 +132,9 @@ def rigid_options(mjcf_path: Path, dt: float) -> dict:
                    int(mujoco.mjtIntegrator.mjINT_IMPLICITFAST): gs.integrator.implicitfast}
     cones = {int(mujoco.mjtCone.mjCONE_ELLIPTIC): gs.friction_cone.elliptic,
              int(mujoco.mjtCone.mjCONE_PYRAMIDAL): gs.friction_cone.pyramidal}
+    if int(o.integrator) not in integrators:
+        name = mujoco.mjtIntegrator(int(o.integrator)).name.removeprefix("mjINT_")
+        raise ValueError(f"Genesis has no {name} integrator (Euler, implicitfast only)")
     return {"dt": dt, "integrator": integrators[int(o.integrator)],
             "constraint_solver": gs.constraint_solver.Newton,
             "iterations": int(o.iterations), "tolerance": float(o.tolerance),

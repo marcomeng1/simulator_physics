@@ -14,6 +14,8 @@ simbench = { path = "packages/simbench", editable = true }
 [tool.ruff]
 line-length = 100
 target-version = "py312"
+# One-off investigation scripts kept for provenance, not library code.
+extend-exclude = ["scripts/probes"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM"]

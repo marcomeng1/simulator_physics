@@ -1,0 +1,1238 @@
+{
+  "route": "mujoco4",
+  "selected": "p0.5-d1.4-t4",
+  "runner_up": "p0.5-d1-t4",
+  "margin_vs_runner_up": 0.0033222762851741194,
+  "ranking": [
+    "p0.5-d1.4-t4",
+    "p0.5-d1-t4",
+    "p0.5-d0.7-t4",
+    "p1-d1-t4",
+    "p1-d0.7-t4",
+    "p1-d1.4-t4",
+    "p2-d0.7-t4",
+    "p0.5-d0.7-t3",
+    "p0.5-d1-t3",
+    "p0.5-d1.4-t3",
+    "p1-d0.7-t3",
+    "p1-d1.4-t3",
+    "p2-d1.4-t4",
+    "p2-d1-t4",
+    "p2-d1-t3",
+    "p2-d1.4-t3",
+    "p2-d0.7-t3",
+    "p1-d1-t3",
+    "p0.5-d0.7-t2",
+    "p0.5-d1.4-t2",
+    "p0.5-d1-t2",
+    "p1-d1.4-t2",
+    "p1-d1-t2",
+    "p2-d0.7-t2",
+    "p2-d1.4-t2",
+    "p2-d1-t2",
+    "p1-d0.7-t2"
+  ],
+  "selection_layouts": [
+    [
+      90.0,
+      0.0,
+      0.0
+    ],
+    [
+      90.0,
+      2.0,
+      0.0
+    ],
+    [
+      90.0,
+      0.0,
+      1.0
+    ]
+  ],
+  "held_out_layouts": [
+    [
+      90.0,
+      -3.0,
+      0.0
+    ],
+    [
+      90.0,
+      3.0,
+      0.0
+    ],
+    [
+      90.0,
+      0.0,
+      -1.0
+    ],
+    [
+      90.0,
+      -2.0,
+      -1.0
+    ],
+    [
+      80.0,
+      -1.0,
+      0.0
+    ],
+    [
+      80.0,
+      1.0,
+      0.0
+    ]
+  ],
+  "selection": {
+    "p0.5-d0.7-t2": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d0.7-t2-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.036060743123876984,
+        "max_hand_height_change_mm": 8.57101658144159,
+        "max_pad_push_N": 11.134981152668876
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d0.7-t2-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03607574124993158,
+        "max_hand_height_change_mm": 8.854170001435332,
+        "max_pad_push_N": 22.506730394521185
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d0.7-t2-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.036090793438304854,
+        "max_hand_height_change_mm": 8.85197156915335,
+        "max_pad_push_N": 14.214579709283948
+      }
+    ],
+    "p0.5-d0.7-t3": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d0.7-t3-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.035292120995182634,
+        "max_hand_height_change_mm": 7.934468157672791,
+        "max_pad_push_N": 17.73824034103482
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d0.7-t3-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.0355184020405695,
+        "max_hand_height_change_mm": 10.809461162191585,
+        "max_pad_push_N": 12.00762684933039
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d0.7-t3-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.035379639013520994,
+        "max_hand_height_change_mm": 9.25869860549651,
+        "max_pad_push_N": 24.165754772469732
+      }
+    ],
+    "p0.5-d0.7-t4": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d0.7-t4-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03467646266053358,
+        "max_hand_height_change_mm": 6.731077515756717,
+        "max_pad_push_N": 9.996474971893928
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d0.7-t4-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03539403741004191,
+        "max_hand_height_change_mm": 15.19779270508198,
+        "max_pad_push_N": 11.515745375668185
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d0.7-t4-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.035235970653686284,
+        "max_hand_height_change_mm": 13.022775145368467,
+        "max_pad_push_N": 14.145902810028673
+      }
+    ],
+    "p0.5-d1-t2": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d1-t2-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03611098771335905,
+        "max_hand_height_change_mm": 8.87027535059956,
+        "max_pad_push_N": 16.58303330958852
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d1-t2-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.036101068990241264,
+        "max_hand_height_change_mm": 8.777372478521395,
+        "max_pad_push_N": 14.58598672845106
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d1-t2-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03605597703167621,
+        "max_hand_height_change_mm": 8.470641582569424,
+        "max_pad_push_N": 11.485927792595987
+      }
+    ],
+    "p0.5-d1-t3": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d1-t3-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.0353280897040539,
+        "max_hand_height_change_mm": 8.660565354250027,
+        "max_pad_push_N": 9.040182864808889
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d1-t3-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03540278473307943,
+        "max_hand_height_change_mm": 9.163101319687616,
+        "max_pad_push_N": 15.982822360082851
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d1-t3-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03551939804000044,
+        "max_hand_height_change_mm": 10.57802857591976,
+        "max_pad_push_N": 17.412682309916388
+      }
+    ],
+    "p0.5-d1-t4": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d1-t4-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.035063509575378626,
+        "max_hand_height_change_mm": 10.95223473631507,
+        "max_pad_push_N": 11.32652576282794
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d1-t4-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03520128167595178,
+        "max_hand_height_change_mm": 12.819343296286437,
+        "max_pad_push_N": 11.049257633224
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d1-t4-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03501138539316997,
+        "max_hand_height_change_mm": 10.871082128902726,
+        "max_pad_push_N": 14.08789751691131
+      }
+    ],
+    "p0.5-d1.4-t2": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d1.4-t2-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03600201693166814,
+        "max_hand_height_change_mm": 7.8104356296365,
+        "max_pad_push_N": 12.11537572707546
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d1.4-t2-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03613790159542427,
+        "max_hand_height_change_mm": 8.871964258279158,
+        "max_pad_push_N": 18.449004375461953
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d1.4-t2-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.036095236130479554,
+        "max_hand_height_change_mm": 8.621987515984406,
+        "max_pad_push_N": 14.005225480145079
+      }
+    ],
+    "p0.5-d1.4-t3": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d1.4-t3-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03521696579810027,
+        "max_hand_height_change_mm": 7.2076246973819815,
+        "max_pad_push_N": 9.093765259172887
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d1.4-t3-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03543587910066833,
+        "max_hand_height_change_mm": 9.344766507919196,
+        "max_pad_push_N": 11.255345448416016
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d1.4-t3-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03584784276931926,
+        "max_hand_height_change_mm": 13.128188460829083,
+        "max_pad_push_N": 18.215383696228294
+      }
+    ],
+    "p0.5-d1.4-t4": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d1.4-t4-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03493046255249481,
+        "max_hand_height_change_mm": 9.515192628160266,
+        "max_pad_push_N": 9.017006758253302
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d1.4-t4-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03504584699556758,
+        "max_hand_height_change_mm": 10.440197281978786,
+        "max_pad_push_N": 11.685269444191928
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p0.5-d1.4-t4-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.034951268691591625,
+        "max_hand_height_change_mm": 9.62312028435254,
+        "max_pad_push_N": 17.547251398115915
+      }
+    ],
+    "p1-d0.7-t2": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d0.7-t2-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03613251453170467,
+        "max_hand_height_change_mm": 5.535880666252893,
+        "max_pad_push_N": 13.049754035059742
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d0.7-t2-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.038555758530950814,
+        "max_hand_height_change_mm": 20.342053664714907,
+        "max_pad_push_N": 20.579096618812354
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d0.7-t2-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03637436930109754,
+        "max_hand_height_change_mm": 6.465759715232861,
+        "max_pad_push_N": 13.898557509732429
+      }
+    ],
+    "p1-d0.7-t3": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d0.7-t3-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.0354891305956515,
+        "max_hand_height_change_mm": 5.145908315922155,
+        "max_pad_push_N": 11.230404541976094
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d0.7-t3-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03577725665475964,
+        "max_hand_height_change_mm": 7.111369535140952,
+        "max_pad_push_N": 13.078366786915112
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d0.7-t3-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03575471571596709,
+        "max_hand_height_change_mm": 6.961596431496949,
+        "max_pad_push_N": 11.260941473030568
+      }
+    ],
+    "p1-d0.7-t4": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d0.7-t4-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.0352560914034927,
+        "max_hand_height_change_mm": 7.135266168467311,
+        "max_pad_push_N": 13.561798635379809
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d0.7-t4-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03529269132808258,
+        "max_hand_height_change_mm": 7.119435503254695,
+        "max_pad_push_N": 14.702758705750304
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d0.7-t4-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03518582668656173,
+        "max_hand_height_change_mm": 6.473612748334371,
+        "max_pad_push_N": 21.71656925111852
+      }
+    ],
+    "p1-d1-t2": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d1-t2-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03637379710377282,
+        "max_hand_height_change_mm": 6.25119471998889,
+        "max_pad_push_N": 12.853820711313306
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d1-t2-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.036381943461065505,
+        "max_hand_height_change_mm": 6.135879665857324,
+        "max_pad_push_N": 24.284670881297505
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d1-t2-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.036326704048063346,
+        "max_hand_height_change_mm": 5.915101654905719,
+        "max_pad_push_N": 11.007739547129383
+      }
+    ],
+    "p1-d1-t3": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d1-t3-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03563570632535962,
+        "max_hand_height_change_mm": 6.254918803230744,
+        "max_pad_push_N": 9.67777178141137
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d1-t3-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03673209780120384,
+        "max_hand_height_change_mm": 13.048931414031225,
+        "max_pad_push_N": 25.510412689567353
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d1-t3-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03564842350023045,
+        "max_hand_height_change_mm": 6.251744353278562,
+        "max_pad_push_N": 12.840229182782828
+      }
+    ],
+    "p1-d1-t4": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d1-t4-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.0349840918143076,
+        "max_hand_height_change_mm": 5.108145332791233,
+        "max_pad_push_N": 10.835854363705769
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d1-t4-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03541322318343855,
+        "max_hand_height_change_mm": 7.810283171084537,
+        "max_pad_push_N": 18.02008406104178
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d1-t4-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03521124443407076,
+        "max_hand_height_change_mm": 6.562768631851457,
+        "max_pad_push_N": 16.32802363948643
+      }
+    ],
+    "p1-d1.4-t2": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d1.4-t2-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03618571935637232,
+        "max_hand_height_change_mm": 5.270822809788342,
+        "max_pad_push_N": 11.26882998692378
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d1.4-t2-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03634206465121016,
+        "max_hand_height_change_mm": 5.855485750576553,
+        "max_pad_push_N": 13.988168441442104
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d1.4-t2-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.036272601472111095,
+        "max_hand_height_change_mm": 5.630084398263902,
+        "max_pad_push_N": 19.2995033592282
+      }
+    ],
+    "p1-d1.4-t3": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d1.4-t3-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03564522551438723,
+        "max_hand_height_change_mm": 6.1463808361549574,
+        "max_pad_push_N": 13.801992330348583
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d1.4-t3-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03575980142381459,
+        "max_hand_height_change_mm": 6.807824151600153,
+        "max_pad_push_N": 9.299696778277365
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d1.4-t3-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03564503195679772,
+        "max_hand_height_change_mm": 6.17890196456175,
+        "max_pad_push_N": 9.922710864262065
+      }
+    ],
+    "p1-d1.4-t4": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d1.4-t4-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03522220323119418,
+        "max_hand_height_change_mm": 6.785990463021127,
+        "max_pad_push_N": 11.301348288437646
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d1.4-t4-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03527512869101013,
+        "max_hand_height_change_mm": 6.927145227087955,
+        "max_pad_push_N": 11.444642688322455
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p1-d1.4-t4-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03549637506200067,
+        "max_hand_height_change_mm": 8.140534154746623,
+        "max_pad_push_N": 21.847997426638386
+      }
+    ],
+    "p2-d0.7-t2": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d0.7-t2-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03655572326539334,
+        "max_hand_height_change_mm": 3.734581603638307,
+        "max_pad_push_N": 13.986899746321452
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d0.7-t2-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.036480452571563016,
+        "max_hand_height_change_mm": 3.5852736379691357,
+        "max_pad_push_N": 17.76001346916553
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d0.7-t2-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03645784293785629,
+        "max_hand_height_change_mm": 3.5000520945086544,
+        "max_pad_push_N": 16.809307261234963
+      }
+    ],
+    "p2-d0.7-t3": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d0.7-t3-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.035661984215763214,
+        "max_hand_height_change_mm": 3.076313969577776,
+        "max_pad_push_N": 11.222439120942271
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d0.7-t3-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03645734226163704,
+        "max_hand_height_change_mm": 5.473006060200417,
+        "max_pad_push_N": 25.59858447652148
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d0.7-t3-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03578832485019141,
+        "max_hand_height_change_mm": 3.536497931821023,
+        "max_pad_push_N": 13.541866212869243
+      }
+    ],
+    "p2-d0.7-t4": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d0.7-t4-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03524578573576365,
+        "max_hand_height_change_mm": 3.431241848468644,
+        "max_pad_push_N": 9.524901511280497
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d0.7-t4-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03543992172023096,
+        "max_hand_height_change_mm": 3.975371266259589,
+        "max_pad_push_N": 9.45827081001062
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d0.7-t4-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.035428089657422564,
+        "max_hand_height_change_mm": 4.001709053778724,
+        "max_pad_push_N": 16.874841903157076
+      }
+    ],
+    "p2-d1-t2": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d1-t2-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03629443337230094,
+        "max_hand_height_change_mm": 3.24273665345437,
+        "max_pad_push_N": 12.632328751182067
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d1-t2-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03693137281029924,
+        "max_hand_height_change_mm": 4.87550206646549,
+        "max_pad_push_N": 31.755507463058958
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d1-t2-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.036743725370611574,
+        "max_hand_height_change_mm": 4.229146191762706,
+        "max_pad_push_N": 21.284438422865275
+      }
+    ],
+    "p2-d1-t3": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d1-t3-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.035620684072547475,
+        "max_hand_height_change_mm": 3.0575074698747513,
+        "max_pad_push_N": 9.620088222466793
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d1-t3-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03591684247033369,
+        "max_hand_height_change_mm": 4.879971362861168,
+        "max_pad_push_N": 22.156165259126436
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d1-t3-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.036091349849007755,
+        "max_hand_height_change_mm": 4.533900594146322,
+        "max_pad_push_N": 19.734736714802914
+      }
+    ],
+    "p2-d1-t4": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d1-t4-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03533998566543984,
+        "max_hand_height_change_mm": 3.787244311579549,
+        "max_pad_push_N": 9.040155814278982
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d1-t4-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03670426624147194,
+        "max_hand_height_change_mm": 7.677747164030441,
+        "max_pad_push_N": 19.08422791486865
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d1-t4-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.035414526946375334,
+        "max_hand_height_change_mm": 3.9063987514787875,
+        "max_pad_push_N": 19.930279657220353
+      }
+    ],
+    "p2-d1.4-t2": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d1.4-t2-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03629797922199644,
+        "max_hand_height_change_mm": 3.077481166923829,
+        "max_pad_push_N": 11.830655385721743
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d1.4-t2-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03669483212660928,
+        "max_hand_height_change_mm": 4.1214199673701435,
+        "max_pad_push_N": 12.519578770863436
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d1.4-t2-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03661222872106743,
+        "max_hand_height_change_mm": 3.8680396731712725,
+        "max_pad_push_N": 10.89392798183047
+      }
+    ],
+    "p2-d1.4-t3": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d1.4-t3-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03589336903984442,
+        "max_hand_height_change_mm": 4.146823088372373,
+        "max_pad_push_N": 16.992023355834444
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d1.4-t3-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.035894955277517904,
+        "max_hand_height_change_mm": 3.7398272977489935,
+        "max_pad_push_N": 17.429042672564577
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d1.4-t3-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.035970804909972474,
+        "max_hand_height_change_mm": 4.075804512199896,
+        "max_pad_push_N": 10.00610672923566
+      }
+    ],
+    "p2-d1.4-t4": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d1.4-t4-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03551587456739055,
+        "max_hand_height_change_mm": 4.39824690530094,
+        "max_pad_push_N": 11.07787200053944
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d1.4-t4-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.0361532849794982,
+        "max_hand_height_change_mm": 6.10572170694984,
+        "max_pad_push_N": 19.132344468867526
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-sel-p2-d1.4-t4-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03538983444239965,
+        "max_hand_height_change_mm": 3.8290253692232628,
+        "max_pad_push_N": 16.95631149503124
+      }
+    ]
+  },
+  "held_out": {
+    "p1-d1-t3": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-test-p1-d1-t3-w90-r-3-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03662967507056975,
+        "max_hand_height_change_mm": 11.619642232559624,
+        "max_pad_push_N": 20.332079798202464
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-test-p1-d1-t3-w90-r+3-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03570238606797002,
+        "max_hand_height_change_mm": 6.324588325294409,
+        "max_pad_push_N": 16.990513882411115
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-test-p1-d1-t3-w90-r+0-f-1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03563170739969578,
+        "max_hand_height_change_mm": 6.175286717993042,
+        "max_pad_push_N": 10.051665997318507
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-test-p1-d1-t3-w90-r-2-f-1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03570959122044655,
+        "max_hand_height_change_mm": 6.631356295823163,
+        "max_pad_push_N": 13.100242096943452
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-test-p1-d1-t3-w80-r-1-f+0",
+        "all_passed": false,
+        "passed_count": 0,
+        "min_progress_capped": 0.10546760139838333,
+        "mean_norm_sq_effort": 0.03754927523595354,
+        "max_hand_height_change_mm": 37.146062722214104,
+        "max_pad_push_N": 93.21434504164415
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-test-p1-d1-t3-w80-r+1-f+0",
+        "all_passed": false,
+        "passed_count": 0,
+        "min_progress_capped": 0.0982216589043401,
+        "mean_norm_sq_effort": 0.037410840569476606,
+        "max_hand_height_change_mm": 37.086236610146926,
+        "max_pad_push_N": 91.4417843865585
+      }
+    ],
+    "p0.5-d1.4-t4": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-test-p0.5-d1.4-t4-w90-r-3-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03527224703658546,
+        "max_hand_height_change_mm": 13.054303648332086,
+        "max_pad_push_N": 12.179806174352711
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-test-p0.5-d1.4-t4-w90-r+3-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03510846292955269,
+        "max_hand_height_change_mm": 11.273252850827253,
+        "max_pad_push_N": 9.44424769451506
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-test-p0.5-d1.4-t4-w90-r+0-f-1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03488240712276326,
+        "max_hand_height_change_mm": 8.799447746194456,
+        "max_pad_push_N": 13.526578019619112
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-test-p0.5-d1.4-t4-w90-r-2-f-1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03509535169666443,
+        "max_hand_height_change_mm": 11.374217154836511,
+        "max_pad_push_N": 10.890562232476881
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-test-p0.5-d1.4-t4-w80-r-1-f+0",
+        "all_passed": false,
+        "passed_count": 0,
+        "min_progress_capped": 0.09735374096066592,
+        "mean_norm_sq_effort": 0.0359487572330724,
+        "max_hand_height_change_mm": 37.28294071695433,
+        "max_pad_push_N": 58.748838410862135
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-test-p0.5-d1.4-t4-w80-r+1-f+0",
+        "all_passed": false,
+        "passed_count": 1,
+        "min_progress_capped": 0.09937165467946472,
+        "mean_norm_sq_effort": 0.03645190598301918,
+        "max_hand_height_change_mm": 37.27506339658564,
+        "max_pad_push_N": 60.45708621091036
+      }
+    ]
+  },
+  "speed": {
+    "3": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-speed-p1-d1-t3-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03563570632535962,
+        "max_hand_height_change_mm": 6.254918803230744,
+        "max_pad_push_N": 9.67777178141137
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-speed-p1-d1-t3-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03673209780120384,
+        "max_hand_height_change_mm": 13.048931414031225,
+        "max_pad_push_N": 25.510412689567353
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-speed-p1-d1-t3-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03564842350023045,
+        "max_hand_height_change_mm": 6.251744353278562,
+        "max_pad_push_N": 12.840229182782828
+      }
+    ],
+    "2": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-speed-p1-d1-t2-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03637379710377282,
+        "max_hand_height_change_mm": 6.25119471998889,
+        "max_pad_push_N": 12.853820711313306
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-speed-p1-d1-t2-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.036381943461065505,
+        "max_hand_height_change_mm": 6.135879665857324,
+        "max_pad_push_N": 24.284670881297505
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-speed-p1-d1-t2-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.036326704048063346,
+        "max_hand_height_change_mm": 5.915101654905719,
+        "max_pad_push_N": 11.007739547129383
+      }
+    ],
+    "1.5": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-speed-p1-d1-t1.5-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03660562443855983,
+        "max_hand_height_change_mm": 5.722862693792353,
+        "max_pad_push_N": 13.343193188966291
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-speed-p1-d1-t1.5-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03747661909095964,
+        "max_hand_height_change_mm": 8.751689252068678,
+        "max_pad_push_N": 28.298626648819646
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-speed-p1-d1-t1.5-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.036856249648169005,
+        "max_hand_height_change_mm": 6.017009209425147,
+        "max_pad_push_N": 10.83182379503741
+      }
+    ],
+    "1": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-speed-p1-d1-t1-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.037215528893435566,
+        "max_hand_height_change_mm": 6.4477368426687915,
+        "max_pad_push_N": 17.008206589211056
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-speed-p1-d1-t1-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03740679474706463,
+        "max_hand_height_change_mm": 6.889422582792751,
+        "max_pad_push_N": 21.400908516042264
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-speed-p1-d1-t1-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03731529751232495,
+        "max_hand_height_change_mm": 6.584665244459734,
+        "max_pad_push_N": 16.741949094022637
+      }
+    ],
+    "0.75": [
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-speed-p1-d1-t0.75-w90-r+0-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03770007739966238,
+        "max_hand_height_change_mm": 6.72078501381139,
+        "max_pad_push_N": 29.508880748690636
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-speed-p1-d1-t0.75-w90-r+2-f+0",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03781122800808754,
+        "max_hand_height_change_mm": 7.287316242654704,
+        "max_pad_push_N": 16.773119925530256
+      },
+      {
+        "status": "ok",
+        "variant": "dt1ms-tune-speed-p1-d1-t0.75-w90-r+0-f+1",
+        "all_passed": true,
+        "passed_count": 3,
+        "min_progress_capped": 1.0,
+        "mean_norm_sq_effort": 0.03773797447429678,
+        "max_hand_height_change_mm": 7.055608037270289,
+        "max_pad_push_N": 22.46386993684894
+      }
+    ]
+  }
+}

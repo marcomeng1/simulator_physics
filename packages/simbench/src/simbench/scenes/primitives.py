@@ -96,6 +96,62 @@ def hinge(dt: float = 0.001, duration: float = 1.0) -> Scene:
     )
 
 
+PLASTIC_HINGE = {"stiffness": 2.0, "damping": 0.2, "target_deg": 10.0, "ramp": (0.2, 0.7),
+                 "release": (1.0, 1.5), "pd": (20.0, 1.0), "duration": 2.5}
+
+
+def _smooth(t: float, t0: float, t1: float) -> float:
+    s = min(max((t - t0) / (t1 - t0), 0.0), 1.0)
+    return 3 * s**2 - 2 * s**3
+
+
+class HingeBend:
+    """Displacement control: a PD bends the link to `target_deg`, holds, then fades out.
+
+    An ideal elasto-plastic spring saturates at stiffness x yield, so a torque load above
+    that flows without bound; a prescribed bend keeps the plastic shift finite.
+    """
+
+    def __call__(self, t: float, q: np.ndarray, qd: np.ndarray) -> np.ndarray:
+        p = PLASTIC_HINGE
+        kp, kd = p["pd"]
+        ref = np.radians(p["target_deg"]) * _smooth(t, *p["ramp"])
+        gain = 1.0 - _smooth(t, *p["release"])
+        return gain * (kp * (ref - q) - kd * qd)
+
+
+def hinge_plastic(dt: float = 0.001, yield_deg: float = 5.0) -> Scene:
+    """The hinge link with a joint spring and ideal elasto-plasticity (MuJoCo >= 4.0).
+
+    Gravity is off. After the bend is released an ideal elasto-plastic spring rests at
+    peak - yield, and an elastic one returns to 0. `yield_deg = 0` writes no
+    `springyield`, so the elastic case compiles on every route.
+    """
+    ixx, iyy, izz = hinge_inertia()
+    half = HINGE["length"] / 2
+    px, py, pz = HINGE["pivot"]
+    p = PLASTIC_HINGE
+    # Hinge springyield is in the compiler's angle unit (degrees by default).
+    springyield = f' springyield="{float(yield_deg)!r}"' if yield_deg else ""
+    mjcf = (
+        f'<mujoco model="hinge_plastic"><option timestep="{dt}" gravity="0 0 0" {OPTION} />'
+        f'<worldbody><body name="link" pos="{px} {py} {pz}">'
+        f'<joint name="hinge" type="hinge" axis="0 1 0" stiffness="{p["stiffness"]}" '
+        f'damping="{p["damping"]}" armature="0" frictionloss="0"{springyield} />'
+        f'<inertial pos="0 0 {-half}" mass="{HINGE["mass"]}" '
+        f'diaginertia="{ixx!r} {iyy!r} {izz!r}" />'
+        f'<geom name="link_geom" type="box" pos="0 0 {-half}" '
+        f'size="{HINGE["width"] / 2} {HINGE["width"] / 2} {half}" contype="0" '
+        f'conaffinity="0" /></body></worldbody></mujoco>'
+    )
+    return Scene(
+        name="hinge-plastic", mjcf=mjcf, dt=dt, duration=p["duration"], bodies=["link"],
+        joints=["hinge"], joint_init={"hinge": 0.0}, controller=HingeBend(),
+        params={"task": "hinge-plastic", "dt": dt, **p,
+                "yield_rad": float(np.radians(yield_deg))},
+    )
+
+
 PRISM_VERTICES = [
     [0, 0.05196152422706631, -0.03], [-0.045, -0.025980762113533156, -0.03],
     [0.045, -0.025980762113533156, -0.03], [0, 0.05196152422706631, 0.03],

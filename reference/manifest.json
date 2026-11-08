@@ -44,6 +44,19 @@
     "replay/drop-20260921.json.gz": "89056f62d2a0a4892abe13ab74c445886ab23b159f3b734b069efc72c0057a04",
     "replay/hinge-20260921.json.gz": "a514bb3cd9b03b6a692c1e809adeff3a17b679e7682449642f719eee137aff7c",
     "replay/collision-chain-20260921.json.gz": "cafe33c3a8bb03fa94d8ddb514897ad8d741244d226174209e0afa487756303c",
-    "replay/panda-20260921.json.gz": "e5cd3abc406f127d49980ffe5f2725a5f4d85338c0d9efd1eab60e69c2fe91f4"
+    "replay/panda-20260921.json.gz": "e5cd3abc406f127d49980ffe5f2725a5f4d85338c0d9efd1eab60e69c2fe91f4",
+    "replay/panda-tracking-20260921.json.gz": "2d6040a2a94178431ce19263d72da75ebf4da88e15e6e57fb79f8fed464b7fb0",
+    "replay/grasp-center-20260921.json.gz": "f8929eb30b5bebcb006e692d86edcb559c97e06e761355e7fb024326aa0e4781",
+    "replay/grasp-offset-20260921.json.gz": "d4fe03e5e8e1825cc81e7362152e18eaaeac505d235ad8bfb087c2262d587542",
+    "replay/stack-center-20260921.json.gz": "5efccc5dc487c00cf7e7c12b8553472968822d5b28263a24264de60b481632f5",
+    "replay/push-medium-20260921.json.gz": "daf044b0d812d13c321016ad43d163fe29415fb4b2deca6c5d30e14cd1b9ac61",
+    "assets/sweep-comparison/repeat-1.json.gz": "c204eb12ad8daffb5afb87cfc46e8826b2a1563ca8eba69816934990d10143fe",
+    "assets/sweep-comparison/repeat-2.json.gz": "723f2c89218871732d535363b4051e75ae81fce8b31ff18fe666627a79474fdd",
+    "assets/insertion/replay-c100-tilted-r0.json.gz": "11c9aa88e5c031b56ee794a8261ee552f62787ae76fe4602494cea38f4b5f2ba",
+    "assets/insertion/replay-guided-tilted-contact_guided.json.gz": "fc8cf934e78152b6948c77e297fe3468ec890814ea7477345a971b8bf2d05fc9",
+    "assets/deformable/compression.json.gz": "f3f8bdf62898fbadb0cb6f4c3acda843220ab1d94122420a7a17aef1b49be977",
+    "assets/deformable/grasp-1N.json.gz": "98fac1019289b069507eb2f887f016598991b476d0e9de8b7c7427a0011b66d1",
+    "assets/deformable/grasp-2N.json.gz": "15a14bc550d3c7cb3b066221f824063afede085e764fbd45fa34248b4cb7421c",
+    "assets/controller-transfer/replay-selected-test-0.json.gz": "e5b61991e4ef7d1deabee9c8348e343db898b57b86756fc4aa47fb921ce3c192"
   }
 }

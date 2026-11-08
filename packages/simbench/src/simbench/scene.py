@@ -43,13 +43,20 @@ class Scene:
     joint_init: dict[str, float] = field(default_factory=dict)
     # Open-loop generalized forces on `joints`, as a function of time.
     effort: Callable[[float], np.ndarray] | None = None
-    # Closed-loop controller: (t, q, qd) -> generalized forces on `joints`.
-    controller: Callable[[float, np.ndarray, np.ndarray], np.ndarray] | None = None
+    # Closed-loop controller: (t, q, qd) -> generalized forces on `joints`; controllers
+    # with `uses_state = True` also receive the route's full state dict.
+    controller: Callable[..., np.ndarray] | None = None
     params: dict = field(default_factory=dict)
-    # Bodies whose geoms are collision-free and should be dropped from contact output.
+    # Record every `record_dt` (a multiple of dt) instead of every step.
+    record_dt: float | None = None
+
     @property
     def steps(self) -> int:
         return int(round(self.duration / self.dt))
+
+    @property
+    def stride(self) -> int:
+        return max(1, int(round((self.record_dt or self.dt) / self.dt)))
 
     @property
     def sha256(self) -> str:
@@ -64,12 +71,16 @@ class Scene:
             path.write_text(self.mjcf)
         return path
 
-    def effort_at(self, t: float, q: np.ndarray, qd: np.ndarray) -> np.ndarray:
+    def effort_at(self, t: float, q: np.ndarray, qd: np.ndarray,
+                  state: dict | None = None) -> np.ndarray:
         tau = np.zeros(len(self.joints))
         if self.effort is not None:
             tau += self.effort(t)
         if self.controller is not None:
-            tau += self.controller(t, q, qd)
+            if getattr(self.controller, "uses_state", False):
+                tau += self.controller(t, q, qd, state)
+            else:
+                tau += self.controller(t, q, qd)
         return tau
 
 

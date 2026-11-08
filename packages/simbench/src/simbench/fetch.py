@@ -6,13 +6,14 @@ reproduces byte-identical inputs and detects upstream changes.
 
 import hashlib
 import json
+import re
 import shutil
 import subprocess
 import tempfile
 import urllib.request
 from pathlib import Path
 
-from simbench.paths import ASSETS, MENAGERIE, REFERENCE
+from simbench.paths import ASSETS, MENAGERIE, REFERENCE, UNITREE
 
 MENAGERIE_REPO = "https://github.com/google-deepmind/mujoco_menagerie"
 # The revision named in the article's Panda audit. Later revisions up to 98a70c5
@@ -20,6 +21,12 @@ MENAGERIE_REPO = "https://github.com/google-deepmind/mujoco_menagerie"
 MENAGERIE_COMMIT = "822c2d8f877dd166c5b7d3c9f7e3c3b6589473b7"
 MENAGERIE_LOCK = ASSETS / "menagerie.lock.json"
 MENAGERIE_MODELS = ["franka_emika_panda"]
+
+UNITREE_REPO = "https://github.com/unitreerobotics/unitree_rl_gym"
+UNITREE_COMMIT = "276801e46c5d433564f24658bac64f254b7d2d4b"
+UNITREE_LOCK = ASSETS / "unitree.lock.json"
+UNITREE_POLICY = "deploy/pre_train/g1/motion.pt"
+UNITREE_CONFIG = "deploy/deploy_mujoco/configs/g1.yaml"
 
 ARTICLE_BASE = "https://mandarobotics.com/blog/comparing-physics-engines/"
 REFERENCE_LOCK = REFERENCE / "manifest.json"
@@ -68,6 +75,21 @@ REFERENCE_FILES = [
     "replay/hinge-20260921.json.gz",
     "replay/collision-chain-20260921.json.gz",
     "replay/panda-20260921.json.gz",
+    # Phase 3 replays: the article's grasp, stack and push layouts.
+    "replay/panda-tracking-20260921.json.gz",
+    "replay/grasp-center-20260921.json.gz",
+    "replay/grasp-offset-20260921.json.gz",
+    "replay/stack-center-20260921.json.gz",
+    "replay/push-medium-20260921.json.gz",
+    # Phase 6 replays: sweep geometry and outcomes, insertion, deformable ball.
+    "assets/sweep-comparison/repeat-1.json.gz",
+    "assets/sweep-comparison/repeat-2.json.gz",
+    "assets/insertion/replay-c100-tilted-r0.json.gz",
+    "assets/insertion/replay-guided-tilted-contact_guided.json.gz",
+    "assets/deformable/compression.json.gz",
+    "assets/deformable/grasp-1N.json.gz",
+    "assets/deformable/grasp-2N.json.gz",
+    "assets/controller-transfer/replay-selected-test-0.json.gz",
 ]
 
 
@@ -119,6 +141,42 @@ def fetch_menagerie(update: bool = False) -> None:
         + "\n"
     )
     print(f"menagerie {commit[:12]} ({commit_date}): {len(files)} files")
+
+
+def fetch_unitree(update: bool = False) -> None:
+    """Sparse-checkout the 12-DOF G1, its pretrained walking policy and deploy config.
+
+    Menagerie's G1 is the 29-DOF robot; the released policy was trained on this one.
+    """
+    lock = json.loads(UNITREE_LOCK.read_text()) if UNITREE_LOCK.exists() else None
+    if lock is not None and lock["commit"] != UNITREE_COMMIT:
+        update = True
+    g1 = "resources/robots/g1_description"
+    with tempfile.TemporaryDirectory() as tmp:
+        clone = Path(tmp) / "unitree"
+        _git("clone", "--filter=blob:none", "--no-checkout", "--quiet", UNITREE_REPO, str(clone))
+        _git("sparse-checkout", "set", "--no-cone", "/LICENSE", f"/{g1}/g1_12dof.xml",
+             f"/{g1}/meshes/", f"/{UNITREE_POLICY}", f"/{UNITREE_CONFIG}", cwd=clone)
+        _git("checkout", "--quiet", UNITREE_COMMIT, cwd=clone)
+        commit_date = _git("show", "-s", "--format=%cI", UNITREE_COMMIT, cwd=clone)
+        xml = (clone / g1 / "g1_12dof.xml").read_text()
+        meshes = sorted(set(re.findall(r'file="([^"]+)"', xml)))
+        if UNITREE.exists():
+            shutil.rmtree(UNITREE)
+        (UNITREE / "meshes").mkdir(parents=True)
+        for rel in ("LICENSE", f"{g1}/g1_12dof.xml", UNITREE_POLICY, UNITREE_CONFIG):
+            shutil.copy(clone / rel, UNITREE / Path(rel).name)
+        for name in meshes:
+            shutil.copy(clone / g1 / "meshes" / name, UNITREE / "meshes" / name)
+
+    files = {str(p.relative_to(UNITREE)): _sha256(p)
+             for p in sorted(UNITREE.rglob("*")) if p.is_file()}
+    if lock is not None and not update and files != lock["files"]:
+        raise RuntimeError("unitree_rl_gym checkout does not match assets/unitree.lock.json")
+    UNITREE_LOCK.write_text(json.dumps(
+        {"repo": UNITREE_REPO, "commit": UNITREE_COMMIT, "commit_date": commit_date,
+         "license": "BSD-3-Clause", "files": files}, indent=2) + "\n")
+    print(f"unitree_rl_gym {UNITREE_COMMIT[:12]} ({commit_date}): {len(files)} files")
 
 
 def fetch_reference(update: bool = False) -> None:

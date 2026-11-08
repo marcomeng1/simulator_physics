@@ -125,7 +125,10 @@ class Sim:
         self.body_ids = np.array([m.body(n).id for n in scene.bodies])
         self.qposadr = np.array([m.jnt_qposadr[m.joint(n).id] for n in scene.joints], dtype=int)
         self.dofadr = np.array([m.jnt_dofadr[m.joint(n).id] for n in scene.joints], dtype=int)
-        self.contact_names = [m.body(b).name or "world" for b in range(m.nbody)]
+        # Flex sides of contacts (geom id -1) are reported as body nbody + flex id.
+        self.contact_names = ([m.body(b).name or "world" for b in range(m.nbody)]
+                              + [mujoco.mj_id2name(m, mujoco.mjtObj.mjOBJ_FLEX, f)
+                                 for f in range(m.nflex)])
         self.track = {b: i for i, b in enumerate(self.body_ids)}
 
         for name, q in scene.joint_init.items():
@@ -181,7 +184,8 @@ class Sim:
             # Contact frame rows are (normal, tangent1, tangent2); the normal points
             # from geom1 to geom2, so this is the force geom1 exerts on geom2.
             f = c.frame.reshape(3, 3).T @ self._f6[:3]
-            a[i], b[i] = m.geom_bodyid[c.geom1], m.geom_bodyid[c.geom2]
+            a[i], b[i] = (m.geom_bodyid[g] if g >= 0 else m.nbody + c.flex[k]
+                          for k, g in enumerate(c.geom))
             pos[i], force[i], dist[i] = c.pos, f, c.dist
             if b[i] in self.track:
                 net[self.track[b[i]]] += f

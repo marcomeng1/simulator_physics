@@ -18,15 +18,16 @@
   <header>
     <div class="brand">
       <h1>Physics engines for robotics, revisited</h1>
-      <p>A reproduction of Manda Robotics'
+      <p>Manda Robotics'
         <a href="https://mandarobotics.com/blog/comparing-physics-engines/index.html">engine
-        comparison</a> with MuJoCo 4.0, MuJoCo-Warp 4.0, Newton 1.7 and Genesis 1.4.5</p>
+        comparison</a> rerun with MuJoCo 4.0, MuJoCo-Warp 4.0, Newton 1.7 and Genesis 1.4.5</p>
     </div>
     <nav id="tabs">
       <button data-tab="overview" class="active">Overview</button>
+      <button data-tab="background">Background</button>
+      <button data-tab="scenarios">Scenarios</button>
+      <button data-tab="mujoco4">MuJoCo 4.0</button>
       <button data-tab="replay">Replay</button>
-      <button data-tab="versions">MuJoCo 4.0 vs 3.11</button>
-      <button data-tab="sensitivity">Sensitivity</button>
       <button data-tab="runtime">Runtime</button>
       <button data-tab="audit">Audit</button>
     </nav>
@@ -34,25 +35,325 @@
 
   <main>
     <section id="overview" class="tab active">
-      <div id="findings" class="cards"></div>
-      <div class="prose">
-        <h2>What was run</h2>
-        <p>Every route loads the same MJCF scene. MuJoCo, MuJoCo-Warp and Genesis read it
-          through the MuJoCo compiler, and Newton reads it through its own importer. Each
-          route gets the same initial state, the same efforts or frozen controller tape, and
-          the same timestep. The model is the Franka Panda from MuJoCo Menagerie at the
-          article's pinned revision. Each route has its own locked <code>uv</code>
-          environment. The Panda reference and feedforward tapes are generated once on
-          MuJoCo 3.11, as in the article.</p>
-        <p>Phases: (1) single-object controls, (2) a three-object collision chain, (3) the
-          Panda: open-loop effort, joint tracking, grasping, stacking and channel pushing,
-          (4) what MuJoCo 4.0 changes and how sensitive the results are to solver options,
-          (5) runtime from one world up to 131,072 worlds.</p>
-        <p class="muted">The article does not publish its table, object layout or IK
-          waypoints for grasp, stack and push. Those scenes follow its protocol (timings,
-          gains, pads, masses, friction) on a layout defined here, so every engine is
-          compared on identical inputs, but absolute positions are not the article's.</p>
+      <div class="hero">
+        <h2>Five engines, one MJCF: what MuJoCo 4.0 changes for robot simulation</h2>
+        <p>The same scenes, controllers and timesteps on MuJoCo 3.11, MuJoCo 4.0, MuJoCo-Warp
+          4.0, Newton 1.7 and Genesis 1.4.5, from a swinging link to a walking humanoid. No
+          engine is treated as ground truth: results are compared with analytic solutions
+          where they exist and with each other otherwise. New to physics engines? Start with
+          <a data-goto="background">Background</a>.</p>
       </div>
+      <div class="conclusions-head">
+        <h2 class="sec">Main conclusions</h2>
+        <button id="expand-all" class="link">Expand all</button>
+        <span class="muted">Click a conclusion for the evidence, the test and its replay.</span>
+      </div>
+      <div id="takeaways" class="takeaways"></div>
+      <div class="two-col">
+        <div>
+          <h2 class="sec">Training advice by task</h2>
+          <ul id="advice" class="advice"></ul>
+        </div>
+        <div>
+          <h2 class="sec">More findings beyond the article</h2>
+          <ol id="beyond" class="beyond"></ol>
+        </div>
+      </div>
+      <p class="short"><b>In short:</b> MuJoCo 4.0 is a safe upgrade with new capabilities on
+        the CPU; GPU engines are fast and agree on simple contact, but check contact-rich,
+        thin, twisting and soft cases on a second engine.</p>
+    </section>
+
+    <section id="background" class="tab">
+      <div class="hero">
+        <h2>Choosing a physics simulator: a short primer</h2>
+        <p>A condensed summary of Manda Robotics'
+          <a href="https://mandarobotics.com/blog/comparing-physics-engines/primer.html">deep
+          dive into simulation frameworks for robotics</a> (30 September 2026), with what this
+          rerun adds. There is no overall best engine: the choice depends on your assets and
+          workflow, speed, accuracy for the task, and how much tuning you can afford.</p>
+      </div>
+
+      <h3>Three layers that are often confused</h3>
+      <div class="cards layers">
+        <div class="card"><div class="label">Simulator / framework</div>
+          <div class="big small-big">Isaac Lab · Genesis World · Gazebo · MuJoCo Playground</div>
+          <p>What you build tasks in: loads robots and scenes, runs many environments, renders
+            sensors, connects to training code. Many frameworks can swap engines.</p></div>
+        <div class="card"><div class="label">Physics engine</div>
+          <div class="big small-big">MuJoCo · MuJoCo-Warp · Newton · Genesis · PhysX · Drake</div>
+          <p>Computes how things move and collide. This site compares only this layer.</p></div>
+        <div class="card"><div class="label">Renderer</div>
+          <div class="big small-big">camera images</div>
+          <p>Independent of the physics: a scene can look realistic and still behave
+            unrealistically. All replays here share one viewer.</p></div>
+      </div>
+
+      <h3>What an engine does every timestep</h3>
+      <ol class="steps">
+        <li><b>Collision detection</b>: which shapes touch, and where. What you see is often
+          not what collides; meshes become convex hulls, and each importer does this
+          differently.</li>
+        <li><b>Contact model</b>: hard (non-penetration, PhysX), soft (small spring-like
+          penetration, MuJoCo's <code>solref</code>/<code>solimp</code>, Genesis), penalty, or
+          pressure-field (Drake's and Newton's hydroelastic). Friction is a cone, often
+          approximated by a pyramid.</li>
+        <li><b>Constraint solver</b>: finds all contact and joint forces at once (PGS, TGS,
+          CG or Newton's method). Too few iterations cause jitter and sinking.</li>
+        <li><b>Integrator</b>: advances the state by one timestep (semi-implicit Euler, RK4,
+          implicit). It sets stability and energy drift; the controller usually runs every
+          N steps (decimation).</li>
+      </ol>
+
+      <h3>The five setups tested here</h3>
+      <div class="tbl-wrap"><table class="text">
+        <thead><tr><th>Engine</th><th>Robot coordinates</th><th>Contact model</th>
+          <th>Solver</th><th>Runs on</th><th>Licence</th></tr></thead>
+        <tbody>
+          <tr><td>MuJoCo 3.11 / 4.0</td><td>generalized (joint)</td><td>soft, convex;
+            <code>solref</code>/<code>solimp</code></td><td>Newton, CG or PGS</td>
+            <td>CPU, float64</td><td>Apache-2.0</td></tr>
+          <tr><td>MuJoCo-Warp 4.0</td><td>generalized</td><td>same as MuJoCo</td>
+            <td>Newton or CG</td><td>NVIDIA GPU, float32</td><td>Apache-2.0</td></tr>
+          <tr><td>Newton 1.7</td><td>per solver (here MuJoCo-Warp 3.15)</td><td>MuJoCo-Warp
+            contacts, Newton's point pipeline, or SDF hydroelastic</td><td>pluggable</td>
+            <td>NVIDIA GPU, float32</td><td>Apache-2.0</td></tr>
+          <tr><td>Genesis 1.4.5</td><td>generalized</td><td>soft, MuJoCo-style</td>
+            <td>Newton</td><td>GPU, float64 here</td><td>Apache-2.0</td></tr>
+          <tr class="muted"><td>PhysX (article only)</td><td>generalized articulations</td>
+            <td>hard; contact and rest offsets</td><td>TGS or PGS</td><td>CPU or GPU</td>
+            <td>BSD-3</td></tr>
+        </tbody></table></div>
+
+      <h3>How to choose, in five steps</h3>
+      <ol class="advice-steps">
+        <li><b>Start from your assets.</b> MJCF keeps contact parameters, tendons and actuators;
+          URDF cannot express them, so converters drop them or fill in defaults.</li>
+        <li><b>Develop on the CPU, train on the GPU.</b> One small world cannot fill a GPU:
+          MuJoCo CPU is fastest for a single scene, GPU engines win from thousands of worlds
+          (<a data-goto="runtime">Runtime</a>).</li>
+        <li><b>Check that your model is honoured.</b> Importers silently ignore what they do
+          not support (<a data-goto="mujoco4#support">engine support</a>).</li>
+        <li><b>Set the knobs explicitly.</b> Timestep, integrator, friction cone and solver
+          iterations have different defaults per engine; the same <code>solref</code> and
+          <code>solimp</code> still give different softness
+          (<a data-goto="scenarios#legged">G1 on soft ground</a>).</li>
+        <li><b>Validate the task outcome on a second engine</b> before trusting a success
+          rate, especially for clutter, thin parts, twisting grips and soft objects.</li>
+      </ol>
+      <p class="short" data-replay="g1-walk|dt2ms-sand-v0.6"><b>In short:</b> pick the engine
+        your assets and training stack fit, set every physics option explicitly, and confirm
+        the outcomes that matter on a second engine.</p>
+
+      <h2 class="family" id="references">References</h2>
+      <ol class="refs">
+        <li>Manda Robotics, <a href="https://mandarobotics.com/blog/comparing-physics-engines/index.html">Comparing
+          physics engines for robotics simulation</a>, 2026. The study reproduced here; its
+          audit files, metrics and replays are fetched by <code>make fetch</code>.</li>
+        <li>Manda Robotics, <a href="https://mandarobotics.com/blog/comparing-physics-engines/primer.html">A
+          deep dive into simulation frameworks for robotics</a>, 30 September 2026.</li>
+        <li>E. Todorov, T. Erez, Y. Tassa, "MuJoCo: A physics engine for model-based control",
+          IROS 2012. <a href="https://mujoco.readthedocs.io/en/latest/overview.html">MuJoCo
+          documentation</a> and <a href="https://mujoco.readthedocs.io/en/latest/changelog.html">changelog</a>.</li>
+        <li><a href="https://github.com/google-deepmind/mujoco_warp">MuJoCo-Warp</a>, Google
+          DeepMind and NVIDIA.</li>
+        <li><a href="https://newton-physics.github.io/newton/latest/guide/overview.html">Newton</a>,
+          Linux Foundation project; hydroelastic contact as in its
+          <code>example_nut_bolt_hydro</code>.</li>
+        <li>R. Elandt, E. Drumwright, M. Sherman, A. Ruina, "A pressure field model for fast,
+          robust approximation of net contact force and moment between nominally rigid
+          objects", IROS 2019 (the hydroelastic model of <a href="https://drake.mit.edu/">Drake</a>).</li>
+        <li><a href="https://genesis-world.readthedocs.io/en/latest/">Genesis World</a>, Genesis AI.</li>
+        <li><a href="https://github.com/google-deepmind/mujoco_menagerie">MuJoCo Menagerie</a>,
+          Franka Emika Panda model.</li>
+        <li><a href="https://github.com/unitreerobotics/unitree_rl_gym">unitree_rl_gym</a>,
+          Unitree G1 12-DOF model and pretrained walking policy (<code>motion.pt</code>).</li>
+      </ol>
+
+      <h2 class="family" id="licences">Licences</h2>
+      <div class="tbl-wrap"><table class="text">
+        <thead><tr><th>Component</th><th>Licence</th><th>How it is used</th></tr></thead>
+        <tbody>
+          <tr><td>MuJoCo, MuJoCo-Warp, Newton, Genesis, Warp</td><td>Apache-2.0</td>
+            <td>installed from PyPI into locked per-engine environments</td></tr>
+          <tr><td>Franka Emika Panda (Menagerie)</td><td>Apache-2.0
+            (<a href="data/PANDA-LICENSE">licence</a>)</td><td>fetched at a pinned commit,
+            meshes shown in replays</td></tr>
+          <tr><td>Unitree G1 model and walking policy</td><td>BSD-3-Clause
+            (<a href="data/UNITREE-LICENSE">licence</a>)</td><td>fetched at a pinned commit;
+            policy weights read with numpy, meshes decimated for the viewer</td></tr>
+          <tr><td>Article audits, metrics and replays</td><td>© Manda Robotics</td><td>fetched
+            from the article for comparison; not stored in the repository</td></tr>
+          <tr><td>Three.js, uPlot</td><td>MIT</td><td>loaded from a CDN by this page</td></tr>
+        </tbody></table></div>
+    </section>
+
+    <section id="scenarios" class="tab">
+      <div class="prose">
+        <h2>Scenarios by task family</h2>
+        <p>Every scene runs on every engine from the same MJCF, initial state and timestep.
+          Click a row or cell to open its replay.</p>
+        <p class="pills"><a data-goto="scenarios#ladder">All scenes</a>
+          <a data-goto="scenarios#manipulation">Contact-rich manipulation</a>
+          <a data-goto="scenarios#deform">Deformable &amp; plastic</a>
+          <a data-goto="scenarios#legged">Legged locomotion</a></p>
+      </div>
+      <h3 id="ladder">Outcome per engine, from contact-free to contact-rich</h3>
+      <p class="muted">The task result each engine reaches, side by side; no engine is
+        treated as the reference. Scenes are grouped into ten classes, numbered from no contact
+        (1) to the most contact-rich (10). Click a cell for its replay.</p>
+      <div id="ladder-matrix"></div>
+      <p class="short"><b>In short:</b> without contact every engine agrees; with contact,
+        compare task outcomes, not trajectories.</p>
+
+      <h2 class="family" id="manipulation">Contact-rich manipulation</h2>
+      <h3 id="sweep">Crowded sweep: 15 objects into a tray</h3>
+      <p class="muted">A paddle sweeps 15 objects across a table on a frozen 12.5 s joint tape.
+        Dots are individual runs with unchanged inputs.</p>
+      <div id="p6-sweep" class="chart-box"></div>
+      <p class="short" data-replay="sweep|dt1ms"><b>In short:</b> crowded outcomes are engine-specific; a success rate
+        measured on one engine does not carry over.</p>
+      <h3 id="insertion">Peg insertion: 3 clearances × 3 approaches × 3 repeats</h3>
+      <p class="muted">A 20 mm, 64-facet peg is pushed into a chamfered bore by a Cartesian
+        impedance controller; a pass needs 19 mm of depth. "Guided" is the article's
+        contact-guided controller.</p>
+      <div id="p6-insertion"></div>
+      <p class="short" data-replay="insertion|dt1ms-c100-tilted-guided"><b>In short:</b> geometry decides tight insertion, so pass and jam
+        cases are the same on every engine.</p>
+      <h3 id="tuning">Controller tuning: does the best push controller transfer?</h3>
+      <p class="muted">A 27-candidate grid (stiffness × damping × push time) picked on three
+        layouts and checked on six held-out ones.</p>
+      <div id="p6-tuning"></div>
+      <p class="short"><b>In short:</b> the picks differ only in damping, and on every engine
+        they pass 4 of 6 held-out layouts, the same as the untuned baseline.</p>
+      <h3 id="twist">Pinch and twist: point contacts vs hydroelastic patches</h3>
+      <p class="muted prose">Two pads squeeze a 0.1 kg puck with 10 N each (μ 0.5) while a
+        torque about the squeeze axis ramps up. With uniform face pressure the puck slips at
+        an analytic torque (0.133 N·m for a 20 mm-radius disc, 0.115 N·m for a 30 mm
+        square), the case where point contacts are weakest and Drake-style hydroelastic
+        contact, available in Newton 1.7 through its own collision pipeline, should help.
+        "+ invweight fix" copies MuJoCo's compiled <code>body_invweight0</code> into Newton
+        (see the chart note).</p>
+      <div id="twist-chart" class="chart-box"></div>
+      <p class="short" data-replay="twist|dt1ms-disc-hydro-iw"><b>In short:</b> point contacts over-resist twisting by 1.5–1.9×;
+        hydroelastic patches get within 1.2–1.4×, at 20–1,000× the contacts per step.</p>
+
+      <h2 class="family" id="deform">Deformable and elasto-plastic bodies</h2>
+      <p class="muted prose">MuJoCo 4.0 fixes the 3D flex elastic constants, reworks flex
+        contact and adds elasto-plasticity (<code>springyield</code> on joints, a
+        <code>yield</code> strain on solids and shells). A run is invalid from the first
+        non-finite vertex or inverted tetrahedron. Newton and Genesis do not read MJCF flex;
+        which engine supports what is on the
+        <a data-goto="mujoco4#support">MuJoCo 4.0 tab</a>.</p>
+      <h3 id="compress">Elastic ball: plate compression</h3>
+      <p class="muted">125-vertex, 384-tetrahedron ball (60 mm, E = 20 kPa) squeezed 12 mm
+        between two plates. "Legacy constants" runs 4.0 with the changelog's E′, ν′ that
+        reproduce pre-4.0 elasticity.</p>
+      <div id="def-compress" class="chart-box"></div>
+      <p class="short" data-replay="ball-compress|dt0.05ms"><b>In short:</b> 4.0's ball is softer than 3.11's by design (the
+        elastic-constant fix), and CPU and GPU now agree within about 5%.</p>
+      <h3 id="grasp">Elastic ball: Panda grasp across finger effort</h3>
+      <p class="muted">Close, lift 80 mm, hold, lower and open. Cells give the hold lift, or
+        when the mesh first went invalid.</p>
+      <div id="def-grasp"></div>
+      <p class="short" data-replay="ball-grasp|dt0.05ms-e2N"><b>In short:</b> MuJoCo-Warp 4.0 holds the ball; MuJoCo 4.0 CPU lifts
+        it too but inverts a tetrahedron at first touch, failing the validity rule.</p>
+      <h3 id="plastic-hinge">Plastic hinge spring (<code>springyield</code>)</h3>
+      <p class="muted">A 2 N·m/rad joint spring with a 5° yield is bent to about 9.5° and
+        released. Ideal plasticity rests at peak − yield; an elastic spring returns to 0.</p>
+      <div id="def-hinge" class="chart-box"></div>
+      <p class="short" data-replay="hinge-plastic|dt1ms-y5deg"><b>In short:</b> plastic joints work on MuJoCo 4.0 CPU and GPU; Newton
+        and Genesis load them and stay elastic.</p>
+      <h3 id="plastic-ball">Plastic ball (3D flex <code>yield</code>)</h3>
+      <p class="muted">The same 12 mm squeeze and 2 N grasp with yield strains 0.01–0.1.
+        Ideal plasticity has no hardening, so the load the ball can hold falls with the
+        yield strain.</p>
+      <div class="grid2">
+        <div><div id="def-plastic-chart" class="chart-box"></div></div>
+        <div id="def-plastic"></div>
+      </div>
+      <p class="short" data-replay="ball-compress|dt0.05ms-y0.03"><b>In short:</b> solid plasticity works on MuJoCo 4.0 CPU only;
+        MuJoCo-Warp 4.0 goes non-finite once the solid yields.</p>
+      <h3 id="plastic-sheet">Plastic sheet (2D shell bending yield)</h3>
+      <p class="muted">A PET-like 120 × 20 × 1 mm cantilever strip (E = 2 GPa) is pressed
+        15 mm by a sphere at 70 mm and released. With <code>yield="0 εb"</code> the shell
+        yields in bending at the clamp and keeps a permanent tip set.</p>
+      <div id="def-sheet" class="chart-box"></div>
+      <p class="short" data-replay="sheet|dt0.1ms-yb0.002"><b>In short:</b> shell plasticity keeps a permanent set on MuJoCo 4.0
+        CPU; MuJoCo-Warp 4.0 keeps much less.</p>
+
+      <h2 class="family" id="legged">Legged locomotion: Unitree G1 on five terrains</h2>
+      <p class="muted prose">Unitree's pretrained G1 walking policy
+        (<code>unitree_rl_gym</code>, 12 leg joints, LSTM, trained in Isaac Gym) runs exactly
+        as in Unitree's MuJoCo deploy script: 50 Hz policy, 500 Hz PD, a constant forward
+        command for 10 s. Each foot touches the ground through four 5 mm spheres; the leg
+        collision meshes touch only when the feet sink deep. Terrains
+        are contact-parameter models, the same on every engine: <b>flat</b> (MuJoCo default
+        contact), <b>glass</b> (μ 0.1), <b>sand</b> (soft, damped, 1.5 cm ripples),
+        <b>mud</b> (very soft, overdamped, μ 1.2) and <b>sponge</b> (soft, springy, bumps up
+        to 2.5 cm). The policy is blind and never saw these terrains.</p>
+      <div id="g1-matrix"></div>
+      <div class="grid2">
+        <div><div id="g1-sink" class="chart-box"></div></div>
+        <div><div id="g1-track" class="chart-box"></div></div>
+      </div>
+      <p class="muted prose">Why engines part ways on soft ground: a 35 kg block on eight
+        5 mm spheres (the G1's weight and feet) settles 4.8 / 8.1 / 6.4 mm into sand on
+        MuJoCo 4.0 / Newton / Genesis, and 12.0 / 9.2 mm into mud on MuJoCo 4.0 / Newton,
+        while Genesis lets it fall through the floor. Same friction, solref and solimp, so
+        the engines map soft-contact impedance differently
+        (<code>scripts/probes/soft_contact_probe.py</code>).</p>
+      <p class="short" id="g1-short" data-replay="g1-walk|dt2ms-glass-v0.6"></p>
+    </section>
+
+    <section id="mujoco4" class="tab">
+      <div class="prose">
+        <h2>What MuJoCo 4.0 changes, tested</h2>
+        <p>Four 4.0 changes that matter for robot simulation, each with its own test:</p>
+        <p class="pills"><a data-goto="mujoco4#upgrade">Upgrading from 3.11</a>
+          <a data-goto="mujoco4#card">Speculative contacts</a>
+          <a data-goto="mujoco4#tumble">Fourth-order RK4</a>
+          <a data-goto="scenarios#deform">Elasto-plasticity</a>
+          <a data-goto="mujoco4#support">Engine support</a></p>
+      </div>
+      <h3 id="upgrade">Upgrading from 3.11: same MJCF, same options</h3>
+      <div id="mj4-cards" class="cards"></div>
+      <div id="versions-chart" class="chart-box"></div>
+      <details><summary>Per-variant table</summary><div id="versions-table"></div></details>
+      <p class="short" data-replay="collision-chain|dt0.5ms"><b>In short:</b> a safe upgrade; the only differences come from
+        contacts on resting box faces.</p>
+
+      <h3 id="card">Speculative contacts: a playing card on a 1 mm plate</h3>
+      <p class="muted prose">An 88 × 63 × 0.3 mm, 1.8 g card is released flat 5 mm above a
+        1 mm thick plate with a downward speed. Standard collision checks only the poses at
+        each step, so a card that moves more than about half the combined thickness
+        (0.65 mm) in one step ends up past the plate's mid-plane and is pushed out of the
+        far side. 4.0's <code>speculative</code> flag predicts the contact before it happens.
+        It exists only on MuJoCo 4.0 CPU (MuJoCo-Warp 4.0 does not implement it).</p>
+      <div id="card-matrix"></div>
+      <div id="card-chart" class="chart-box"></div>
+      <p class="short" data-replay="card-catch|dt1ms-v1-speculative"><b>In short:</b> speculative contacts stop thin objects tunnelling,
+        but only on MuJoCo 4.0 CPU and not for a spinning card.</p>
+
+      <h3 id="tumble">Fourth-order RK4: a T-handle tumbling about its middle axis</h3>
+      <p class="muted prose">A free T-handle spun about its intermediate principal axis
+        with no gravity flips over periodically (the Dzhanibekov effect), which makes
+        orientation errors easy to see. 4.0 made RK4 fourth-order for free-body
+        orientations. Error is measured against an independent rigid-body solution.</p>
+      <div class="grid2">
+        <div><div id="tumble-chart" class="chart-box"></div></div>
+        <div><div id="tumble-time" class="chart-box"></div></div>
+      </div>
+
+      <p class="short" data-replay="tumble|dt2ms-euler"><b>In short:</b> for free-flying bodies use RK4 on MuJoCo 4.0 CPU;
+        on GPU, float32 caps it near 0.2°.</p>
+      <h3 id="support">What each engine supports</h3>
+      <div id="support-matrix"></div>
+      <p class="short"><b>In short:</b> check that your MJCF is honoured; unsupported
+        features are often loaded and silently ignored.</p>
+      <details><summary>Option and determinism sensitivity (cone, CCD, speculative,
+        discrete/IPC, Jacobian, GPU determinism)</summary><div id="sensitivity-table"></div>
+      </details>
     </section>
 
     <section id="replay" class="tab">
@@ -72,7 +373,13 @@
             <option value="0.002">1 N = 2 mm</option>
             <option value="0.05">1 N = 5 cm</option>
           </select></label>
+        <label class="check"><input type="checkbox" id="show-points" checked> Contact points</label>
         <label class="check"><input type="checkbox" id="show-trails" checked> COM trails</label>
+        <label class="check" title="Image-based lighting, tone mapping, sky and checker floor"><input
+          type="checkbox" id="studio" checked> Studio look</label>
+        <label class="check opacity">Body opacity
+          <input type="range" id="opacity" min="0.1" max="1" step="0.05" value="1">
+          <button id="xray" title="See through bodies to the contacts">X-ray</button></label>
       </aside>
       <div class="stage">
         <div id="viewer"></div>
@@ -94,29 +401,6 @@
       </div>
     </section>
 
-    <section id="versions" class="tab">
-      <div class="prose">
-        <h2>Same MJCF, same options: MuJoCo 3.11 vs 4.0</h2>
-        <p>The path difference is the largest centre-of-mass distance between the two traces
-          over all bodies and frames. The first divergence is when it first exceeds 1 µm. The
-          contact column lists the body pairs whose mean number of contacts per frame
-          changed.</p>
-      </div>
-      <div id="versions-table"></div>
-    </section>
-
-    <section id="sensitivity" class="tab">
-      <div class="prose">
-        <h2>Option and determinism sensitivity</h2>
-        <p>Each variant changes one setting relative to its baseline run on the same route.
-          The variants cover cone type, native CCD, multi-contact CCD, impratio, the new 4.0
-          speculative contacts, the new 4.0 discrete integrator and IPC, a forced
-          dense or sparse Jacobian (the mujoco#3767 check), the GPU determinism switches,
-          and Genesis's own default options.</p>
-      </div>
-      <div id="sensitivity-table"></div>
-    </section>
-
     <section id="runtime" class="tab">
       <div class="prose">
         <h2>Runtime</h2>
@@ -135,6 +419,7 @@
       <div id="bench-cpu"></div>
       <h3>GPU memory and batch equivalence</h3>
       <div id="bench-gpu"></div>
+      <p class="short" id="runtime-short"></p>
     </section>
 
     <section id="audit" class="tab">
@@ -147,13 +432,20 @@
       <div id="audit-tables"></div>
       <h3>Environments</h3>
       <div id="env-table"></div>
+      <p class="short"><b>In short:</b> every route imports both Panda models within the
+        article's tolerances, so differences elsewhere come from the solvers, not the
+        import.</p>
     </section>
   </main>
 
   <footer>
     Robot model: Franka Emika Panda from
     <a href="https://github.com/google-deepmind/mujoco_menagerie">MuJoCo Menagerie</a>
-    (Apache-2.0, see <a href="data/PANDA-LICENSE">licence</a>). Data: <code>results/</code>.
+    (Apache-2.0, see <a href="data/PANDA-LICENSE">licence</a>); Unitree G1 and its walking
+    policy from <a href="https://github.com/unitreerobotics/unitree_rl_gym">unitree_rl_gym</a>
+    (BSD-3-Clause, see <a href="data/UNITREE-LICENSE">licence</a>). Data: <code>results/</code>.
+    Scenario and probe scripts: <code>packages/simbench/src/simbench/scenes/</code>,
+    <code>scripts/probes/</code>.
   </footer>
   <script type="module" src="js/main.js"></script>
 </body>

@@ -8,9 +8,17 @@ import numpy as np
 from simbench.metrics import METRICS
 from simbench.paths import RAW, SUMMARY
 from simbench.plans import PLANS, PRIMARY
-from simbench.reference import BUNDLES, article_traces
+from simbench.reference import (
+    BUNDLES,
+    INSERTION_GUIDED,
+    SWEEP_REPEATS,
+    article_deform,
+    article_traces,
+)
 from simbench.trace import Trace
 
+# Published article bundles for variants other than a scene's PRIMARY one.
+ARTICLE_VARIANTS = {"insertion/dt1ms-c100-tilted-guided": INSERTION_GUIDED}
 ROUTE_ORDER = ["mujoco311", "mujoco4", "mjwarp4", "newton", "genesis"]
 HEADLINE = {
     "slide": ["travel_x_m", "peak_contact_force_N", "max_com_z_m", "settled_at_s",
@@ -18,6 +26,7 @@ HEADLINE = {
     "drop": ["peak_contact_force_N", "max_overlap_m", "settled_at_s", "impulse_first_40ms_Ns",
              "max_momentum_residual_Ns"],
     "hinge": ["max_reference_error_deg", "final_angle_rad"],
+    "hinge-plastic": ["peak_angle_deg", "final_angle_deg", "expected_final_deg"],
     "collision-chain": ["cube_final_xy_mm", "prism_final_heading_deg", "sphere_final_xy_mm",
                         "peak_horizontal_force_N"],
     "panda-effort": ["hand_excursion_cm", "max_arm_limit_violation_rad"],
@@ -28,6 +37,17 @@ HEADLINE = {
               "final_tilt_deg", "max_final_speed_m_s"],
     "push": ["all_passed", "passed_count", "max_pad_push_N", "max_hand_height_change_mm",
              "max_object_tilt_deg"],
+    "sweep": ["collected", "fallen", "left_outside", "peak_paddle_contact_N"],
+    "insertion": ["depth_reached", "final_depth_mm", "peak_contact_N", "peak_penetration_um"],
+    "ball-compress": ["completed", "hold_plate_load_N", "hold_extent_mm", "permanent_set_mm"],
+    "ball-grasp": ["completed", "invalid_at_s", "hold_lift_mm", "ungated_hold_lift_mm",
+                   "invalid_frames", "dent_mm"],
+    "card-catch": ["outcome", "tunnel_at_s", "rest_gap_mm", "max_penetration_mm"],
+    "tumble": ["final_error_deg", "max_error_deg", "momentum_drift", "energy_drift"],
+    "sheet": ["held_tip_mm", "peak_tip_mm", "permanent_set_mm"],
+    "twist": ["slip_torque_Nm", "slip_ratio", "contacts_per_step", "pad_speed_max"],
+    "g1-walk": ["fell_at_s", "distance_m", "speed_ratio", "lateral_drift_m", "sink_mm",
+                "foot_slip_mm_s", "cost_of_transport"],
 }
 
 
@@ -53,7 +73,8 @@ def seed_spread(traces: list[Trace]) -> float | None:
 
 def path_difference(tr: Trace, base: Trace | None) -> float | None:
     """Largest COM distance [m] from `base` over matching frames and bodies."""
-    if base is None or tr is base:
+    if (base is None or tr is base or not tr.meta.get("frames", 1)
+            or not base.meta.get("frames", 1)):
         return None
     n = min(len(tr.t), len(base.t))
     if not np.allclose(tr.t[:n], base.t[:n]):
@@ -85,15 +106,33 @@ def variant_summary(scene: str, variant: str, baseline: str = "mujoco4") -> dict
             "seed_spread_m": seed_spread(traces),
             f"path_diff_vs_{baseline}_m": _clean(path_difference(tr, base)),
             "notes": tr.meta.get("notes", []),
-            "metrics": {k: _clean(v) for k, v in METRICS[scene](tr).items()},
+            "error": tr.meta.get("error"),
+            "metrics": ({k: _clean(v) for k, v in METRICS[scene](tr).items()}
+                        if tr.meta["frames"] else {}),
         }
-    if PRIMARY.get(scene) == variant and scene in BUNDLES:
-        for engine, tr in article_traces(scene).items():
-            rows[tr.meta["route"]] = {
+        if len(traces) > 1:
+            rows[route]["seed_metrics"] = [
+                {"status": t.meta["status"],
+                 **({k: _clean(METRICS[scene](t).get(k)) for k in HEADLINE[scene]}
+                    if t.meta["frames"] else {})} for t in traces]
+    bundle = (BUNDLES.get(scene) if PRIMARY.get(scene) == variant
+              else ARTICLE_VARIANTS.get(f"{scene}/{variant}"))
+    bundles = [(bundle, "")] if bundle else []
+    if scene == "sweep" and bundle:
+        bundles.append((SWEEP_REPEATS[2], "#2"))
+    for path, suffix in bundles:
+        for engine, tr in article_traces(scene, path).items():
+            rows[tr.meta["route"] + suffix] = {
                 "status": "published", "versions": {engine: tr.meta["engine_version"]},
                 f"path_diff_vs_{baseline}_m": _clean(path_difference(tr, base)),
                 "metrics": {k: _clean(v) for k, v in METRICS[scene](tr).items()},
             }
+    deform = ("compression" if (scene, variant) == ("ball-compress", PRIMARY["ball-compress"])
+              else {"dt0.05ms-e2N": "grasp-2N", "dt0.05ms-e1N": "grasp-1N"}.get(variant)
+              if scene == "ball-grasp" else None)
+    if deform:
+        for route, row in article_deform(deform).items():
+            rows[route] = row | {"metrics": {k: _clean(v) for k, v in row["metrics"].items()}}
     return rows
 
 

@@ -7,6 +7,7 @@ __pycache__/
 
 # Fetched inputs (reproducible from lock files via `make fetch`)
 assets/menagerie/
+assets/unitree/
 assets/generated/
 reference/article/
 
@@ -15,3 +16,4 @@ results/raw/
 
 # Site data, regenerated from results/ by `make web`
 web/data/
+MUJOCO_LOG.TXT

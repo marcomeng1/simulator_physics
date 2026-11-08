@@ -72,10 +72,14 @@ class Sim:
     """
 
     def __init__(self, scene, seed: int = 0, options: dict | None = None,
-                 deterministic: bool = False, naconmax: int = 256, njmax: int = 1024):
+                 deterministic: bool = False, naconmax: int | None = None,
+                 njmax: int | None = None):
         from simbench.adapters.mujoco_cpu import Sim as CpuSim
 
         cpu = CpuSim(scene, seed=seed, options=options)
+        flex = cpu.m.nflex > 0  # deformable contacts need far larger buffers
+        naconmax = naconmax or (4096 if flex else 256)
+        njmax = njmax or (16384 if flex else 1024)
         self.scene, self.mjm = scene, cpu.m
         self.m = mjw.put_model(cpu.m)
         if deterministic:
@@ -83,7 +87,7 @@ class Sim:
         self.d = mjw.put_data(cpu.m, cpu.d, naconmax=naconmax, njmax=njmax)
         self.body_ids, self.qposadr, self.dofadr = cpu.body_ids, cpu.qposadr, cpu.dofadr
         self.contact_names, self.track = cpu.contact_names, cpu.track
-        self.geom_body = cpu.m.geom_bodyid.copy()
+        self.geom_body, self.nbody = cpu.m.geom_bodyid.copy(), cpu.m.nbody
         self.root = cpu.m.body_rootid[cpu.body_ids]
         self._qfrc = np.zeros((1, cpu.m.nv), dtype=np.float32)
         self._ids = wp.array(np.arange(naconmax, dtype=np.int32), dtype=wp.int32)
@@ -134,7 +138,10 @@ class Sim:
                     "dist": np.zeros(0), "net": net}
         mjw.contact_force(self.m, d, self._ids, True, self._force)
         geom = d.contact.geom.numpy()[:n]
-        a, b = self.geom_body[geom[:, 0]], self.geom_body[geom[:, 1]]
+        flex = d.contact.flex.numpy()[:n]
+        side = (np.where(geom >= 0, self.geom_body[np.maximum(geom, 0)], self.nbody + flex)
+                if len(flex) == n else self.geom_body[geom])
+        a, b = side[:, 0], side[:, 1]
         force = self._force.numpy()[:n, :3].astype(float)
         for i in range(n):
             if b[i] in self.track:
