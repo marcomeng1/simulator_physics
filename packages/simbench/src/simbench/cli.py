@@ -150,7 +150,7 @@ def cmd_bench(args) -> None:
 def cmd_export_web(args) -> None:
     from simbench.web import export
 
-    export()
+    export(public=args.public)
 
 
 def cmd_tune(args) -> None:
@@ -214,6 +214,8 @@ def main(argv: list[str] | None = None) -> None:
     p.set_defaults(func=cmd_bench)
 
     p = sub.add_parser("export-web", help="write replay data and summaries for web/")
+    p.add_argument("--public", action="store_true",
+                   help="leave out the article's own traces (for publishing)")
     p.set_defaults(func=cmd_export_web)
 
     p = sub.add_parser("report", help="metrics for every recorded trace of a plan")

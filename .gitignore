@@ -16,4 +16,5 @@ results/raw/
 
 # Site data, regenerated from results/ by `make web`
 web/data/
+dist/
 MUJOCO_LOG.TXT

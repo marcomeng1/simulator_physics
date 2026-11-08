@@ -194,7 +194,7 @@ def replay(tr: Trace, bodies: list[str], stride: int) -> dict:
     return out
 
 
-def export_scene(scene: str, variant: str, meshes: dict) -> dict | None:
+def export_scene(scene: str, variant: str, meshes: dict, article: bool = True) -> dict | None:
     overrides = _overrides(scene, variant)
     geo = geometry(scene, overrides, meshes)
     routes = {}
@@ -205,7 +205,7 @@ def export_scene(scene: str, variant: str, meshes: dict) -> dict | None:
             routes[route] = replay(tr, geo["bodies"], stride)
     bundle = (BUNDLES.get(scene) if PRIMARY.get(scene) == variant
               else ARTICLE_VARIANTS.get(f"{scene}/{variant}"))
-    if bundle:
+    if bundle and article:
         for tr in article_traces(scene, bundle).values():
             stride = max(1, int(np.ceil(len(tr.t) / MAX_FRAMES)))
             routes[tr.meta["route"]] = replay(tr, geo["bodies"], stride)
@@ -232,12 +232,15 @@ def ladder() -> list[dict]:
     return out
 
 
-def export() -> None:
-    (DATA / "replays").mkdir(parents=True, exist_ok=True)
+def export(public: bool = False) -> None:
+    """Write web/data. `public` leaves out the article's own traces, which are © Manda Robotics."""
+    if (DATA / "replays").exists():
+        shutil.rmtree(DATA / "replays")
+    (DATA / "replays").mkdir(parents=True)
     index, meshes = [], {}
     for scene, primary in PRIMARY.items():
         for variant in [primary, *EXTRA_VARIANTS.get(scene, [])]:
-            data = export_scene(scene, variant, meshes)
+            data = export_scene(scene, variant, meshes, article=not public)
             if data is None:
                 continue
             name = f"{scene}--{variant}.json"
@@ -257,7 +260,8 @@ def export() -> None:
     (DATA / "summary.json").write_text(json.dumps(summaries, separators=(",", ":")))
     (DATA / "index.json").write_text(json.dumps(
         {"replays": index, "routes": ROUTE_LABELS, "route_order": ROUTE_ORDER,
-         "headline": HEADLINE, "ladder_groups": LADDER, "ladder": ladder()}, indent=1))
+         "headline": HEADLINE, "ladder_groups": LADDER, "ladder": ladder(),
+         "public": public}, indent=1))
     for licence, name in ((REPO / "assets" / "menagerie" / "franka_emika_panda" / "LICENSE",
                            "PANDA-LICENSE"), (UNITREE / "LICENSE", "UNITREE-LICENSE")):
         if licence.exists():

@@ -78,3 +78,16 @@ twist contact models, soft-contact sinkage). They are kept for reference and exc
 
 Any command can be run in a single route, e.g.
 `uv run --locked --project envs/mujoco4 simbench audit --route mujoco4 --model panda_article`.
+
+### Publishing to GitHub Pages
+
+The data comes from the GPU runs, so CI only deploys it and never regenerates it:
+1. `make publish-data` writes a public export, packs it as `dist/site-data.tar.gz` and
+   uploads it to the `site-data` release. The export leaves out the article's own
+   replay traces, which are © Manda Robotics. It then triggers the Pages workflow.
+2. `.github/workflows/pages.yml` runs on pushes to `main` that touch `web/`, and on
+   demand. It downloads the release asset into `web/data/` and deploys `web/` with
+   `actions/deploy-pages`.
+
+One-time setup: in Settings → Pages, set Source to "GitHub Actions". `make web`
+restores the full local data, including the article traces.
