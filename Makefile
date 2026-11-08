@@ -71,6 +71,7 @@ publish-data: site-data
 		--title "Site data" --notes "Generated web/data for GitHub Pages (make publish-data)."
 	gh release upload site-data dist/site-data.tar.gz --clobber
 	gh workflow run pages.yml
+	$(call RUN,mujoco4) export-web
 
 serve:
 	python3 -m http.server $(PORT) -d web

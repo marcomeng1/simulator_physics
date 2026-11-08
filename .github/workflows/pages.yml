@@ -30,6 +30,10 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          if ! gh release view site-data >/dev/null 2>&1; then
+            echo "::error::No 'site-data' release yet. Run 'make publish-data' locally, or create a release tagged site-data with dist/site-data.tar.gz attached."
+            exit 1
+          fi
           gh release download site-data --pattern site-data.tar.gz --dir "$RUNNER_TEMP"
           tar -xzf "$RUNNER_TEMP/site-data.tar.gz" -C web
           test -f web/data/index.json
