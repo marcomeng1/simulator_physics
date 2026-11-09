@@ -1,15 +1,24 @@
 // Fetch and decode exported data (see packages/simbench/src/simbench/web.py).
 
 const cache = new Map();
+let cacheBust = "";
+
+/** Bust browser/http caches after `make web` regenerates data. */
+export function setCacheBust(token) {
+  cacheBust = String(token || "");
+  cache.clear();
+}
 
 export async function json(path) {
-  if (!cache.has(path)) {
-    cache.set(path, fetch(path).then((r) => {
+  const url = cacheBust ? `${path}${path.includes("?") ? "&" : "?"}v=${encodeURIComponent(cacheBust)}`
+    : path;
+  if (!cache.has(url)) {
+    cache.set(url, fetch(url, { cache: "no-store" }).then((r) => {
       if (!r.ok) throw new Error(`${path}: ${r.status}`);
       return r.json();
     }));
   }
-  return cache.get(path);
+  return cache.get(url);
 }
 
 function bytes(b64) {
@@ -42,7 +51,7 @@ export function decodeRoute(r, scales, nb) {
     const start = new Uint32Array(count.length + 1);
     for (let i = 0; i < count.length; i++) start[i + 1] = start[i] + count[i];
     out.contacts = { start, pos: scaled(r.contacts.pos, scales.pos),
-                     force: scaled(r.contacts.force, scales.force) };
+                     force: scaled(r.contacts.force, scales.contact_force ?? scales.force) };
   }
   return out;
 }
@@ -60,6 +69,10 @@ function mesh(key, all) {
 }
 
 export async function loadReplay(file) {
+  // Always re-fetch the replay file itself so a new `make web` shows up without a hard reload
+  // fighting a stale in-memory entry from an earlier navigation.
+  cache.delete(`data/replays/${file}`);
+  if (cacheBust) cache.delete(`data/replays/${file}?v=${encodeURIComponent(cacheBust)}`);
   const [raw, all] = await Promise.all([json(`data/replays/${file}`), json("data/meshes.json")]);
   const nb = raw.bodies.length;
   const routes = {};

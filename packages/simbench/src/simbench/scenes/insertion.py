@@ -224,6 +224,11 @@ class Impedance:
         return None
 
 
+# Soft-polymer FEM sleeve defaults (Genesis materials.FEM.Elastic); metal GPa is out of scope.
+FEM_PEG = {"E": 1e6, "nu": 0.3, "rho": 1000.0, "friction_mu": 0.5,
+           "hydroelastic_modulus": 1e7}
+
+
 def insertion(dt: float = 0.001, clearance_mm: float = 0.10, case: str = "aligned",
               guided: bool = False) -> Scene:
     import mujoco
@@ -240,7 +245,8 @@ def insertion(dt: float = 0.001, clearance_mm: float = 0.10, case: str = "aligne
               "pass_window_s": PASS_WINDOW, "gains": {"k_t": K_T, "k_r": K_R, "d_t": D_T,
                                                       "d_r": D_R, "k_null": K_NULL,
                                                       "d_null": D_NULL},
-              "caps": [F_CAP, M_CAP], "stops": [F_STOP, M_STOP], "friction": 0.5}
+              "caps": [F_CAP, M_CAP], "stops": [F_STOP, M_STOP], "friction": 0.5,
+              "fem_peg": FEM_PEG}
     scene = Scene(name="insertion", mjcf=mjcf, dt=dt, duration=DURATION,
                   bodies=[*PANDA_BODIES, "peg"], joints=ARM_JOINTS, params=params)
     path = scene.mjcf_path()

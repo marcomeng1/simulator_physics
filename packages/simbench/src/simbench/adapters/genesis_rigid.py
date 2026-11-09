@@ -142,10 +142,31 @@ def rigid_options(mjcf_path: Path, dt: float) -> dict:
 
 
 class Sim:
-    """Genesis rigid solver, single environment (float64, GPU)."""
+    """Genesis rigid solver, single environment (float64, GPU).
 
-    def __init__(self, scene, seed: int = 0, matched_options: bool = True):
+    Pass ``fem_peg=True`` (and optional FEM material kwargs) to build the soft-peg
+    hybrid in :mod:`simbench.adapters.genesis_fem` instead.
+    """
+
+    def __new__(cls, scene, seed: int = 0, matched_options: bool = True,
+                fem_peg: bool = False, fem_mode: str | None = None,
+                cloth_pbd: bool = False, **kwargs):
+        # soft-insertion / legacy fem_peg → continuum FEM hybrid adapter.
+        mode = fem_mode or ("peg" if fem_peg else None)
+        if mode:
+            from simbench.adapters.genesis_fem import Sim as FemSim
+            return FemSim(scene, seed=seed, fem_mode=mode, **kwargs)
+        if cloth_pbd or scene.params.get("task") == "cloth-fold":
+            from simbench.adapters.genesis_cloth import Sim as ClothSim
+            return ClothSim(scene, seed=seed, cloth_pbd=True, **kwargs)
+        return super().__new__(cls)
+
+    def __init__(self, scene, seed: int = 0, matched_options: bool = True,
+                 fem_peg: bool = False, fem_mode: str | None = None,
+                 cloth_pbd: bool = False, **_fem_kwargs):
         """matched_options=False keeps Genesis's own RigidOptions defaults (only dt is set)."""
+        if fem_mode or fem_peg or cloth_pbd or scene.params.get("task") == "cloth-fold":
+            return  # instance is genesis_fem/cloth.Sim from __new__
         import torch
 
         self.torch = torch

@@ -217,10 +217,52 @@
       <h3 id="insertion">Peg insertion: 3 clearances × 3 approaches × 3 repeats</h3>
       <p class="muted">A 20 mm, 64-facet peg is pushed into a chamfered bore by a Cartesian
         impedance controller; a pass needs 19 mm of depth. "Guided" is the article's
-        contact-guided controller.</p>
+        contact-guided controller. Where available, replays add a sixth panel
+        <b>Newton 1.7 hydro</b> (SDF hydroelastic patches + invweight fix) beside the
+        five point-contact engines. Continuum soft peg/bore material cases live under
+        <a data-goto="scenarios#soft-insertion">Deformable → Soft peg / bore</a>.</p>
       <div id="p6-insertion"></div>
-      <p class="short" data-replay="insertion|dt1ms-c100-tilted-guided"><b>In short:</b> geometry decides tight insertion, so pass and jam
-        cases are the same on every engine.</p>
+      <p class="muted prose">On the tight <b>tilted</b> 0.1 mm case the five point-contact engines
+        all jam near 13.7 mm with peak peg forces of about 9–25 N. Newton hydroelastic on
+        the same MJCF reaches full depth with only ~0.3 N recorded — an outlier, not a
+        tie-break. There is no sim ground truth here, only model-conditioned outcomes:</p>
+      <ul class="findings">
+        <li><b>Separate geometry, contact model and controller.</b> Point contact + open
+          impedance jams; the guided controller passes on every point-contact engine
+          (still ~20 N); hydro can pass without guidance. Do not collapse those into one
+          “truth.”</li>
+        <li><b>Multi-engine consensus is robustness, not reality.</b> When MuJoCo 3.11/4,
+          MuJoCo-Warp, Newton-point and Genesis agree on a jam, that is strong evidence
+          that <em>under hard / point-like contact this scene jams</em>. Hydro disagreeing
+          means Newton hydro is in another contact regime.</li>
+        <li><b>Match the physical assumption you care about.</b> Stiff metal and sharp edges
+          → prefer point / MuJoCo-like (expect jam). Soft pads or deliberate compliance →
+          hydro / patch contact may pass. Force control or search motion → match the
+          controller first, then the contact model.</li>
+        <li><b>Practical rule.</b> Use point-contact consensus for “what can go wrong”
+          (conservative bound). Use hydro for “what changes if contact is a soft pressure
+          patch.” Treat sim–sim disagreement as a sensitivity finding; only hardware (or a
+          third calibrated stack) settles which world you are in.</li>
+      </ul>
+      <p class="muted prose"><b>Q. Does hydro read the peg/hole material? If these are stiff
+        metal, is hydro still a good representation?</b><br>
+        <b>A.</b> No material card is read. The MJCF has no Young’s modulus or metal
+        constitutive law — peg and bore are <em>rigid bodies</em> with MuJoCo contact knobs
+        (μ&nbsp;0.5, <code>solref</code>/<code>solimp</code>). Newton hydroelastic here stamps
+        every colliding shape with a uniform hydro stiffness (<code>kh&nbsp;=&nbsp;1e11</code>,
+        SDF resolution 64); it does not import steel/aluminum from the mesh. You can
+        <em>imagine</em> stiff metal, but the sim only knows rigid geometry + a contact model.
+        Hydroelastic (Drake/Newton) is a pressure-field approximation for
+        <em>nominally rigid</em> objects, not continuum FEM of metal. High <code>kh</code> can
+        feel stiff, yet a distributed patch still differs from point contact — which is why
+        the tilt can pass under hydro while five point-contact engines jam. For stiff
+        peg-in-hole risk, prefer point / MuJoCo-like as the conservative default; use hydro
+        when you explicitly want patch contact (or soft coating), not as “more physical
+        steel.”</p>
+      <p class="short" data-replay="insertion|dt1ms-c100-tilted"><b>In short:</b> under point
+        contact every engine jams the tight tilt; Newton hydro alone slips through — contact
+        model choice can flip pass/fail, so treat hydro as a sensitivity check, not a
+        referee.</p>
       <h3 id="tuning">Controller tuning: does the best push controller transfer?</h3>
       <p class="muted">A 27-candidate grid (stiffness × damping × push time) picked on three
         layouts and checked on six held-out ones.</p>
@@ -246,6 +288,35 @@
         non-finite vertex or inverted tetrahedron. Newton and Genesis do not read MJCF flex;
         which engine supports what is on the
         <a data-goto="mujoco4#support">MuJoCo 4.0 tab</a>.</p>
+      <h3 id="soft-insertion">Soft peg / bore insertion (continuum materials)</h3>
+      <p class="muted prose">Same tilted 0.1&nbsp;mm impedance motion as the rigid peg-insertion
+        headline, but the peg and/or bore are continuum materials — not a sixth panel on the
+        rigid matrix. Primary metric is the <b>contact wrench about the Franka hand</b>
+        (peak |F|, |M|), plus depth. Polymer card E&nbsp;=&nbsp;1e6&nbsp;Pa, ν&nbsp;=&nbsp;0.3
+        (not metal GPa).</p>
+      <ul class="findings">
+        <li><b>A1</b> Genesis FEM soft peg / rigid bore</li>
+        <li><b>A2</b> rigid peg / Genesis FEM soft bore sleeve</li>
+        <li><b>M1</b> MuJoCo 4 flex elastic peg / rigid bore</li>
+        <li><b>M2</b> MuJoCo 4 flex plastic peg (<code>yield</code>&nbsp;0.05) / rigid bore</li>
+      </ul>
+      <div id="def-soft-insertion"></div>
+      <p class="short" data-replay="soft-insertion|dt1ms-fem-peg"><b>In short:</b> Genesis FEM
+        polymer (E&nbsp;=&nbsp;1e6) seats the tilted 0.1&nbsp;mm case on both peg and bore;
+        MuJoCo flex foam (E&nbsp;=&nbsp;20&nbsp;kPa) jams around 10&nbsp;mm depth with a much
+        larger hand wrench — different continuum stacks, not drop-in engine swaps.</p>
+      <h3 id="cloth-fold">Dual-Franka cloth fold</h3>
+      <p class="muted prose">Two Frankas pinch the near-edge midpoints of a 0.4×0.4&nbsp;m
+        felt-ish napkin on a table (high-friction pads), lift, fold one half across the
+        midline, press and release (~3&nbsp;s). <b>Fair comparison:</b> every engine follows
+        the same open-loop joint tape <em>kinematically</em> (no torque PD), then welds a few
+        pinch vertices while fingers are closed. Cloth stacks differ by engine —
+        MuJoCo&nbsp;4 / MuJoCo-Warp: <b>2D flex</b>; Newton: <b>SolverVBD</b>; Genesis:
+        <b>PBD.Cloth</b>. Headline metrics: half-plane coverage (≥80%) and grasp slip
+        (≤25&nbsp;mm). The replay panel repeats the controller and per-engine cloth model.</p>
+      <div id="def-cloth-fold"></div>
+      <p class="short" data-replay="cloth-fold|dt0.1ms-square"><b>In short:</b> same kinematic
+        tape + pinch attach; compare cloth solvers (flex / VBD / PBD), coverage and slip.</p>
       <h3 id="compress">Elastic ball: plate compression</h3>
       <p class="muted">125-vertex, 384-tetrahedron ball (60 mm, E = 20 kPa) squeezed 12 mm
         between two plates. "Legacy constants" runs 4.0 with the changelog's E′, ν′ that
@@ -385,6 +456,10 @@
             <option value="0.05">1 N = 5 cm</option>
           </select></label>
         <label class="check"><input type="checkbox" id="show-points" checked> Contact points</label>
+        <div class="contact-key" id="contact-key" title="Yellow: nonzero force. Blue (50% transparent): inactive proximity with ~0 N.">
+          <span class="swatch active"></span><span>yellow = active (|F| &gt; 0)</span>
+          <span class="swatch idle"></span><span>blue 50% = inactive proximity</span>
+        </div>
         <label class="check"><input type="checkbox" id="show-trails" checked> COM trails</label>
         <label class="check" title="Image-based lighting, tone mapping, sky and checker floor"><input
           type="checkbox" id="studio" checked> Studio look</label>
@@ -394,6 +469,10 @@
       </aside>
       <div class="stage">
         <div id="viewer"></div>
+        <div class="contact-legend" id="contact-legend">
+          <span class="swatch active"></span> yellow = active contact (nonzero force)
+          <span class="swatch idle idle-fade"></span> blue (50% transparent) = inactive proximity (~0 N)
+        </div>
         <div class="transport">
           <button id="play" title="Play / pause (space)">▶</button>
           <input type="range" id="scrub" min="0" max="1000" value="0">
@@ -408,7 +487,9 @@
           <span class="muted" id="signal-note"></span>
         </div>
         <div id="plot"></div>
+        <div id="scene-method"></div>
         <div id="scene-metrics"></div>
+        <div class="contact-explain" id="contact-note"></div>
       </div>
     </section>
 

@@ -50,6 +50,11 @@ CARD_CASES = [(0.001, v, 0.0) for v in (0.3, 1.0, 3.0, 10.0)] + [(0.002, 1.0, 0.
 
 _IW, _HYDRO = {"mujoco_invweight": True}, {"contacts": "hydroelastic", "naconmax": 12000,
                                            "njmax": 40000}
+# Genesis FEM soft-insertion (polymer E=1e6); lives under scene soft-insertion, not peg insertion.
+_FEM_PEG = {"fem_mode": "peg", "E": 1e6, "nu": 0.3, "rho": 1000.0, "friction_mu": 0.5,
+            "hydroelastic_modulus": 1e7, "attachment": "coupler",
+            "n_mount": 48, "fem_damping": 20.0}
+_FEM_BORE = {**_FEM_PEG, "fem_mode": "bore"}
 NEWTON_CONTACTS = [
     ("iw", _IW),
     ("point-iw", {"contacts": "newton"} | _IW),
@@ -137,6 +142,43 @@ PLANS: dict[str, list[Run]] = {
         *[Run("insertion", {"dt": 0.001, "clearance_mm": 0.10, "case": case, "guided": True},
               seeds=(0, 1, 2), tag=f"c100-{case}-guided", base=f"dt1ms-c100-{case}")
           for case in ("offset", "tilted")],
+        # Newton's SDF hydroelastic patches, stored as <variant>-hydro and shown in the
+        # web replay as route "newton-hydro" beside the five point-contact engines.
+        *[Run("insertion", {"dt": 0.001, "clearance_mm": 0.10, "case": case}, seeds=(0,),
+              tag=f"c100-{case}-hydro", sim=_HYDRO | _IW, routes=("newton",),
+              base=f"dt1ms-c100-{case}")
+          for case in ("aligned", "offset", "tilted")],
+        *[Run("insertion", {"dt": 0.001, "clearance_mm": 0.10, "case": case, "guided": True},
+              seeds=(0,), tag=f"c100-{case}-guided-hydro", sim=_HYDRO | _IW, routes=("newton",),
+              base=f"dt1ms-c100-{case}-guided")
+          for case in ("offset", "tilted")],
+        Run("insertion", {"dt": 0.001, "clearance_mm": 0.50, "case": "aligned"}, seeds=(0,),
+            tag="c500-aligned-hydro", sim=_HYDRO | _IW, routes=("newton",),
+            base="dt1ms-c500-aligned"),
+        # Deformable soft-insertion (materialized peg/bore): continuum cases, not the
+        # rigid peg-insertion matrix. Motion = c100-tilted open impedance.
+        Run("soft-insertion", {"dt": 0.001, "clearance_mm": 0.10, "case": "tilted",
+                               "kind": "fem-peg"},
+            tag="fem-peg", sim=_FEM_PEG, routes=("genesis",)),
+        Run("soft-insertion", {"dt": 0.001, "clearance_mm": 0.10, "case": "tilted",
+                               "kind": "fem-bore"},
+            tag="fem-bore", sim=_FEM_BORE, routes=("genesis",)),
+        # MuJoCo flex peg: elastic (M1) and plastic yield (M2). Soft E=20 kPa card
+        # (ball suite) with elevated flex damping + 2-layer hand mount; not the same
+        # E=1e6 polymer as Genesis A1/A2.
+        Run("soft-insertion", {"dt": 5e-5, "clearance_mm": 0.10, "case": "tilted",
+                               "kind": "flex-peg", "yield_strain": 0.0},
+            tag="flex-peg", routes=("mujoco4", "mjwarp4")),
+        Run("soft-insertion", {"dt": 5e-5, "clearance_mm": 0.10, "case": "tilted",
+                               "kind": "flex-peg", "yield_strain": 0.05},
+            tag="flex-peg-y0.05", routes=("mujoco4", "mjwarp4")),
+        # Dual-Franka scripted napkin fold (0.4×0.4 m, cotton-ish). MuJoCo 2D flex;
+        # Newton VBD / Genesis PBD rebuild cloth from scene params (not MJCF flex).
+        Run("cloth-fold", {"dt": 1e-4}, tag="square", routes=("mujoco4", "mjwarp4")),
+        Run("cloth-fold", {"dt": 1e-4}, tag="square", routes=("newton",),
+            sim={"cloth_vbd": True}),
+        Run("cloth-fold", {"dt": 1e-4}, tag="square", routes=("genesis",),
+            sim={"cloth_pbd": True}),
         # Deformable ball (MuJoCo flex routes only): compression control with a repeat
         # and a halved step, then the Panda grasp across the article's effort limits.
         Run("ball-compress", {"dt": 5e-5}, seeds=(0, 1), routes=FLEX),
@@ -204,7 +246,9 @@ PLANS: dict[str, list[Run]] = {
 PRIMARY = {"slide": "dt2ms", "drop": "dt1ms", "hinge": "dt1ms", "collision-chain": "dt0.5ms",
            "panda-effort": "dt1ms", "panda-tracking": "dt1ms", "grasp": "dt1ms",
            "stack": "dt1ms-offset20mm", "push": "dt1ms-w90mm", "sweep": "dt1ms",
-           "insertion": "dt1ms-c100-tilted", "ball-compress": "dt0.05ms",
+           "insertion": "dt1ms-c100-tilted", "soft-insertion": "dt1ms-fem-peg",
+           "cloth-fold": "dt0.1ms-square",
+           "ball-compress": "dt0.05ms",
            "hinge-plastic": "dt1ms-y5deg", "card-catch": "dt1ms-v1",
            "tumble": "dt2ms-rk4", "sheet": "dt0.1ms-yb0.002",
            "ball-grasp": "dt0.05ms-e2N-stiff", "twist": "dt1ms-disc",

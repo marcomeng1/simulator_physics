@@ -1,6 +1,8 @@
 """Scene registry: name -> factory(**overrides) -> Scene."""
 
-from simbench.scenes import deform, g1, insertion, panda, patch, primitives, sweep, thin
+from simbench.scenes import (
+    cloth_fold, deform, g1, insertion, panda, patch, primitives, soft_insertion, sweep, thin,
+)
 
 SCENES = {
     "slide": primitives.slide,
@@ -15,6 +17,8 @@ SCENES = {
     "push": panda.push,
     "sweep": sweep.sweep,
     "insertion": insertion.insertion,
+    "soft-insertion": soft_insertion.soft_insertion,
+    "cloth-fold": cloth_fold.cloth_fold,
     "ball-compress": deform.compress,
     "ball-grasp": deform.grasp,
     "card-catch": thin.card_catch,

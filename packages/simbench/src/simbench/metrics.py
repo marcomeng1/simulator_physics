@@ -295,6 +295,24 @@ def insertion_depth(tr: Trace) -> tuple[np.ndarray, np.ndarray]:
     return origin[2] - tip[:, 2], np.linalg.norm(tip[:, :2] - origin[:2], axis=1)
 
 
+def _hand_wrench(tr: Trace, peg_ids: list[int]) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+    """Per-frame contact force and moment about the hand from contacts on peg_ids."""
+    hand = tr.body("hand")
+    force = np.zeros((len(tr.t), 3))
+    moment = np.zeros((len(tr.t), 3))
+    if not peg_ids or "c_frame" not in tr.arrays or not len(tr.c_frame):
+        return force, moment, np.zeros(0)
+    sel = np.isin(tr.c_a, peg_ids) | np.isin(tr.c_b, peg_ids)
+    if not sel.any():
+        return force, moment, np.zeros(0)
+    sign = np.where(np.isin(tr.c_b[sel], peg_ids), 1.0, -1.0)[:, None]
+    f = tr.c_force[sel] * sign
+    frames = tr.c_frame[sel]
+    np.add.at(force, frames, f)
+    np.add.at(moment, frames, np.cross(tr.c_pos[sel] - tr.pos[frames, hand], f))
+    return force, moment, frames
+
+
 def insertion_metrics(tr: Trace) -> dict:
     """Article criterion: depth >= 19 mm throughout the last 0.25 s of a completed run."""
     p = tr.meta["params"]
@@ -309,21 +327,83 @@ def insertion_metrics(tr: Trace) -> dict:
            "stop_time_s": None if completed else float(tr.t[-1])}
     if "contact_names" in tr.meta:
         names = tr.meta["contact_names"]
-        peg = names.index("peg") if "peg" in names else -1
-        sel = (tr.c_a == peg) | (tr.c_b == peg)
-        sign = np.where(tr.c_b[sel] == peg, 1.0, -1.0)[:, None]
-        f = tr.c_force[sel] * sign
-        frames = tr.c_frame[sel]
-        force, moment = np.zeros((len(tr.t), 3)), np.zeros((len(tr.t), 3))
-        np.add.at(force, frames, f)
-        np.add.at(moment, frames, np.cross(tr.c_pos[sel] - tr.pos[frames, tr.body("hand")], f))
+        peg_ids = [i for i, n in enumerate(names) if n == "peg" or n.startswith("peg_")]
+        force, moment, frames = _hand_wrench(tr, peg_ids)
+        sel = np.isin(tr.c_a, peg_ids) | np.isin(tr.c_b, peg_ids) if peg_ids else slice(0, 0)
+        penet = 0.0
+        if peg_ids and "c_dist" in tr.arrays and np.shape(tr.c_dist)[0]:
+            mask = np.isin(tr.c_a, peg_ids) | np.isin(tr.c_b, peg_ids)
+            if mask.any():
+                penet = float(max(0.0, -tr.c_dist[mask].min()) * 1e6)
         out |= {"peak_contact_N": float(np.linalg.norm(force, axis=1).max()),
+                "peak_hand_force_N": float(np.linalg.norm(force, axis=1).max()),
+                "peak_hand_force_xy_N": float(np.linalg.norm(force[:, :2], axis=1).max()),
+                "peak_hand_force_z_N": float(np.max(np.abs(force[:, 2]))),
                 "peak_hand_moment_Nm": float(np.linalg.norm(moment, axis=1).max()),
-                "peak_penetration_um": float(max(0.0, -tr.c_dist[sel].min(initial=0.0)) * 1e6),
-                "contact_frames": int(len(np.unique(frames)))}
+                "peak_penetration_um": penet,
+                "contact_frames": int(len(np.unique(frames))) if len(frames) else 0}
     else:  # published bundles: net peg contact force sampled every 10 ms
         out["peak_contact_N"] = float(np.linalg.norm(tr.contact_net[:, tr.body("peg")],
                                                      axis=1).max())
+        out["peak_hand_force_N"] = out["peak_contact_N"]
+    return out
+
+
+def soft_insertion_metrics(tr: Trace) -> dict:
+    """Soft-insertion: depth + hand wrench + continuum extras (strain / permanent set)."""
+    out = insertion_metrics(tr)
+    p = tr.meta.get("params") or {}
+    sk = tr.meta.get("sim_kwargs") or {}
+    st = tr.meta.get("settings") or {}
+    out["kind"] = p.get("kind", sk.get("fem_mode", ""))
+    if st.get("peak_vertex_disp_m") is not None:
+        out["peak_vertex_disp_mm"] = float(st["peak_vertex_disp_m"]) * 1e3
+    fem = st.get("fem") or p.get("polymer") or {}
+    if fem:
+        out["fem_E_Pa"] = float(sk.get("E", fem.get("E", p.get("flex_peg", {}).get("young", 0))))
+        out["fem_nu"] = float(sk.get("nu", fem.get("nu", p.get("flex_peg", {}).get("poisson", 0))))
+    yield_strain = float(p.get("yield_strain") or p.get("flex_peg", {}).get("yield") or 0.0)
+    out["yield_strain"] = yield_strain
+
+    flex_idxs = [i for i, b in enumerate(tr.bodies) if b.startswith("peg_")]
+    if flex_idxs:
+        # Continuum tip = free (non-mount) vertex centroid; ghost "peg" follows the hand
+        # rigidly and must not decide depth_reached when the mesh has exploded.
+        mount = set((p.get("flex_peg") or {}).get("mount") or [])
+        free = [i for i, b in enumerate(tr.bodies)
+                if b.startswith("peg_") and int(b.split("_", 1)[1]) not in mount] or flex_idxs
+        tip = tr.pos[:, free].mean(axis=1)
+        origin = np.asarray(p["bore_origin"])
+        depth = origin[2] - tip[:, 2]
+        lateral = np.linalg.norm(tip[:, :2] - origin[:2], axis=1)
+        disp = np.linalg.norm(tr.pos[:, flex_idxs] - tr.pos[0:1, flex_idxs], axis=2)
+        peak_disp = float(disp.max())
+        out["peak_vertex_disp_mm"] = peak_disp * 1e3
+        # >50 mm of vertex travel from rest is a continuum blow-up, not insertion.
+        bad = ~np.isfinite(tr.pos[:, flex_idxs]).all(axis=(1, 2)) | (disp.max(axis=1) > 0.05)
+        out["continuum_valid"] = bool(not bad.any())
+        out["final_depth_mm"] = float(depth[-1] * 1e3)
+        out["max_depth_mm"] = float(depth.max() * 1e3)
+        out["final_lateral_mm"] = float(lateral[-1] * 1e3)
+        steps = int(round(p["duration"] / p["dt"]))
+        completed = tr.meta.get("status") == "ok" and len(tr.t) == steps
+        tail = tr.t >= p["duration"] - p["pass_window_s"] - 1e-9
+        out["depth_reached"] = bool(
+            completed and out["continuum_valid"] and depth[tail].min() >= p["depth_pass_m"])
+        if "peak_hand_force_N" in out and not out["continuum_valid"]:
+            # Report force on valid prefix only so a blow-up spike does not dominate.
+            n_ok = int(np.argmax(bad)) if bad.any() else len(tr.t)
+            n_ok = max(n_ok, 1)
+            names = tr.meta.get("contact_names") or []
+            peg_ids = [i for i, n in enumerate(names) if n == "peg" or n.startswith("peg_")]
+            force, moment, _ = _hand_wrench(tr, peg_ids)
+            force, moment = force[:n_ok], moment[:n_ok]
+            out["peak_hand_force_N"] = float(np.linalg.norm(force, axis=1).max())
+            out["peak_hand_moment_Nm"] = float(np.linalg.norm(moment, axis=1).max())
+            out["peak_contact_N"] = out["peak_hand_force_N"]
+        if yield_strain:
+            mid = len(tr.t) // 2
+            out["permanent_set_mm"] = float(np.linalg.norm(tip[-1] - tip[mid]) * 1e3)
     return out
 
 
@@ -563,6 +643,50 @@ def walk_metrics(tr: Trace) -> dict:
 FEET = ["left_ankle_roll_link", "right_ankle_roll_link"]
 
 
+def cloth_fold_metrics(tr: Trace) -> dict:
+    """Half-plane coverage after the fold + grasp slip of pinched cloth patches."""
+    p = tr.meta["params"]
+    cloth = [i for i, b in enumerate(tr.bodies) if b.startswith(p.get("flex_prefix", "cloth_"))]
+    out = {"frames": len(tr.t), "completed": tr.meta.get("status") == "ok"}
+    if not cloth or not len(tr.t):
+        return out | {"coverage": None, "fold_ok": False, "grasp_slip_mm": None}
+    pos = tr.pos[:, cloth]
+    if not np.isfinite(pos).all():
+        bad = int(np.argmax(~np.isfinite(pos).all(axis=(1, 2))))
+        return out | {"invalid_at_s": float(tr.t[bad]), "coverage": None, "fold_ok": False,
+                      "grasp_slip_mm": None}
+    # Target half-plane: y <= 0 (fold left half onto the right / negative-y side).
+    final = pos[-1]
+    coverage = float((final[:, 1] <= 0.0).mean())
+    out["coverage"] = coverage
+    out["fold_ok"] = bool(coverage >= float(p.get("coverage_pass", 0.8)))
+    # Grasp slip: patch-centroid drift in the hand's local frame during attach.
+    # World-frame (cent - hand) grows under wrist rotation even with a perfect weld.
+    slip = []
+    t0, t1 = p.get("attach_window") or [0.65, 2.60]
+    closed = (tr.t >= t0) & (tr.t <= t1)
+    for hand_name, ids_key in (("L_hand", "pinch_left"), ("R_hand", "pinch_right")):
+        ids = [i for i in (p.get(ids_key) or []) if i < len(cloth)]
+        if not ids or hand_name not in tr.bodies or not closed.any():
+            continue
+        hand_i = tr.body(hand_name)
+        hand = tr.pos[closed, hand_i]
+        quat = tr.quat[closed, hand_i]  # wxyz
+        cent = pos[closed][:, ids].mean(axis=1)
+        # qinv * (cent - hand) for each frame.
+        w, xyz = quat[:, 0], quat[:, 1:]
+        d = cent - hand
+        # R^T v = v + 2*(-u)×((-u)×v + w v) with u = xyz → use conjugate (-xyz, w)
+        u = -xyz
+        local = d + 2 * np.cross(u, np.cross(u, d) + w[:, None] * d)
+        slip.append(float(np.linalg.norm(local - local[0], axis=1).max() * 1e3))
+    out["grasp_slip_mm"] = float(max(slip)) if slip else None
+    out["slip_ok"] = bool(out["grasp_slip_mm"] is not None
+                          and out["grasp_slip_mm"] <= float(p.get("slip_pass_mm", 25.0)))
+    out["passed"] = bool(out.get("completed") and out["fold_ok"] and out.get("slip_ok"))
+    return out
+
+
 METRICS = {
     "g1-walk": walk_metrics,
     "twist": twist_metrics,
@@ -581,6 +705,8 @@ METRICS = {
     "push": push_metrics,
     "sweep": sweep_metrics,
     "insertion": insertion_metrics,
+    "soft-insertion": soft_insertion_metrics,
+    "cloth-fold": cloth_fold_metrics,
     "ball-compress": ball_compress_metrics,
     "ball-grasp": ball_grasp_metrics,
 }

@@ -1129,6 +1129,113 @@
       }
     }
   },
+  "cloth-fold": {
+    "dt0.1ms-square": {
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 300,
+          "completed": true,
+          "coverage": 0.884298,
+          "fold_ok": true,
+          "grasp_slip_mm": 27.0271,
+          "slip_ok": false,
+          "passed": false
+        }
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.249939,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 300,
+          "completed": true,
+          "coverage": 0.942149,
+          "fold_ok": true,
+          "grasp_slip_mm": 58.7699,
+          "slip_ok": false,
+          "passed": false
+        }
+      },
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.327163,
+        "notes": [
+          "newton cloth: kinematic joint_q from tape + SolverVBD + pinch attach"
+        ],
+        "error": null,
+        "metrics": {
+          "frames": 300,
+          "completed": true,
+          "coverage": 1.0,
+          "fold_ok": true,
+          "grasp_slip_mm": 0.000255571,
+          "slip_ok": true,
+          "passed": true
+        }
+      },
+      "genesis": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "genesis-world": "1.4.5",
+          "quadrants": "1.3.3",
+          "torch": "2.14.1+cu130"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.337559,
+        "notes": [
+          "genesis cloth: PBD.Cloth + kinematic tape + pinch attach"
+        ],
+        "error": null,
+        "metrics": {
+          "frames": 300,
+          "completed": true,
+          "coverage": 1.0,
+          "fold_ok": true,
+          "grasp_slip_mm": 40.775,
+          "slip_ok": false,
+          "passed": false
+        }
+      }
+    }
+  },
   "insertion": {
     "dt1ms-c100-aligned": {
       "mujoco311": {
@@ -1154,6 +1261,9 @@
           "final_lateral_mm": 0.00035156,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -1206,6 +1316,9 @@
           "final_lateral_mm": 0.00035156,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -1260,6 +1373,9 @@
           "final_lateral_mm": 0.000712829,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -1314,6 +1430,9 @@
           "final_lateral_mm": 0.000277335,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 4000
@@ -1371,6 +1490,9 @@
           "final_lateral_mm": 0.00035156,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -1400,6 +1522,40 @@
         ]
       }
     },
+    "dt1ms-c100-aligned-hydro": {
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9997,
+          "max_depth_mm": 20.018,
+          "final_lateral_mm": 0.000277335,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 4000
+        }
+      }
+    },
     "dt1ms-c100-offset": {
       "mujoco311": {
         "status": "ok",
@@ -1424,6 +1580,9 @@
           "final_lateral_mm": 0.0900096,
           "stop_time_s": null,
           "peak_contact_N": 8.13372,
+          "peak_hand_force_N": 8.13372,
+          "peak_hand_force_xy_N": 2.57391,
+          "peak_hand_force_z_N": 7.71572,
           "peak_hand_moment_Nm": 0.348514,
           "peak_penetration_um": 11.4031,
           "contact_frames": 1231
@@ -1476,6 +1635,9 @@
           "final_lateral_mm": 0.0901247,
           "stop_time_s": null,
           "peak_contact_N": 8.13373,
+          "peak_hand_force_N": 8.13373,
+          "peak_hand_force_xy_N": 2.57392,
+          "peak_hand_force_z_N": 7.71573,
           "peak_hand_moment_Nm": 0.348515,
           "peak_penetration_um": 11.4037,
           "contact_frames": 1231
@@ -1530,6 +1692,9 @@
           "final_lateral_mm": 0.0904891,
           "stop_time_s": null,
           "peak_contact_N": 8.13221,
+          "peak_hand_force_N": 8.13221,
+          "peak_hand_force_xy_N": 2.5723,
+          "peak_hand_force_z_N": 7.71466,
           "peak_hand_moment_Nm": 0.348282,
           "peak_penetration_um": 11.3961,
           "contact_frames": 1210
@@ -1584,6 +1749,9 @@
           "final_lateral_mm": 0.090312,
           "stop_time_s": null,
           "peak_contact_N": 8.05125,
+          "peak_hand_force_N": 8.05125,
+          "peak_hand_force_xy_N": 2.56623,
+          "peak_hand_force_z_N": 7.63132,
           "peak_hand_moment_Nm": 0.348062,
           "peak_penetration_um": 11.2963,
           "contact_frames": 4000
@@ -1641,6 +1809,9 @@
           "final_lateral_mm": 0.0900538,
           "stop_time_s": null,
           "peak_contact_N": 5.13781,
+          "peak_hand_force_N": 5.13781,
+          "peak_hand_force_xy_N": 1.62729,
+          "peak_hand_force_z_N": 4.8733,
           "peak_hand_moment_Nm": 0.220264,
           "peak_penetration_um": 21.6229,
           "contact_frames": 2812
@@ -1694,6 +1865,9 @@
           "final_lateral_mm": 0.100037,
           "stop_time_s": null,
           "peak_contact_N": 8.13372,
+          "peak_hand_force_N": 8.13372,
+          "peak_hand_force_xy_N": 2.57391,
+          "peak_hand_force_z_N": 7.71572,
           "peak_hand_moment_Nm": 0.348514,
           "peak_penetration_um": 11.439,
           "contact_frames": 1034
@@ -1746,6 +1920,9 @@
           "final_lateral_mm": 0.100056,
           "stop_time_s": null,
           "peak_contact_N": 8.13373,
+          "peak_hand_force_N": 8.13373,
+          "peak_hand_force_xy_N": 2.57392,
+          "peak_hand_force_z_N": 7.71573,
           "peak_hand_moment_Nm": 0.348515,
           "peak_penetration_um": 11.4395,
           "contact_frames": 1056
@@ -1800,6 +1977,9 @@
           "final_lateral_mm": 0.100127,
           "stop_time_s": null,
           "peak_contact_N": 8.13223,
+          "peak_hand_force_N": 8.13223,
+          "peak_hand_force_xy_N": 2.57231,
+          "peak_hand_force_z_N": 7.71469,
           "peak_hand_moment_Nm": 0.348283,
           "peak_penetration_um": 11.4409,
           "contact_frames": 987
@@ -1854,6 +2034,9 @@
           "final_lateral_mm": 0.0998602,
           "stop_time_s": null,
           "peak_contact_N": 8.05125,
+          "peak_hand_force_N": 8.05125,
+          "peak_hand_force_xy_N": 2.56623,
+          "peak_hand_force_z_N": 7.63132,
           "peak_hand_moment_Nm": 0.348062,
           "peak_penetration_um": 11.3642,
           "contact_frames": 4000
@@ -1911,6 +2094,9 @@
           "final_lateral_mm": 0.100008,
           "stop_time_s": null,
           "peak_contact_N": 5.13781,
+          "peak_hand_force_N": 5.13781,
+          "peak_hand_force_xy_N": 1.62729,
+          "peak_hand_force_z_N": 4.8733,
           "peak_hand_moment_Nm": 0.220264,
           "peak_penetration_um": 21.6233,
           "contact_frames": 2793
@@ -1940,6 +2126,74 @@
         ]
       }
     },
+    "dt1ms-c100-offset-guided-hydro": {
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0,
+          "max_depth_mm": 20.0181,
+          "final_lateral_mm": 0.237679,
+          "stop_time_s": null,
+          "peak_contact_N": 2.63287,
+          "peak_hand_force_N": 2.63287,
+          "peak_hand_force_xy_N": 2.3532,
+          "peak_hand_force_z_N": 1.18085,
+          "peak_hand_moment_Nm": 0.361481,
+          "peak_penetration_um": 0.399802,
+          "contact_frames": 4000
+        }
+      }
+    },
+    "dt1ms-c100-offset-hydro": {
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0002,
+          "max_depth_mm": 20.0152,
+          "final_lateral_mm": 0.243292,
+          "stop_time_s": null,
+          "peak_contact_N": 2.63287,
+          "peak_hand_force_N": 2.63287,
+          "peak_hand_force_xy_N": 2.3532,
+          "peak_hand_force_z_N": 1.18085,
+          "peak_hand_moment_Nm": 0.361481,
+          "peak_penetration_um": 4.3711,
+          "contact_frames": 4000
+        }
+      }
+    },
     "dt1ms-c100-tilted": {
       "mujoco311": {
         "status": "ok",
@@ -1964,6 +2218,9 @@
           "final_lateral_mm": 0.102967,
           "stop_time_s": null,
           "peak_contact_N": 20.8851,
+          "peak_hand_force_N": 20.8851,
+          "peak_hand_force_xy_N": 3.07614,
+          "peak_hand_force_z_N": 20.6573,
           "peak_hand_moment_Nm": 0.419646,
           "peak_penetration_um": 4.12436,
           "contact_frames": 2027
@@ -2016,6 +2273,9 @@
           "final_lateral_mm": 0.103004,
           "stop_time_s": null,
           "peak_contact_N": 25.5446,
+          "peak_hand_force_N": 25.5446,
+          "peak_hand_force_xy_N": 4.28768,
+          "peak_hand_force_z_N": 25.1822,
           "peak_hand_moment_Nm": 0.441254,
           "peak_penetration_um": 4.38587,
           "contact_frames": 2030
@@ -2070,6 +2330,9 @@
           "final_lateral_mm": 0.102601,
           "stop_time_s": null,
           "peak_contact_N": 16.4974,
+          "peak_hand_force_N": 16.4974,
+          "peak_hand_force_xy_N": 2.51832,
+          "peak_hand_force_z_N": 16.3904,
           "peak_hand_moment_Nm": 0.360593,
           "peak_penetration_um": 5.16932,
           "contact_frames": 2032
@@ -2124,6 +2387,9 @@
           "final_lateral_mm": 0.105306,
           "stop_time_s": null,
           "peak_contact_N": 21.1997,
+          "peak_hand_force_N": 21.1997,
+          "peak_hand_force_xy_N": 3.17052,
+          "peak_hand_force_z_N": 20.9613,
           "peak_hand_moment_Nm": 0.419159,
           "peak_penetration_um": 3.83305,
           "contact_frames": 4000
@@ -2181,6 +2447,9 @@
           "final_lateral_mm": 0.103044,
           "stop_time_s": null,
           "peak_contact_N": 9.41227,
+          "peak_hand_force_N": 9.41227,
+          "peak_hand_force_xy_N": 0.812049,
+          "peak_hand_force_z_N": 9.3979,
           "peak_hand_moment_Nm": 0.0848669,
           "peak_penetration_um": 1.86619,
           "contact_frames": 2390
@@ -2223,7 +2492,8 @@
           "max_depth_mm": 12.2384,
           "final_lateral_mm": 0.101618,
           "stop_time_s": 1.992,
-          "peak_contact_N": 125.831
+          "peak_contact_N": 125.831,
+          "peak_hand_force_N": 125.831
         }
       },
       "article:newton_mjwarp": {
@@ -2240,7 +2510,8 @@
           "max_depth_mm": 15.3038,
           "final_lateral_mm": 0.102054,
           "stop_time_s": null,
-          "peak_contact_N": 17.3167
+          "peak_contact_N": 17.3167,
+          "peak_hand_force_N": 17.3167
         }
       },
       "article:mujoco_cpu": {
@@ -2257,7 +2528,8 @@
           "max_depth_mm": 15.3168,
           "final_lateral_mm": 0.103052,
           "stop_time_s": null,
-          "peak_contact_N": 16.5703
+          "peak_contact_N": 16.5703,
+          "peak_hand_force_N": 16.5703
         }
       },
       "article:genesis": {
@@ -2274,7 +2546,8 @@
           "max_depth_mm": 15.681,
           "final_lateral_mm": 0.103116,
           "stop_time_s": null,
-          "peak_contact_N": 10.8144
+          "peak_contact_N": 10.8144,
+          "peak_hand_force_N": 10.8144
         }
       }
     },
@@ -2302,6 +2575,9 @@
           "final_lateral_mm": 0.100713,
           "stop_time_s": null,
           "peak_contact_N": 19.8573,
+          "peak_hand_force_N": 19.8573,
+          "peak_hand_force_xy_N": 3.7083,
+          "peak_hand_force_z_N": 19.508,
           "peak_hand_moment_Nm": 0.33054,
           "peak_penetration_um": 3.66637,
           "contact_frames": 1994
@@ -2354,6 +2630,9 @@
           "final_lateral_mm": 0.100717,
           "stop_time_s": null,
           "peak_contact_N": 22.2005,
+          "peak_hand_force_N": 22.2005,
+          "peak_hand_force_xy_N": 3.89976,
+          "peak_hand_force_z_N": 21.8552,
           "peak_hand_moment_Nm": 0.339422,
           "peak_penetration_um": 4.41332,
           "contact_frames": 1969
@@ -2408,6 +2687,9 @@
           "final_lateral_mm": 0.100817,
           "stop_time_s": null,
           "peak_contact_N": 21.3517,
+          "peak_hand_force_N": 21.3517,
+          "peak_hand_force_xy_N": 3.997,
+          "peak_hand_force_z_N": 20.9836,
           "peak_hand_moment_Nm": 0.336263,
           "peak_penetration_um": 3.37963,
           "contact_frames": 2000
@@ -2462,6 +2744,9 @@
           "final_lateral_mm": 0.101692,
           "stop_time_s": null,
           "peak_contact_N": 20.114,
+          "peak_hand_force_N": 20.114,
+          "peak_hand_force_xy_N": 3.55889,
+          "peak_hand_force_z_N": 19.7967,
           "peak_hand_moment_Nm": 0.316912,
           "peak_penetration_um": 3.68571,
           "contact_frames": 4000
@@ -2519,6 +2804,9 @@
           "final_lateral_mm": 0.100751,
           "stop_time_s": null,
           "peak_contact_N": 4.77678,
+          "peak_hand_force_N": 4.77678,
+          "peak_hand_force_xy_N": 0.795619,
+          "peak_hand_force_z_N": 4.77152,
           "peak_hand_moment_Nm": 0.0828149,
           "peak_penetration_um": 1.16112,
           "contact_frames": 2389
@@ -2561,7 +2849,8 @@
           "max_depth_mm": 12.244,
           "final_lateral_mm": 0.101594,
           "stop_time_s": 1.992,
-          "peak_contact_N": 46.3168
+          "peak_contact_N": 46.3168,
+          "peak_hand_force_N": 46.3168
         }
       },
       "article:newton_mjwarp": {
@@ -2578,7 +2867,8 @@
           "max_depth_mm": 19.9338,
           "final_lateral_mm": 0.0708432,
           "stop_time_s": null,
-          "peak_contact_N": 15.9387
+          "peak_contact_N": 15.9387,
+          "peak_hand_force_N": 15.9387
         }
       },
       "article:mujoco_cpu": {
@@ -2595,7 +2885,8 @@
           "max_depth_mm": 19.9544,
           "final_lateral_mm": 0.0702636,
           "stop_time_s": null,
-          "peak_contact_N": 14.2561
+          "peak_contact_N": 14.2561,
+          "peak_hand_force_N": 14.2561
         }
       },
       "article:genesis": {
@@ -2612,7 +2903,76 @@
           "max_depth_mm": 19.9563,
           "final_lateral_mm": 0.0723343,
           "stop_time_s": null,
-          "peak_contact_N": 3.5888
+          "peak_contact_N": 3.5888,
+          "peak_hand_force_N": 3.5888
+        }
+      }
+    },
+    "dt1ms-c100-tilted-guided-hydro": {
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9996,
+          "max_depth_mm": 20.018,
+          "final_lateral_mm": 0.000494974,
+          "stop_time_s": null,
+          "peak_contact_N": 0.319939,
+          "peak_hand_force_N": 0.319939,
+          "peak_hand_force_xy_N": 0.278713,
+          "peak_hand_force_z_N": 0.157099,
+          "peak_hand_moment_Nm": 0.0399166,
+          "peak_penetration_um": 0.231529,
+          "contact_frames": 4000
+        }
+      }
+    },
+    "dt1ms-c100-tilted-hydro": {
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9997,
+          "max_depth_mm": 20.0181,
+          "final_lateral_mm": 0.000357719,
+          "stop_time_s": null,
+          "peak_contact_N": 0.319939,
+          "peak_hand_force_N": 0.319939,
+          "peak_hand_force_xy_N": 0.278713,
+          "peak_hand_force_z_N": 0.157099,
+          "peak_hand_moment_Nm": 0.0399166,
+          "peak_penetration_um": 0.231529,
+          "contact_frames": 4000
         }
       }
     },
@@ -2640,6 +3000,9 @@
           "final_lateral_mm": 0.00035156,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -2692,6 +3055,9 @@
           "final_lateral_mm": 0.00035156,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -2746,6 +3112,9 @@
           "final_lateral_mm": 0.000712829,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -2800,6 +3169,9 @@
           "final_lateral_mm": 0.000277335,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 4000
@@ -2857,6 +3229,9 @@
           "final_lateral_mm": 0.00035156,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -2910,6 +3285,9 @@
           "final_lateral_mm": 0.24963,
           "stop_time_s": null,
           "peak_contact_N": 1.40801,
+          "peak_hand_force_N": 1.40801,
+          "peak_hand_force_xy_N": 1.25944,
+          "peak_hand_force_z_N": 0.629518,
           "peak_hand_moment_Nm": 0.188583,
           "peak_penetration_um": 0.337105,
           "contact_frames": 234
@@ -2962,6 +3340,9 @@
           "final_lateral_mm": 0.249637,
           "stop_time_s": null,
           "peak_contact_N": 1.29512,
+          "peak_hand_force_N": 1.29512,
+          "peak_hand_force_xy_N": 1.15849,
+          "peak_hand_force_z_N": 0.579006,
           "peak_hand_moment_Nm": 0.185363,
           "peak_penetration_um": 0.256133,
           "contact_frames": 243
@@ -3016,6 +3397,9 @@
           "final_lateral_mm": 0.249993,
           "stop_time_s": null,
           "peak_contact_N": 1.30918,
+          "peak_hand_force_N": 1.30918,
+          "peak_hand_force_xy_N": 1.17102,
+          "peak_hand_force_z_N": 0.585377,
           "peak_hand_moment_Nm": 0.187374,
           "peak_penetration_um": 0.431655,
           "contact_frames": 211
@@ -3070,6 +3454,9 @@
           "final_lateral_mm": 0.249711,
           "stop_time_s": null,
           "peak_contact_N": 1.34822,
+          "peak_hand_force_N": 1.34822,
+          "peak_hand_force_xy_N": 1.19091,
+          "peak_hand_force_z_N": 0.631993,
           "peak_hand_moment_Nm": 0.190173,
           "peak_penetration_um": 0.468921,
           "contact_frames": 4000
@@ -3127,6 +3514,9 @@
           "final_lateral_mm": 0.249641,
           "stop_time_s": null,
           "peak_contact_N": 0.0137107,
+          "peak_hand_force_N": 0.0137107,
+          "peak_hand_force_xy_N": 0.0122632,
+          "peak_hand_force_z_N": 0.00613162,
           "peak_hand_moment_Nm": 0.001962,
           "peak_penetration_um": 0.083486,
           "contact_frames": 1656
@@ -3180,6 +3570,9 @@
           "final_lateral_mm": 0.0887336,
           "stop_time_s": null,
           "peak_contact_N": 1.27452,
+          "peak_hand_force_N": 1.27452,
+          "peak_hand_force_xy_N": 1.12999,
+          "peak_hand_force_z_N": 0.589513,
           "peak_hand_moment_Nm": 0.165178,
           "peak_penetration_um": 0.451689,
           "contact_frames": 1057
@@ -3232,6 +3625,9 @@
           "final_lateral_mm": 0.0889261,
           "stop_time_s": null,
           "peak_contact_N": 1.28118,
+          "peak_hand_force_N": 1.28118,
+          "peak_hand_force_xy_N": 1.13589,
+          "peak_hand_force_z_N": 0.5926,
           "peak_hand_moment_Nm": 0.166051,
           "peak_penetration_um": 0.48307,
           "contact_frames": 1058
@@ -3286,6 +3682,9 @@
           "final_lateral_mm": 0.0887475,
           "stop_time_s": null,
           "peak_contact_N": 1.25231,
+          "peak_hand_force_N": 1.25231,
+          "peak_hand_force_xy_N": 1.12015,
+          "peak_hand_force_z_N": 0.576877,
           "peak_hand_moment_Nm": 0.164001,
           "peak_penetration_um": 0.665383,
           "contact_frames": 1028
@@ -3340,6 +3739,9 @@
           "final_lateral_mm": 0.0892918,
           "stop_time_s": null,
           "peak_contact_N": 1.26543,
+          "peak_hand_force_N": 1.26543,
+          "peak_hand_force_xy_N": 1.12314,
+          "peak_hand_force_z_N": 0.846337,
           "peak_hand_moment_Nm": 0.164204,
           "peak_penetration_um": 0.587864,
           "contact_frames": 4000
@@ -3397,6 +3799,9 @@
           "final_lateral_mm": 0.0887595,
           "stop_time_s": null,
           "peak_contact_N": 0.0756768,
+          "peak_hand_force_N": 0.0756768,
+          "peak_hand_force_xy_N": 0.0670801,
+          "peak_hand_force_z_N": 0.035032,
           "peak_hand_moment_Nm": 0.00946215,
           "peak_penetration_um": 0.816646,
           "contact_frames": 1822
@@ -3450,6 +3855,9 @@
           "final_lateral_mm": 0.00035156,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -3502,6 +3910,9 @@
           "final_lateral_mm": 0.00035156,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -3556,6 +3967,9 @@
           "final_lateral_mm": 0.000712829,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -3610,6 +4024,9 @@
           "final_lateral_mm": 0.000277335,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 4000
@@ -3667,6 +4084,9 @@
           "final_lateral_mm": 0.00035156,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -3696,6 +4116,40 @@
         ]
       }
     },
+    "dt1ms-c500-aligned-hydro": {
+      "newton": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "3.15.0",
+          "mujoco-warp": "3.15.0",
+          "warp-lang": "1.19.0",
+          "newton": "1.7.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9997,
+          "max_depth_mm": 20.018,
+          "final_lateral_mm": 0.000277335,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
+          "peak_hand_moment_Nm": 0.0,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 4000
+        }
+      }
+    },
     "dt1ms-c500-offset": {
       "mujoco311": {
         "status": "ok",
@@ -3720,6 +4174,9 @@
           "final_lateral_mm": 0.24965,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -3772,6 +4229,9 @@
           "final_lateral_mm": 0.24965,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -3826,6 +4286,9 @@
           "final_lateral_mm": 0.250644,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -3880,6 +4343,9 @@
           "final_lateral_mm": 0.25004,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 4000
@@ -3937,6 +4403,9 @@
           "final_lateral_mm": 0.24965,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -3990,6 +4459,9 @@
           "final_lateral_mm": 0.00034933,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -4042,6 +4514,9 @@
           "final_lateral_mm": 0.00034933,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -4096,6 +4571,9 @@
           "final_lateral_mm": 0.00069333,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -4150,6 +4628,9 @@
           "final_lateral_mm": 0.000244261,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 4000
@@ -4207,6 +4688,9 @@
           "final_lateral_mm": 0.00034933,
           "stop_time_s": null,
           "peak_contact_N": 0.0,
+          "peak_hand_force_N": 0.0,
+          "peak_hand_force_xy_N": 0.0,
+          "peak_hand_force_z_N": 0.0,
           "peak_hand_moment_Nm": 0.0,
           "peak_penetration_um": 0.0,
           "contact_frames": 0
@@ -4234,6 +4718,248 @@
             "peak_penetration_um": 0.0
           }
         ]
+      }
+    }
+  },
+  "soft-insertion": {
+    "dt0.05ms-flex-peg": {
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 80000,
+          "completed": true,
+          "depth_reached": false,
+          "final_depth_mm": 10.3952,
+          "max_depth_mm": 10.4128,
+          "final_lateral_mm": 0.214753,
+          "stop_time_s": null,
+          "peak_contact_N": 6437.74,
+          "peak_hand_force_N": 6437.74,
+          "peak_hand_force_xy_N": 2.82695,
+          "peak_hand_force_z_N": 6437.74,
+          "peak_hand_moment_Nm": 83.208,
+          "peak_penetration_um": 8000.0,
+          "contact_frames": 80000,
+          "kind": "flex-peg",
+          "fem_E_Pa": 1000000.0,
+          "fem_nu": 0.3,
+          "yield_strain": 0.0,
+          "peak_vertex_disp_mm": 22.5247,
+          "continuum_valid": true
+        }
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.00028201,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 80000,
+          "completed": true,
+          "depth_reached": false,
+          "final_depth_mm": 10.4092,
+          "max_depth_mm": 10.4094,
+          "final_lateral_mm": 0.217596,
+          "stop_time_s": null,
+          "peak_contact_N": 5750.81,
+          "peak_hand_force_N": 5750.81,
+          "peak_hand_force_xy_N": 34.6107,
+          "peak_hand_force_z_N": 5750.81,
+          "peak_hand_moment_Nm": 95.6693,
+          "peak_penetration_um": 8000.0,
+          "contact_frames": 80000,
+          "kind": "flex-peg",
+          "fem_E_Pa": 1000000.0,
+          "fem_nu": 0.3,
+          "yield_strain": 0.0,
+          "peak_vertex_disp_mm": 22.523,
+          "continuum_valid": true
+        }
+      }
+    },
+    "dt0.05ms-flex-peg-y0.05": {
+      "mujoco4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 80000,
+          "completed": true,
+          "depth_reached": false,
+          "final_depth_mm": 10.3952,
+          "max_depth_mm": 10.4128,
+          "final_lateral_mm": 0.214753,
+          "stop_time_s": null,
+          "peak_contact_N": 6437.74,
+          "peak_hand_force_N": 6437.74,
+          "peak_hand_force_xy_N": 2.82695,
+          "peak_hand_force_z_N": 6437.74,
+          "peak_hand_moment_Nm": 83.208,
+          "peak_penetration_um": 8000.0,
+          "contact_frames": 80000,
+          "kind": "flex-peg",
+          "fem_E_Pa": 1000000.0,
+          "fem_nu": 0.3,
+          "yield_strain": 0.05,
+          "peak_vertex_disp_mm": 22.5247,
+          "continuum_valid": true,
+          "permanent_set_mm": 7.49495
+        }
+      },
+      "mjwarp4": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "mujoco-warp": "4.0.0",
+          "warp-lang": "1.19.0"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": 0.000302736,
+        "notes": [],
+        "error": null,
+        "metrics": {
+          "frames": 80000,
+          "completed": true,
+          "depth_reached": false,
+          "final_depth_mm": 10.4093,
+          "max_depth_mm": 10.4094,
+          "final_lateral_mm": 0.217519,
+          "stop_time_s": null,
+          "peak_contact_N": 5750.81,
+          "peak_hand_force_N": 5750.81,
+          "peak_hand_force_xy_N": 34.6107,
+          "peak_hand_force_z_N": 5750.81,
+          "peak_hand_moment_Nm": 95.6837,
+          "peak_penetration_um": 8000.0,
+          "contact_frames": 80000,
+          "kind": "flex-peg",
+          "fem_E_Pa": 1000000.0,
+          "fem_nu": 0.3,
+          "yield_strain": 0.05,
+          "peak_vertex_disp_mm": 22.5231,
+          "continuum_valid": true,
+          "permanent_set_mm": 7.57912
+        }
+      }
+    },
+    "dt1ms-fem-bore": {
+      "genesis": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "genesis-world": "1.4.5",
+          "quadrants": "1.3.3",
+          "torch": "2.14.1+cu130"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [
+          "genesis import set armature=[0.10000000149011612, 0.10000000149011612, 0.10000000149011612, 0.10000000149011612, 0.10000000149011612, 0.10000000149011612, 0.10000000149011612]; overridden to MJCF [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",
+          "fem_mode=bore E=1e+06 Pa nu=0.3 rho=1000.0 mu=0.5; attachment=coupler"
+        ],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 19.9997,
+          "max_depth_mm": 20.0172,
+          "final_lateral_mm": 0.0111084,
+          "stop_time_s": null,
+          "peak_contact_N": 0.0180705,
+          "peak_hand_force_N": 0.0180705,
+          "peak_hand_force_xy_N": 0.0125187,
+          "peak_hand_force_z_N": 0.0165829,
+          "peak_hand_moment_Nm": 0.00206712,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 4000,
+          "kind": "fem-bore",
+          "peak_vertex_disp_mm": 0.234097,
+          "fem_E_Pa": 1000000.0,
+          "fem_nu": 0.3,
+          "yield_strain": 0.0
+        }
+      }
+    },
+    "dt1ms-fem-peg": {
+      "genesis": {
+        "status": "ok",
+        "versions": {
+          "mujoco": "4.0.0",
+          "mujoco-core": "4.0.0",
+          "genesis-world": "1.4.5",
+          "quadrants": "1.3.3",
+          "torch": "2.14.1+cu130"
+        },
+        "seeds": [
+          0
+        ],
+        "seed_spread_m": null,
+        "path_diff_vs_mujoco4_m": null,
+        "notes": [
+          "genesis import set armature=[0.10000000149011612, 0.10000000149011612, 0.10000000149011612, 0.10000000149011612, 0.10000000149011612, 0.10000000149011612, 0.10000000149011612]; overridden to MJCF [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]",
+          "fem_mode=peg E=1e+06 Pa nu=0.3 rho=1000.0 mu=0.5; attachment=coupler"
+        ],
+        "error": null,
+        "metrics": {
+          "frames": 4000,
+          "completed": true,
+          "depth_reached": true,
+          "final_depth_mm": 20.0007,
+          "max_depth_mm": 20.0182,
+          "final_lateral_mm": 0.000397224,
+          "stop_time_s": null,
+          "peak_contact_N": 0.140197,
+          "peak_hand_force_N": 0.140197,
+          "peak_hand_force_xy_N": 0.140183,
+          "peak_hand_force_z_N": 0.0577838,
+          "peak_hand_moment_Nm": 0.0195482,
+          "peak_penetration_um": 0.0,
+          "contact_frames": 4000,
+          "kind": "fem-peg",
+          "peak_vertex_disp_mm": 12.181,
+          "fem_E_Pa": 1000000.0,
+          "fem_nu": 0.3,
+          "yield_strain": 0.0
+        }
       }
     }
   },

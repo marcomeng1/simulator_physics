@@ -28,19 +28,29 @@ DATA = WEB / "data"
 MAX_FRAMES = 700
 MAX_FACES = 40000
 POS_SCALE, QUAT_SCALE, FORCE_SCALE = 5e-5, 1 / 32767, 0.01
+# Per-contact forces need a finer scale than net body force: hydroelastic patches are mN each.
+CONTACT_FORCE_SCALE = 1e-4
+# Drop far zero-force proximity reports (Newton's mesh contact buffer can list thousands).
+CONTACT_IDLE_DIST = 0.003
 
 ROUTE_LABELS = {"mujoco311": "MuJoCo 3.11 CPU", "mujoco4": "MuJoCo 4.0 CPU",
                 "mjwarp4": "MuJoCo-Warp 4.0", "newton": "Newton 1.7",
-                "genesis": "Genesis 1.4.5", **{f"article:{k}": v for k, v in
-                                               ENGINE_LABELS.items()},
+                "newton-hydro": "Newton 1.7 hydro", "genesis": "Genesis 1.4.5",
+                **{f"article:{k}": v for k, v in ENGINE_LABELS.items()},
                 **{f"article:{k}#2": v.replace("(article)", "(article, repeat 2)")
                    for k, v in ENGINE_LABELS.items()}}
 
 # Replays shown on the site: primary variants plus the informative contrasts.
+# Insertion hydroelastic Newton runs live in <variant>-hydro folders and are merged
+# into each replay as route "newton-hydro" (not listed as separate scene entries).
+# Continuum soft-insertion (FEM / flex peg) is its own deformable scene, not a panel
+# on rigid peg-insertion.
 EXTRA_VARIANTS = {"stack": ["dt1ms-offset24mm"], "push": ["dt1ms-w80mm"],
                   "grasp": ["dt1ms-offset8mm"],
                   "insertion": ["dt1ms-c100-tilted-guided", "dt1ms-c100-offset",
                                 "dt1ms-c500-aligned"],
+                  "soft-insertion": ["dt1ms-fem-bore", "dt0.05ms-flex-peg",
+                                     "dt0.05ms-flex-peg-y0.05"],
                   "ball-compress": ["dt0.05ms-y0.03"],
                   "ball-grasp": ["dt0.05ms-e2N", "dt0.05ms-e1N-stiff", "dt0.05ms-e2N-y0.03",
                                  "dt0.05ms-e1N", "dt0.05ms-e1.1N"],
@@ -59,7 +69,7 @@ LADDER = [("No contact", ["hinge", "tumble", "panda-effort", "panda-tracking"]),
           ("Multi-object manipulation", ["push", "insertion"]),
           ("Patch contact", ["twist"]),
           ("Crowded", ["sweep"]),
-          ("Deformable", ["ball-compress", "ball-grasp"]),
+          ("Deformable", ["ball-compress", "ball-grasp", "soft-insertion", "cloth-fold"]),
           ("Elasto-plastic (new in 4.0)", ["hinge-plastic", "sheet"]),
           ("Legged locomotion", ["g1-walk"])]
 TITLES = {"slide": "Sliding block", "drop": "Drop and settle", "hinge": "Hinged link",
@@ -67,7 +77,9 @@ TITLES = {"slide": "Sliding block", "drop": "Drop and settle", "hinge": "Hinged 
           "collision-chain": "Collision chain", "panda-effort": "Panda open-loop effort",
           "panda-tracking": "Panda joint tracking", "grasp": "Grasp and lift",
           "stack": "Stacking", "push": "Channel push", "sweep": "Crowded sweep",
-          "insertion": "Peg insertion", "ball-compress": "Ball compression",
+          "insertion": "Peg insertion", "soft-insertion": "Soft peg / bore insertion",
+          "cloth-fold": "Dual-Franka cloth fold",
+          "ball-compress": "Ball compression",
           "ball-grasp": "Soft-ball grasp", "card-catch": "Thin card catch",
           "tumble": "Tumbling T-handle", "sheet": "Plastic sheet bend",
           "twist": "Pinch and twist", "g1-walk": "G1 walking on terrain"}
@@ -174,6 +186,15 @@ def replay(tr: Trace, bodies: list[str], stride: int) -> dict:
     """Downsampled poses, COM, net contact forces, joints and per-contact arrows."""
     idx = [tr.body(b) if b in tr.bodies else None for b in bodies]
     k = np.arange(0, len(tr.t), stride)
+    # Keep frames that carry contact force so brief yellow dots survive stride — but
+    # continuum flex contacts every step, so subsample hot frames to a budget.
+    if "c_frame" in tr.arrays and len(tr.c_frame):
+        hot = np.unique(tr.c_frame[np.linalg.norm(tr.c_force, axis=1) > 1e-6])
+        if len(hot):
+            budget = max(MAX_FRAMES, len(k) * 2)
+            if len(hot) > budget:
+                hot = hot[::int(np.ceil(len(hot) / budget))]
+            k = np.unique(np.concatenate([k, hot]))
     nb = len(bodies)
 
     def gather(arr, width):
@@ -193,10 +214,18 @@ def replay(tr: Trace, bodies: list[str], stride: int) -> dict:
         out["nq"] = int(tr.q.shape[1])
     if "c_frame" in tr.arrays and len(tr.c_frame):
         sel = np.isin(tr.c_frame, k)
-        frame = np.searchsorted(k, tr.c_frame[sel])
+        mag = np.linalg.norm(tr.c_force[sel], axis=1)
+        dist = tr.c_dist[sel] if "c_dist" in tr.arrays else np.zeros(int(sel.sum()))
+        keep = (mag > 1e-6) | (dist < CONTACT_IDLE_DIST)
+        frame = np.searchsorted(k, tr.c_frame[sel][keep])
         out["contacts"] = {"count": np.bincount(frame, minlength=len(k)).tolist(),
-                           "pos": _b64(tr.c_pos[sel], POS_SCALE),
-                           "force": _b64(tr.c_force[sel], FORCE_SCALE)}
+                           "pos": _b64(tr.c_pos[sel][keep], POS_SCALE),
+                           "force": _b64(tr.c_force[sel][keep], CONTACT_FORCE_SCALE)}
+    # Per-route solver / cloth stack (replay page fair-comparison notes).
+    if tr.meta.get("settings"):
+        out["settings"] = _jsonable(tr.meta["settings"])
+    if tr.meta.get("notes"):
+        out["notes"] = list(tr.meta["notes"])
     return out
 
 
@@ -209,6 +238,12 @@ def export_scene(scene: str, variant: str, meshes: dict, article: bool = True) -
         if tr is not None and tr.meta["status"] == "ok":
             stride = max(1, int(np.ceil(len(tr.t) / MAX_FRAMES)))
             routes[route] = replay(tr, geo["bodies"], stride)
+        # Companion Newton hydroelastic trace (same MJCF, SDF patches) as a sixth panel.
+        if route == "newton":
+            hydro = _load(scene, f"{variant}-hydro", "newton")
+            if hydro is not None and hydro.meta["status"] == "ok":
+                stride = max(1, int(np.ceil(len(hydro.t) / MAX_FRAMES)))
+                routes["newton-hydro"] = replay(hydro, geo["bodies"], stride)
     bundle = (BUNDLES.get(scene) if PRIMARY.get(scene) == variant
               else ARTICLE_VARIANTS.get(f"{scene}/{variant}"))
     if bundle and article:
@@ -217,9 +252,31 @@ def export_scene(scene: str, variant: str, meshes: dict, article: bool = True) -
             routes[tr.meta["route"]] = replay(tr, geo["bodies"], stride)
     if not routes:
         return None
+    # Cloth-fold: stamp per-route cloth model labels even on older traces.
+    engines = (geo.get("params") or {}).get("method", {}).get("engines") or {}
+    for name, blob in routes.items():
+        settings = dict(blob.get("settings") or {})
+        key = name.replace("-hydro", "")
+        if key == "mujoco4" or key == "mjwarp4":
+            settings.setdefault("cloth_model", "2D flex")
+            settings.setdefault("cloth_solver", "MuJoCo flex elasticity" if key == "mujoco4"
+                                else "MuJoCo-Warp flex elasticity")
+            settings.setdefault("robot_drive", "kinematic-tape")
+        elif key == "newton":
+            settings.setdefault("cloth_model", settings.pop("cloth", None) or "SolverVBD")
+            settings.setdefault("cloth_solver", "newton.solvers.SolverVBD")
+            settings.setdefault("robot_drive", settings.pop("robot", None) or "kinematic-tape")
+        elif key == "genesis":
+            settings.setdefault("cloth_model", settings.pop("cloth", None) or "PBD.Cloth")
+            settings.setdefault("cloth_solver", "genesis PBDSolver")
+            settings.setdefault("robot_drive", "kinematic-tape")
+        if engines.get(key):
+            settings.setdefault("cloth_stack", engines[key])
+        blob["settings"] = settings
     return {"scene": scene, "variant": variant, "title": TITLES[scene], **geo,
             "routes": routes, "scales": {
-                "pos": POS_SCALE, "quat": QUAT_SCALE, "force": FORCE_SCALE}}
+                "pos": POS_SCALE, "quat": QUAT_SCALE, "force": FORCE_SCALE,
+                "contact_force": CONTACT_FORCE_SCALE}}
 
 
 def ladder() -> list[dict]:
@@ -264,10 +321,14 @@ def export(public: bool = False) -> None:
             continue
         summaries[key] = json.loads(path.read_text())
     (DATA / "summary.json").write_text(json.dumps(summaries, separators=(",", ":")))
+    import time
+
     (DATA / "index.json").write_text(json.dumps(
-        {"replays": index, "routes": ROUTE_LABELS, "route_order": ROUTE_ORDER,
+        {"replays": index, "routes": ROUTE_LABELS,
+         "route_order": [*ROUTE_ORDER[:ROUTE_ORDER.index("newton") + 1], "newton-hydro",
+                         *ROUTE_ORDER[ROUTE_ORDER.index("newton") + 1:]],
          "headline": HEADLINE, "ladder_groups": LADDER, "ladder": ladder(),
-         "public": public}, indent=1))
+         "public": public, "build": int(time.time())}, indent=1))
     for licence, name in ((REPO / "assets" / "menagerie" / "franka_emika_panda" / "LICENSE",
                            "PANDA-LICENSE"), (UNITREE / "LICENSE", "UNITREE-LICENSE")):
         if licence.exists():

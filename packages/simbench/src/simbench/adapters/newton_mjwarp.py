@@ -151,9 +151,17 @@ class Sim:
     MuJoCo-Warp data, mapped back to MJCF body names.
     """
 
+    def __new__(cls, scene, seed: int = 0, cloth_vbd: bool = False, **kwargs):
+        # Dual-Franka cloth fold uses VBD, not SolverMuJoCo (MJCF flex is stripped).
+        if cloth_vbd or scene.params.get("task") == "cloth-fold":
+            from simbench.adapters.newton_cloth import Sim as ClothSim
+            return ClothSim(scene, seed=seed, cloth_vbd=True, **kwargs)
+        return super().__new__(cls)
+
     def __init__(self, scene, seed: int = 0, naconmax: int = 256, njmax: int = 1024,
                  contacts: str = "mujoco", kh: float = 1e11, sdf_resolution: int = 64,
-                 reduce: bool = True, mujoco_invweight: bool = False, **solver_options):
+                 reduce: bool = True, mujoco_invweight: bool = False, cloth_vbd: bool = False,
+                 **solver_options):
         """`contacts`: "mujoco" (MuJoCo-Warp collision), "newton" (Newton's collision
         pipeline, point contacts) or "hydroelastic" (Newton pipeline, SDF pressure patches).
 
@@ -161,6 +169,8 @@ class Sim:
         values MuJoCo compiles from the same MJCF. They set the constraint regularizer, and
         Newton 1.7 gives a hinged body a translational weight where MuJoCo gives 0.
         """
+        if cloth_vbd or scene.params.get("task") == "cloth-fold":
+            return
         import mujoco_warp as mjw
 
         self.mjw = mjw

@@ -47,11 +47,20 @@ def simulate(route: str, scene: Scene, seed: int = 0, tag: str = "",
             status, error = "nonfinite", f"non-finite state at t={t:.6f}s"
             break
         tau = scene.effort_at(t, state["q"], state["qd"], state)
+        # Optional pre-step hook (e.g. cloth-fold kinematic joint tape).
+        prepare = getattr(scene.controller, "prepare", None)
+        if prepare is not None:
+            prepare(t, sim)
         try:
             sim.step(tau)
         except Exception as exc:  # engine-level numerical failures are results, not crashes
             status, error = "error", f"{type(exc).__name__} at t={t:.6f}s: {exc}"
             break
+        # Optional controller hook (e.g. cloth-fold closed-finger particle attach).
+        post = getattr(scene.controller, "post_step", None)
+        if post is not None:
+            post(t, sim)
+            state = sim.state()  # record/observe the attached state
         if observe is None and k % stride:
             continue
         contacts = sim.contacts()

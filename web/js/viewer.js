@@ -188,7 +188,7 @@ export class Viewer {
         group.add(b);
         return b;
       });
-      const tint = new THREE.Color(colors[name]);
+      const tint = new THREE.Color(colors[name] ?? "#888888");
       for (const g of replay.geoms.filter((g) => g.body >= 0)) {
         const geo = geomMesh(g, replay.meshes, cache);
         if (!geo) continue;
@@ -319,6 +319,7 @@ export class Viewer {
     const each = this.opacity >= 1 ? 1 : 1 - (1 - this.opacity) ** (1 / stacked);
     names.forEach((name, i) => {
       const r = this.routes[name];
+      if (!r) return;
       const ghost = this.mode === "overlay" && i > 0;
       const alpha = Math.min(ghost ? 0.45 : 1, each);
       r.group.traverse((o) => {
@@ -404,17 +405,29 @@ export class Viewer {
     };
     const n = c.start[k + 1] - c.start[k];
     if (this.showPoints && n) {
+      // Yellow = nonzero force; blue (50% opacity) = inactive proximity (~0 N).
       const size = this.pointSize ?? 0.003;
-      const dots = new THREE.InstancedMesh(this.pointGeo, new THREE.MeshBasicMaterial({
-        color: 0xffe066, depthTest: false, transparent: true, opacity: 0.95 }), n);
-      const m = new THREE.Matrix4();
+      const active = [], idle = [];
       for (let i = 0; i < n; i++) {
         const j = c.start[k] + i;
-        m.makeScale(size, size, size).setPosition(c.pos[3 * j], c.pos[3 * j + 1], c.pos[3 * j + 2]);
-        dots.setMatrixAt(i, m);
+        const f = Math.hypot(c.force[3 * j], c.force[3 * j + 1], c.force[3 * j + 2]);
+        (f > 1e-4 ? active : idle).push(j);
       }
-      dots.renderOrder = 11;
-      r.arrows.add(dots);
+      const addDots = (idxs, color, opacity, scale, order) => {
+        if (!idxs.length) return;
+        const dots = new THREE.InstancedMesh(this.pointGeo, new THREE.MeshBasicMaterial({
+          color, depthTest: false, transparent: true, opacity, depthWrite: false }), idxs.length);
+        const m = new THREE.Matrix4();
+        const s = size * scale;
+        idxs.forEach((j, i) => {
+          m.makeScale(s, s, s).setPosition(c.pos[3 * j], c.pos[3 * j + 1], c.pos[3 * j + 2]);
+          dots.setMatrixAt(i, m);
+        });
+        dots.renderOrder = order;
+        r.arrows.add(dots);
+      };
+      addDots(idle, 0x6ec8ff, 0.5, 1.0, 11);
+      addDots(active, 0xffe066, 0.95, 1.15, 12);
     }
     if (!this.showForces) return;
     for (let i = c.start[k]; i < c.start[k + 1]; i++) {

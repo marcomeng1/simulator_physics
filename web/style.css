@@ -37,7 +37,11 @@ main { padding: 20px 28px 40px; }
 .prose h2 { font-size: 18px; margin: 6px 0 8px; }
 .muted { color: var(--muted); }
 h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted);
-     margin: 18px 0 8px; }
+     margin: 36px 0 10px; }
+/* Extra breathing room between scenario blocks on the scenarios tab. */
+#scenarios h3 { margin-top: 48px; padding-top: 18px; border-top: 1px solid #2a3340; }
+#scenarios h3:first-of-type,
+#scenarios h2.family + h3 { margin-top: 20px; padding-top: 0; border-top: none; }
 
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px;
          margin-bottom: 26px; }
@@ -108,6 +112,41 @@ button.link { background: none; border: 0; color: var(--accent); cursor: pointer
 .grid2 > div > div { background: var(--panel); border: 1px solid var(--line); border-radius: 10px;
                      padding: 6px; }
 .u-legend { font-size: 12px; }
+.contact-key, .contact-legend {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px;
+  color: #c3c9d2; font-size: 12px; line-height: 1.35;
+}
+.contact-key { margin: 0 0 10px 22px; }
+.contact-legend {
+  margin: 8px 0 0; padding: 8px 12px; border: 1px solid var(--line);
+  border-radius: 8px; background: #141920;
+}
+.contact-key .swatch, .contact-legend .swatch {
+  width: 10px; height: 10px; border-radius: 50%; display: inline-block; flex: none;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.15);
+}
+.contact-key .swatch.active, .contact-legend .swatch.active { background: #ffe066; }
+.contact-key .swatch.idle, .contact-legend .swatch.idle { background: #6ec8ff; }
+.contact-legend .swatch.idle-fade { opacity: 0.5; }
+.contact-explain {
+  margin: 10px 2px 0; padding: 10px 12px; max-width: 920px;
+  border: 1px solid var(--line); border-radius: 8px; background: #141920;
+  color: #c3c9d2; font-size: 12.5px; line-height: 1.5;
+}
+.contact-explain:empty { display: none; }
+.contact-explain b { color: var(--text); font-weight: 600; }
+#scene-method:empty { display: none; }
+#scene-method h3 { margin-top: 18px; }
+.method-box {
+  margin: 0 0 14px; padding: 12px 14px; max-width: 1100px;
+  border: 1px solid var(--line); border-radius: 8px; background: #141920;
+  color: #c3c9d2; font-size: 12.5px; line-height: 1.5;
+}
+.method-box p { margin: 0 0 8px; }
+.method-box p:last-child { margin-bottom: 10px; }
+.method-box b { color: var(--text); font-weight: 600; }
+.method-box table { margin: 0; }
+.method-box td.wrap { white-space: normal; text-align: left; max-width: 420px; }
 footer { padding: 16px 28px 30px; color: var(--muted); border-top: 1px solid var(--line); }
 
 @media (max-width: 1000px) {
@@ -165,10 +204,10 @@ h2.sec { font-size: 17px; margin: 0 0 8px; }
 .advice strong { color: var(--text); display: block; }
 .advice { list-style: none; padding-left: 0; }
 .advice li { border-left: 3px solid var(--accent, #4fb3ff); padding-left: 10px; }
-.short { margin: 14px 0 26px; padding: 8px 12px; border-radius: 6px; background: #1b2430;
+.short { margin: 16px 0 40px; padding: 8px 12px; border-radius: 6px; background: #1b2430;
   border-left: 3px solid #3fcf8e; color: #d7dde5; max-width: 980px; }
 .short b { color: #3fcf8e; }
-h2.family { margin: 44px 0 6px; padding-top: 14px; border-top: 1px solid #2a3340;
+h2.family { margin: 56px 0 10px; padding-top: 22px; border-top: 1px solid #2a3340;
   font-size: 1.35em; }
 
 /* charts */

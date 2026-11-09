@@ -1,16 +1,32 @@
-import { json, loadReplay } from "./data.js";
+import { json, loadReplay, setCacheBust } from "./data.js";
 import { bars, dots, fmt, legend, lines, matrix } from "./charts.js";
 import { fmtSI, logPlot, timePlot } from "./plots.js";
 import { frameAt, Viewer } from "./viewer.js";
 
 const COLORS = {
   mujoco311: "#9aa5b1", mujoco4: "#4fb3ff", mjwarp4: "#3fcf8e", newton: "#b48cff",
-  genesis: "#ff9f43", "article:mujoco_cpu": "#c9d1d9", "article:newton_mjwarp": "#d6b8ff",
-  "article:genesis": "#ffd29b", "article:physx": "#ff7b9c", "article:mujoco_warp": "#a8ecc8",
+  "newton-hydro": "#f472b6", genesis: "#ff9f43", "article:mujoco_cpu": "#c9d1d9",
+  "article:newton_mjwarp": "#d6b8ff", "article:genesis": "#ffd29b", "article:physx": "#ff7b9c",
+  "article:mujoco_warp": "#a8ecc8",
 };
 for (const k of Object.keys(COLORS)) if (k.startsWith("article:")) COLORS[`${k}#2`] = COLORS[k];
 const GPU = ["mjwarp4", "newton", "genesis"];
 const ROUTES = ["mujoco311", "mujoco4", ...GPU];
+// Side-by-side / engine list order: Newton hydro sits beside Newton point contacts.
+const ROUTE_DISPLAY = ["mujoco311", "mujoco4", "mjwarp4", "newton", "newton-hydro", "genesis"];
+
+function orderRoutes(names) {
+  const set = new Set(names);
+  const main = ROUTE_DISPLAY.filter((n) => set.has(n));
+  const rest = names.filter((n) => !ROUTE_DISPLAY.includes(n) && !n.startsWith("article:"));
+  const articles = names.filter((n) => n.startsWith("article:"));
+  return [...main, ...rest, ...articles];
+}
+
+function defaultVisible(names) {
+  // Show the five engines plus Newton hydro when present; hide article traces by default.
+  return orderRoutes(names).filter((n) => !n.startsWith("article:"));
+}
 // Plan summaries holding per-scene variant tables, searched in order.
 const PLANS = ["phase1", "phase2", "phase3", "phase6", "plastic", "mj4new", "patch", "terrain"];
 const DEFAULT_SIGNAL = {
@@ -487,17 +503,19 @@ let visible = [];
 
 function buildRouteList() {
   const box = $("#route-list");
-  box.replaceChildren(...Object.keys(current.routes).map((name) => {
+  const names = orderRoutes(Object.keys(current.routes));
+  box.replaceChildren(...names.map((name) => {
     const row = el("div", { class: `route ${visible.includes(name) ? "" : "off"}`,
                             onclick: () => {
                               visible = visible.includes(name) ? visible.filter((n) => n !== name)
-                                : Object.keys(current.routes).filter((n) => visible.includes(n)
-                                                                       || n === name);
+                                : orderRoutes(Object.keys(current.routes)).filter((n) =>
+                                  visible.includes(n) || n === name);
                               buildRouteList();
                               viewer.setVisible(visible);
                               drawPlot();
                             } },
-                   el("span", { class: "chip", style: `background:${COLORS[name]}` }),
+                   el("span", { class: "chip",
+                                style: `background:${COLORS[name] ?? "#888"}` }),
                    label(name));
     return row;
   }));
@@ -513,14 +531,18 @@ async function openReplay(file, routes) {
   pending = null;
   current = { ...replay, file };
   const names = Object.keys(current.routes);
-  visible = routes?.filter((r) => names.includes(r))
-    ?? names.filter((n) => !n.startsWith("article:") || names.length < 3);
+  visible = routes?.length
+    ? orderRoutes(routes.filter((r) => names.includes(r)))
+    : defaultVisible(names);
+  // Keep article traces available if the caller asked for a tiny compare set only.
+  if (!routes?.length && names.length < 3) visible = orderRoutes(names);
   viewer.load(current, COLORS);
   viewer.setVisible(visible);
   buildRouteList();
   buildSignals();
   playT = 0;
   seek(0);
+  sceneMethod();
   sceneMetrics();
 }
 
@@ -635,17 +657,113 @@ function table(headers, rows, cls = "") {
     el("tbody", {}, rows)));
 }
 
+function sceneMethod() {
+  const box = $("#scene-method");
+  if (!box) return;
+  const method = current.params?.method;
+  if (!method || current.scene !== "cloth-fold") {
+    box.replaceChildren();
+    return;
+  }
+  const card = method.cloth_card ?? {};
+  const engines = method.engines ?? {};
+  const fallback = {
+    mujoco4: { model: "2D flex", solver: "MuJoCo flex elasticity" },
+    mjwarp4: { model: "2D flex", solver: "MuJoCo-Warp flex elasticity" },
+    newton: { model: "SolverVBD", solver: "newton.solvers.SolverVBD" },
+    genesis: { model: "PBD.Cloth", solver: "genesis PBDSolver" },
+  };
+  const routeOrder = orderRoutes(Object.keys(current.routes));
+  const engineRows = routeOrder.map((r) => {
+    const s = current.routes[r]?.settings ?? {};
+    const key = r.replace(/-hydro$/, "");
+    const blurb = engines[r] ?? engines[key] ?? "—";
+    const fb = fallback[key] ?? {};
+    const model = s.cloth_model || s.cloth || fb.model || "—";
+    const solver = s.cloth_solver || fb.solver || s.engine || "—";
+    const drive = s.robot_drive || current.params?.robot_drive || "kinematic-tape";
+    return el("tr", {},
+      el("td", {}, el("span", { class: "chip-inline", style: `color:${COLORS[r] ?? "#aaa"}` },
+         "■ "), label(r)),
+      el("td", {}, model),
+      el("td", {}, solver),
+      el("td", {}, drive),
+      el("td", { class: "wrap" }, blurb));
+  });
+  box.replaceChildren(
+    el("h3", {}, "Fair comparison — controller & cloth stacks"),
+    el("div", { class: "method-box" },
+      el("p", {}, el("b", {}, "Controller: "), method.controller || ""),
+      el("p", {}, el("b", {}, "Grasp: "), method.grasp || ""),
+      el("p", {}, el("b", {}, "Shared cloth card: "),
+         `ρ=${card.areal_density ?? "?"} kg/m², thickness=${card.thickness_m ?? "?"} m, `,
+         `E=${card.young ?? "?"} Pa, damping=${card.damping ?? "?"}, `,
+         `grid ${card.nx ?? "?"}×${card.ny ?? "?"} on ${card.size_m ?? "?"} m`),
+      table(["engine", "cloth model", "solver", "robot drive", "notes"], engineRows),
+    ),
+  );
+}
+
 function sceneMetrics() {
-  const rows = variantRows(current.scene, current.variant);
+  const rows = { ...variantRows(current.scene, current.variant) };
+  // Hydroelastic Newton is merged into the replay as "newton-hydro" from <variant>-hydro.
+  if (current.routes["newton-hydro"]) {
+    const hydro = variantRows(current.scene, `${current.variant}-hydro`).newton;
+    if (hydro) rows["newton-hydro"] = hydro;
+  }
   const keys = INDEX.headline[current.scene] ?? [];
+  const order = [...ROUTES, "newton-hydro"].filter((r) => rows[r]);
+  const extra = Object.keys(rows).filter((r) => !order.includes(r));
   $("#scene-metrics").replaceChildren(el("h3", {}, "Metrics for this variant"), table(
     ["engine", ...keys, "seed spread"],
-    Object.entries(rows).map(([r, row]) => el("tr", {},
-      el("td", {}, el("span", { class: "chip-inline", style: `color:${COLORS[r]}` }, "■ "),
-         label(r)),
-      keys.map((k) => el("td", {}, num(row.metrics?.[k]))),
-      el("td", {}, mm(row.seed_spread_m)))),
+    [...order, ...extra].map((r) => {
+      const row = rows[r];
+      return el("tr", {},
+        el("td", {}, el("span", { class: "chip-inline", style: `color:${COLORS[r] ?? "#aaa"}` },
+           "■ "), label(r)),
+        keys.map((k) => el("td", {}, num(row.metrics?.[k]))),
+        el("td", {}, mm(row.seed_spread_m)));
+    }),
   ));
+  contactNote();
+}
+
+// Yellow dots carry force; cool-blue dots are proximity reports with ~0 N (common on
+// Newton's MuJoCo-Warp 3.15 mesh contact buffer before first touch).
+function contactNote() {
+  const note = $("#contact-note");
+  if (!current) { note.textContent = ""; return; }
+  let idle = 0, active = 0, newtonIdle = false, hydroIdle = false;
+  for (const [name, r] of Object.entries(current.routes)) {
+    const c = r.contacts;
+    if (!c) continue;
+    let routeIdle = 0, routeActive = 0;
+    const n = c.start[c.start.length - 1];
+    for (let j = 0; j < n; j++) {
+      const f = Math.hypot(c.force[3 * j], c.force[3 * j + 1], c.force[3 * j + 2]);
+      if (f > 1e-4) { active += 1; routeActive += 1; }
+      else { idle += 1; routeIdle += 1; }
+    }
+    if (name === "newton" && routeIdle > routeActive) newtonIdle = true;
+    if (name === "newton-hydro" && routeIdle > routeActive) hydroIdle = true;
+  }
+  if (!idle && !active) { note.replaceChildren(); return; }
+  const parts = [
+    el("div", {}, el("b", {}, "Contact points. "),
+       "Yellow = active (nonzero force), drawn on top. ",
+       "Blue at 50% opacity = inactive proximity (~0 N), kept so the buffer is visible without hiding yellow points."),
+  ];
+  if (newtonIdle) {
+    parts.push(el("div", {}, el("b", {}, "Newton (point contacts). "),
+      "MuJoCo-Warp often lists every peg–bore pair from t = 0 with zero force; those stay blue. ",
+      "First yellow force matches the other engines."));
+  }
+  if (hydroIdle) {
+    parts.push(el("div", {}, el("b", {}, "Newton hydroelastic. "),
+      "SDF hydroelastic emits many nearby samples at 0 N (blue, translucent). ",
+      "Only samples that carry force are yellow — that is the load-bearing patch."));
+  }
+  note.replaceChildren(...parts);
 }
 
 // --- versions, sensitivity -----------------------------------------------------------
@@ -748,13 +866,17 @@ function sweepTable() {
 
 function insertionTable() {
   const ins = get(SUMMARY, "phase6", "insertion") ?? {};
-  const variants = Object.keys(ins).sort((a, b) => a.localeCompare(b));
-  const cols = [...ROUTES, "article:mujoco_cpu"];
+  // Hydro companions are folded into the parent replay as "newton-hydro", not matrix rows.
+  const variants = Object.keys(ins).filter((v) => !v.endsWith("-hydro") && !v.endsWith("-fem"))
+    .sort((a, b) => a.localeCompare(b));
+  const cols = [...ROUTES, "newton-hydro", "article:mujoco_cpu"];
   $("#p6-insertion").replaceChildren(matrix(variants.map((v) => {
     const [, c, kind, guided] = v.match(/c(\d+)-(\w+)(-guided)?/);
     return `${+c / 1000} mm · ${kind}${guided ? " · guided" : ""}`;
-  }), cols.map((r) => ({ label: label(r), color: COLORS[r] })), (i, j) => {
-    const row = ins[variants[i]][cols[j]];
+  }), cols.map((r) => ({ label: label(r), color: COLORS[r] ?? "#aaa" })), (i, j) => {
+    const route = cols[j];
+    const row = route === "newton-hydro" ? ins[`${variants[i]}-hydro`]?.newton
+      : ins[variants[i]]?.[route];
     if (!row) return null;
     const seeds = row.seed_metrics ?? [row.metrics];
     const pass = seeds.filter((s) => s.depth_reached).length;
@@ -763,8 +885,75 @@ function insertionTable() {
       : "bad", title: `final depth ${fx(row.metrics.final_depth_mm, 2)} mm, peak contact `
       + `${fx(row.metrics.peak_contact_N, 1)} N`, onclick: file ? () => openReplay(file) : null };
   }, { corner: "clearance · approach" }),
-  el("p", { class: "muted" }, "Cells: runs that reached 19 mm. Every engine jams on the tilted "
-    + "0.1 mm case and passes it with the guided controller."));
+  el("p", { class: "muted" }, "Cells: runs that reached 19 mm. Point-contact engines all jam on "
+    + "the tilted 0.1 mm case and pass it with the guided controller. Newton hydro (when "
+    + "present) can pass the same open-impedance tilt with ~0.3 N — see the discussion "
+    + "above. Continuum soft peg/bore cases live under Deformable → Soft peg / bore."));
+}
+
+function softInsertionTable() {
+  const rows = get(SUMMARY, "phase6", "soft-insertion") ?? {};
+  const order = ["dt1ms-fem-peg", "dt1ms-fem-bore", "dt0.05ms-flex-peg",
+                 "dt0.05ms-flex-peg-y0.05"];
+  const variants = order.filter((v) => rows[v]).concat(
+    Object.keys(rows).filter((v) => !order.includes(v)).sort());
+  const cols = ["genesis", "mujoco4", "mjwarp4"];
+  const titles = {
+    "dt1ms-fem-peg": "A1 Genesis FEM peg / rigid bore",
+    "dt1ms-fem-bore": "A2 rigid peg / Genesis FEM bore",
+    "dt0.05ms-flex-peg": "M1 MuJoCo flex peg elastic (E=20 kPa)",
+    "dt0.05ms-flex-peg-y0.05": "M2 MuJoCo flex peg yield 0.05",
+  };
+  const elBox = $("#def-soft-insertion");
+  if (!elBox) return;
+  elBox.replaceChildren(matrix(variants.map((v) => titles[v] ?? v),
+    cols.map((r) => ({ label: label(r), color: COLORS[r] ?? "#aaa" })), (i, j) => {
+      const row = rows[variants[i]]?.[cols[j]];
+      if (!row) return null;
+      const m = row.metrics ?? {};
+      const file = replayFor("soft-insertion", variants[i]);
+      const pass = m.depth_reached;
+      return {
+        text: pass ? `${fx(m.final_depth_mm, 1)} mm` : `${fx(m.final_depth_mm, 1)} mm`,
+        tone: pass ? "good" : "bad",
+        title: `hand |F| ${fx(m.peak_hand_force_N, 2)} N, |M| ${fx(m.peak_hand_moment_Nm, 3)} N·m`
+          + (m.peak_vertex_disp_mm != null ? `, disp ${fx(m.peak_vertex_disp_mm, 2)} mm` : "")
+          + (m.permanent_set_mm != null ? `, set ${fx(m.permanent_set_mm, 2)} mm` : ""),
+        onclick: file ? () => openReplay(file) : null,
+      };
+    }, { corner: "material case" }),
+  el("p", { class: "muted" }, "Cells: final depth (pass ≥ 19 mm). Title shows peak hand wrench "
+    + "(contact force / moment about the Franka hand). Continuum cases are not merged into "
+    + "the rigid peg-insertion matrix."));
+}
+
+function clothFoldTable() {
+  const rows = get(SUMMARY, "phase6", "cloth-fold") ?? {};
+  const variants = Object.keys(rows).sort();
+  const cols = ["mujoco4", "mjwarp4", "newton", "genesis"];
+  const elBox = $("#def-cloth-fold");
+  if (!elBox) return;
+  if (!variants.length) {
+    elBox.replaceChildren(el("p", { class: "muted" }, "No cloth-fold runs in phase6 yet."));
+    return;
+  }
+  elBox.replaceChildren(matrix(variants.map((v) => v.replace(/^dt[\d.]+ms-?/, "") || v),
+    cols.map((r) => ({ label: label(r), color: COLORS[r] ?? "#aaa" })), (i, j) => {
+      const row = rows[variants[i]]?.[cols[j]];
+      if (!row) return null;
+      const m = row.metrics ?? {};
+      const file = replayFor("cloth-fold", variants[i]);
+      const pass = m.passed;
+      return {
+        text: m.coverage == null ? "—" : `${fx(m.coverage * 100, 0)}%`,
+        tone: pass ? "good" : "bad",
+        title: `coverage ${fx((m.coverage ?? 0) * 100, 1)}%, slip ${fx(m.grasp_slip_mm, 1)} mm`,
+        onclick: file ? () => openReplay(file) : null,
+      };
+    }, { corner: "variant" }),
+  el("p", { class: "muted" }, "Cells: fraction of cloth vertices with y ≤ 0 after the fold "
+    + "(pass ≥ 80%). Title shows grasp slip of the pinched patches. Open the replay for the "
+    + "shared kinematic controller and per-engine cloth model (2D flex / VBD / PBD)."));
 }
 
 function tuningTable() {
@@ -800,6 +989,8 @@ const OUTCOME = {
   stack: ["stack_survives", (v) => (v ? "stands" : "falls")],
   push: ["passed_count", (v) => `${v}/3`],
   insertion: ["final_depth_mm", (v) => `${fx(v, 1)} mm`],
+  "soft-insertion": ["final_depth_mm", (v) => `${fx(v, 1)} mm`],
+  "cloth-fold": ["coverage", (v) => `${fx((v ?? 0) * 100, 0)}%`],
   sweep: ["collected", (v) => `${v}/15`],
   "ball-compress": ["hold_plate_load_N", (v) => `${fx(v, 2)} N`],
   "ball-grasp": ["hold_lift_mm", (v) => (v == null ? "invalid" : `${fx(v, 1)} mm`)],
@@ -813,7 +1004,9 @@ const OUTCOME_LABEL = {
   "panda-tracking": "tracking error", slide: "peak contact force", drop: "peak contact force",
   "card-catch": "card at 1 m/s", "collision-chain": "peak horizontal force",
   grasp: "hold lift", stack: "20 mm offset stack", push: "objects through channel",
-  insertion: "tilted 0.1 mm depth", sweep: "objects collected", "ball-compress": "plate load",
+  insertion: "tilted 0.1 mm depth", "soft-insertion": "soft peg depth",
+  "cloth-fold": "fold coverage",
+  sweep: "objects collected", "ball-compress": "plate load",
   "ball-grasp": "2 N hold lift", "hinge-plastic": "rest angle", sheet: "tip set",
   twist: "disc slip torque", "g1-walk": "flat, 0.6 m/s",
 };
@@ -823,6 +1016,8 @@ const outcomeTone = (scene, m, row) => {
   if (scene === "stack") return m.stack_survives ? "good" : "bad";
   if (scene === "push") return m.passed_count === 3 ? "good" : "warn";
   if (scene === "ball-grasp") return m.hold_lift_mm == null ? "bad" : "good";
+  if (scene === "soft-insertion") return m.depth_reached ? "good" : "bad";
+  if (scene === "cloth-fold") return m.passed ? "good" : "bad";
   if (scene === "hinge-plastic") return Math.abs(m.final_error_deg) < 0.05 ? "good" : "bad";
   if (scene === "g1-walk") return m.fell ? "bad" : "good";
   if (scene === "twist") return Math.abs(m.slip_ratio - 1) < 0.25 ? "good" : "warn";
@@ -1098,6 +1293,8 @@ function deformable() {
   $("#support-matrix").replaceChildren(supportMatrix(),
     el("p", { class: "muted" }, "Newton and Genesis are not run on MJCF flex: the article "
       + "compares their own soft-body solvers (VBD, FEM), which do not read it."));
+  softInsertionTable();
+  clothFoldTable();
   defCompress();
   defGrasp();
   defHinge();
@@ -1311,6 +1508,9 @@ function audit() {
 
 async function main() {
   [INDEX, SUMMARY] = await Promise.all([json("data/index.json"), json("data/summary.json")]);
+  // Replay fetches append ?v=<build> so a fresh `make web` is picked up without fighting
+  // a stale browser cache of the previous export.
+  setCacheBust(INDEX.build || INDEX.replays?.length || Date.now());
   viewer = new Viewer($("#viewer"));
   viewer.routeLabel = label;
   document.querySelectorAll("nav button").forEach((b) =>
@@ -1345,8 +1545,14 @@ async function main() {
   $("#show-forces").addEventListener("change", (e) => { viewer.showForces = e.target.checked;
                                                         seek(playT); });
   $("#show-trails").addEventListener("change", (e) => { viewer.showTrails = e.target.checked; });
-  $("#show-points").addEventListener("change", (e) => { viewer.showPoints = e.target.checked;
-                                                        seek(playT); });
+  $("#show-points").addEventListener("change", (e) => {
+    viewer.showPoints = e.target.checked;
+    const dim = e.target.checked ? "1" : "0.35";
+    $("#contact-key").style.opacity = dim;
+    $("#contact-legend").style.opacity = dim;
+    $("#contact-note").style.opacity = dim;
+    seek(playT);
+  });
   const setOpacity = (v) => { $("#opacity").value = v; viewer.setOpacity(+v); };
   $("#opacity").addEventListener("input", (e) => setOpacity(e.target.value));
   $("#xray").addEventListener("click", () => setOpacity(viewer.opacity < 1 ? 1 : 0.3));
