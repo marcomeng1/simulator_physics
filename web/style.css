@@ -85,6 +85,13 @@ select { background: #20262e; color: var(--text); border: 1px solid var(--line);
           border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
 #viewer .vp-label { position: absolute; top: 8px; font-size: 12px; padding: 2px 8px;
                     border-radius: 5px; background: rgba(0, 0, 0, 0.55); pointer-events: none; }
+/* View controls sit directly under the canvas, not in the scene sidebar. */
+.view-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px;
+            margin: 8px 0 0; padding: 8px 10px; background: var(--panel);
+            border: 1px solid var(--line); border-radius: 10px; }
+.view-bar .seg { margin: 0; }
+.view-bar .check { margin: 0; }
+.view-bar .check.opacity { flex: 1 1 160px; min-width: 140px; }
 .transport { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
 .transport button { width: 36px; height: 30px; border-radius: 6px; border: 1px solid var(--line);
                     background: #20262e; color: var(--text); cursor: pointer; }

@@ -1551,7 +1551,6 @@ async function main() {
   $("#show-points").addEventListener("change", (e) => {
     viewer.showPoints = e.target.checked;
     const dim = e.target.checked ? "1" : "0.35";
-    $("#contact-key").style.opacity = dim;
     $("#contact-legend").style.opacity = dim;
     $("#contact-note").style.opacity = dim;
     seek(playT);
