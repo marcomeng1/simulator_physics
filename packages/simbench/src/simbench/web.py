@@ -252,21 +252,22 @@ def export_scene(scene: str, variant: str, meshes: dict, article: bool = True) -
             routes[tr.meta["route"]] = replay(tr, geo["bodies"], stride)
     if not routes:
         return None
-    # Cloth-fold: stamp per-route cloth model labels even on older traces.
+    # Soft-shell scenes: stamp per-route cloth model labels even on older traces.
     engines = (geo.get("params") or {}).get("method", {}).get("engines") or {}
+    soft = scene == "cloth-fold"
     for name, blob in routes.items():
         settings = dict(blob.get("settings") or {})
         key = name.replace("-hydro", "")
-        if key == "mujoco4" or key == "mjwarp4":
+        if soft and key in ("mujoco4", "mjwarp4"):
             settings.setdefault("cloth_model", "2D flex")
             settings.setdefault("cloth_solver", "MuJoCo flex elasticity" if key == "mujoco4"
                                 else "MuJoCo-Warp flex elasticity")
             settings.setdefault("robot_drive", "kinematic-tape")
-        elif key == "newton":
+        elif soft and key == "newton":
             settings.setdefault("cloth_model", settings.pop("cloth", None) or "SolverVBD")
             settings.setdefault("cloth_solver", "newton.solvers.SolverVBD")
             settings.setdefault("robot_drive", settings.pop("robot", None) or "kinematic-tape")
-        elif key == "genesis":
+        elif soft and key == "genesis":
             settings.setdefault("cloth_model", settings.pop("cloth", None) or "PBD.Cloth")
             settings.setdefault("cloth_solver", "genesis PBDSolver")
             settings.setdefault("robot_drive", "kinematic-tape")

@@ -152,8 +152,9 @@ class Sim:
     """
 
     def __new__(cls, scene, seed: int = 0, cloth_vbd: bool = False, **kwargs):
-        # Dual-Franka cloth fold uses VBD, not SolverMuJoCo (MJCF flex is stripped).
-        if cloth_vbd or scene.params.get("task") == "cloth-fold":
+        # Soft shell scenes use VBD, not SolverMuJoCo (MJCF flex is stripped).
+        task = scene.params.get("task")
+        if cloth_vbd or task == "cloth-fold":
             from simbench.adapters.newton_cloth import Sim as ClothSim
             return ClothSim(scene, seed=seed, cloth_vbd=True, **kwargs)
         return super().__new__(cls)

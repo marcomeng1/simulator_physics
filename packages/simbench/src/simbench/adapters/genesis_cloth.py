@@ -61,23 +61,24 @@ class Sim:
         rest = np.asarray(p["cloth_rest"], float).copy()
         faces = np.asarray(p["faces"], int)
         # Match MuJoCo grid spacing; oversized PBD particles made kinematic pads blast the sheet.
-        size = float(cloth["size_m"])
+        size_x = float(cloth.get("size_x", cloth["size_m"]))
         nx = max(int(cloth["nx"]), 2)
-        particle_size = min(size / (nx - 1), 0.02)
-        # Sit on the table top (z=0): rest z must clear the PBD particle radius.
+        particle_size = min(size_x / (nx - 1), 0.02)
+        # Cloth-fold: rest the sheet on the table plane (z≈0).
         rest[:, 2] = 0.5 * particle_size + 0.002
         obj = path.with_name(path.stem + "_cloth.obj")
         _write_cloth_obj(obj, rest, faces)
 
+        lo, hi = (-1.0, -1.0, 0.5 * particle_size), (2.0, 2.0, 2.0)
         self.gs_scene = gs.Scene(
             sim_options=gs.options.SimOptions(dt=scene.dt, gravity=(0, 0, -9.81)),
             rigid_options=gs.options.RigidOptions(dt=scene.dt),
             pbd_options=gs.options.PBDOptions(
                 dt=scene.dt,
                 particle_size=particle_size,
-                # Floor at table top (cloth has collision=False vs kinematic pads).
-                lower_bound=(-1.0, -1.0, 0.5 * particle_size),
-                upper_bound=(2.0, 2.0, 2.0),
+                # Floor bound carries the soft sheet (rigid↔PBD collision often off).
+                lower_bound=lo,
+                upper_bound=hi,
             ),
             show_viewer=False,
         )
@@ -113,6 +114,8 @@ class Sim:
         self.contact_names = list(scene.bodies)
         self.notes = ["genesis cloth: PBD.Cloth + kinematic tape + pinch attach"]
         self._link = {link.name: link for link in self.robot.links}
+        hands = p.get("hand_bodies") or {"L_": "L_hand", "R_": "R_hand"}
+        self.hand_bodies = {k: hands.get(k, f"{k}hand") for k in ("L_", "R_")}
         self.attach_window = p.get("attach_window") or [0.65, 2.60]
         self._step = 0
         self._local = None
@@ -189,13 +192,18 @@ class Sim:
         self._attach_pinch(t)
 
     def _drive_robot(self, t: float) -> None:
-        """Open-loop joint tape via position control (same kinematic intent as Newton)."""
+        """Joint targets via position control (kinematic tape)."""
         ctrl = self.scene.controller
-        if not (self.dofs and self.qs and hasattr(ctrl, "qref")):
+        if not (self.dofs and self.qs):
             return
-        k = min(max(int(round(t / self.ctrl_dt)), 0), len(ctrl.qref) - 1)
-        qref = self.torch.as_tensor(
-            ctrl.qref[k], dtype=self.gs.tc_float, device=self.gs.device)
+        if hasattr(ctrl, "joint_targets"):
+            targets = np.asarray(ctrl.joint_targets(t), float)
+        elif hasattr(ctrl, "qref"):
+            k = min(max(int(round(t / self.ctrl_dt)), 0), len(ctrl.qref) - 1)
+            targets = np.asarray(ctrl.qref[k], float)
+        else:
+            return
+        qref = self.torch.as_tensor(targets, dtype=self.gs.tc_float, device=self.gs.device)
         self.robot.set_dofs_position(qref, self.dofs)
         self.robot.control_dofs_position(qref, self.dofs)
 
@@ -209,7 +217,7 @@ class Sim:
         if self._local is None:
             self._local = {}
             for pref, pids in self._pinch_particles.items():
-                link = self._link.get(pref + "hand")
+                link = self._link.get(self.hand_bodies.get(pref, pref + "hand"))
                 if link is None or not pids:
                     continue
                 p = link.get_pos().detach().cpu().numpy().astype(float)
@@ -219,7 +227,7 @@ class Sim:
                 self._local[pref] = np.array(
                     [_rotate_wxyz(q_inv, particles[i] - p) for i in pids], float)
         for pref, pids in self._pinch_particles.items():
-            link = self._link.get(pref + "hand")
+            link = self._link.get(self.hand_bodies.get(pref, pref + "hand"))
             if link is None or pref not in self._local or not pids:
                 continue
             p = link.get_pos().detach().cpu().numpy().astype(float)

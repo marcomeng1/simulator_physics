@@ -4,7 +4,8 @@ RUN = uv run --locked --project envs/$(1) simbench
 PORT ?= 8000
 
 .PHONY: sync fetch env-report audit tapes lint test phase1 phase2 phase3 phase4 phase6 \
-	plastic mj4new patch terrain tuning versions bench web serve site-data publish-data
+	plastic mj4new patch terrain tuning versions bench web serve site-data \
+	publish-data
 
 phase1 phase2:
 	@for r in $(ROUTES); do $(call RUN,$$r) run-plan --route $$r --plan $@ || exit 1; done

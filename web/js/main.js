@@ -690,6 +690,9 @@ function sceneMethod() {
       el("td", {}, drive),
       el("td", { class: "wrap" }, blurb));
   });
+  const size = card.size_x != null
+    ? `${card.size_x}×${card.size_y ?? "?"} m`
+    : `${card.size_m ?? "?"} m`;
   box.replaceChildren(
     el("h3", {}, "Fair comparison — controller & cloth stacks"),
     el("div", { class: "method-box" },
@@ -698,7 +701,7 @@ function sceneMethod() {
       el("p", {}, el("b", {}, "Shared cloth card: "),
          `ρ=${card.areal_density ?? "?"} kg/m², thickness=${card.thickness_m ?? "?"} m, `,
          `E=${card.young ?? "?"} Pa, damping=${card.damping ?? "?"}, `,
-         `grid ${card.nx ?? "?"}×${card.ny ?? "?"} on ${card.size_m ?? "?"} m`),
+         `grid ${card.nx ?? "?"}×${card.ny ?? "?"} on ${size}`),
       table(["engine", "cloth model", "solver", "robot drive", "notes"], engineRows),
     ),
   );

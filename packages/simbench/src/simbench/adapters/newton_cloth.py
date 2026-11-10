@@ -46,8 +46,11 @@ class Sim:
         path = _rigid_mjcf(scene)
         builder = newton.ModelBuilder(gravity=(0.0, 0.0, -9.81))
         builder.add_mjcf(str(path))
-        nx, ny, size = int(cloth["nx"]), int(cloth["ny"]), float(cloth["size_m"])
-        cell = size / max(nx - 1, 1)
+        nx, ny = int(cloth["nx"]), int(cloth["ny"])
+        size_x = float(cloth.get("size_x", cloth["size_m"]))
+        size_y = float(cloth.get("size_y", cloth["size_m"]))
+        cell_x = size_x / max(nx - 1, 1)
+        cell_y = size_y / max(ny - 1, 1)
         rest = np.asarray(p["cloth_rest"], float)
         origin = rest[0]
         radius = float(p.get("cloth_radius", cloth["thickness_m"]))
@@ -57,9 +60,9 @@ class Sim:
             vel=wp.vec3(0.0, 0.0, 0.0),
             dim_x=nx - 1,
             dim_y=ny - 1,
-            cell_x=cell,
-            cell_y=cell,
-            mass=float(cloth["areal_density"]) * cell * cell,
+            cell_x=cell_x,
+            cell_y=cell_y,
+            mass=float(cloth["areal_density"]) * cell_x * cell_y,
             tri_ke=float(cloth["young"]) * float(cloth["thickness_m"]),
             tri_ka=float(cloth["young"]) * float(cloth["thickness_m"]) * 0.5,
             tri_kd=float(cloth["damping"]),
@@ -100,6 +103,8 @@ class Sim:
         p = scene.params
         self.pinch = {"L_": list(p.get("pinch_left") or []),
                       "R_": list(p.get("pinch_right") or [])}
+        hands = p.get("hand_bodies") or {"L_": "L_hand", "R_": "R_hand"}
+        self.hand_bodies = {k: hands.get(k, f"{k}hand") for k in ("L_", "R_")}
         self.attach_window = p.get("attach_window") or [0.65, 2.60]
         self.rest = np.asarray(p["cloth_rest"], float)
 
@@ -160,12 +165,14 @@ class Sim:
 
     def _drive_robot(self, t: float) -> None:
         ctrl = self.scene.controller
-        k = int(round(t / CTRL_DT))
-        if hasattr(ctrl, "qref"):
+        q = self.s0.joint_q.numpy().copy()
+        if hasattr(ctrl, "joint_targets"):
+            q[self.q_idx] = np.asarray(ctrl.joint_targets(t), np.float32)
+        elif hasattr(ctrl, "qref"):
+            k = int(round(t / CTRL_DT))
             k = min(max(k, 0), len(ctrl.qref) - 1)
-            q = self.s0.joint_q.numpy().copy()
             q[self.q_idx] = ctrl.qref[k].astype(np.float32)
-            self.s0.joint_q.assign(q)
+        self.s0.joint_q.assign(q)
         self.s0.joint_qd.zero_()
         newton.eval_fk(self.model, self.s0.joint_q, self.s0.joint_qd, self.s0)
 
@@ -183,7 +190,7 @@ class Sim:
             # Capture hand-local offsets from *current* particle positions (xyzw quat).
             self._local = {}
             for pref, ids in self.pinch.items():
-                hand = self.body_index.get(pref + "hand")
+                hand = self.body_index.get(self.hand_bodies.get(pref, pref + "hand"))
                 if hand is None:
                     continue
                 pq = body_q[hand]
@@ -192,7 +199,7 @@ class Sim:
                 self._local[pref] = np.array(
                     [_rotate_xyzw(q_inv, particles[i] - p) for i in ids], float)
         for pref, ids in self.pinch.items():
-            hand = self.body_index.get(pref + "hand")
+            hand = self.body_index.get(self.hand_bodies.get(pref, pref + "hand"))
             if hand is None or pref not in self._local:
                 continue
             pq = body_q[hand]
