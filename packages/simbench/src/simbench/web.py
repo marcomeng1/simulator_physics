@@ -55,9 +55,9 @@ EXTRA_VARIANTS = {"stack": ["dt1ms-offset24mm"], "push": ["dt1ms-w80mm"],
                   "ball-grasp": ["dt0.05ms-e2N", "dt0.05ms-e1N-stiff", "dt0.05ms-e2N-y0.03",
                                  "dt0.05ms-e1N", "dt0.05ms-e1.1N"],
                   "hinge-plastic": ["dt1ms-elastic"],
-                  "card-catch": ["dt1ms-v1-soft", "dt1ms-v3", "dt1ms-v3-speculative",
-                                 "dt1ms-v1-speculative", "dt1ms-v1-w30",
-                                 "dt1ms-v1-w30-speculative", "dt1ms-v10-speculative"],
+                  # PRIMARY is dt16ms-v2 (official-style large step). Companions are other
+                  # hard cases; mujoco4 runs each with SPECULATIVE baked into that route.
+                  "card-catch": ["dt1ms-v3", "dt1ms-v10", "dt8ms-v2"],
                   "tumble": ["dt10ms-rk4", "dt2ms-euler"], "sheet": ["dt0.1ms-elastic"],
                   "twist": ["dt1ms-disc-iw", "dt1ms-disc-hydro-iw", "dt1ms-square"],
                   "g1-walk": [f"dt2ms-{t}-v0.6" for t in ("glass", "sand", "mud", "sponge")]}

@@ -139,24 +139,25 @@ const replayButton = (scene, variant, text = "▶ Watch the replay") => {
   return file ? el("a", { class: "go replay-go", onclick: () => openReplay(file) }, text) : "";
 };
 
-// Card outcome on the thin plate: [text, tone].
-const CARD_ROUTES = [["mujoco311", ""], ["mujoco4", ""], ["mujoco4", "-speculative"],
-                     ["mjwarp4", ""], ["newton", ""], ["genesis", ""]];
-const cardCols = () => CARD_ROUTES.map(([r, v]) => ({
-  label: v ? "MuJoCo 4.0 + speculative" : label(r), color: COLORS[r] }));
-const CARD_CASES = [["dt1ms-v0.3", "0.3 m/s"], ["dt1ms-v1", "1 m/s"], ["dt1ms-v3", "3 m/s"],
-                    ["dt1ms-v10", "10 m/s"], ["dt2ms-v1", "1 m/s, 2 ms step"],
-                    ["dt1ms-v1-w30", "1 m/s + 30 rad/s spin"],
-                    ["dt1ms-v1-soft", "1 m/s, article's 10 ms contact"]];
-function cardCell(variant, route, suffix) {
-  const row = get(variantRows("card-catch", variant + suffix), route);
-  if (!row) return suffix && route === "mujoco4" ? null : { text: "—", tone: "muted" };
+// Five-engine matrix only (mujoco4 runs with SPECULATIVE baked into that route).
+const CARD_ROUTES = ROUTES.map((r) => [r, ""]);
+const cardCols = () => CARD_ROUTES.map(([r]) => ({ label: label(r), color: COLORS[r] }));
+// Official-style hard cases only (no ≤1 m/s / soft / single-engine -speculative rows).
+const CARD_CASES = [
+  ["dt16ms-v2", "2 m/s · 16 ms ★"],
+  ["dt8ms-v2", "2 m/s · 8 ms"],
+  ["dt1ms-v3", "3 m/s · 1 ms"],
+  ["dt1ms-v10", "10 m/s · 1 ms"],
+];
+function cardCell(variant, route) {
+  const row = get(variantRows("card-catch", variant), route);
+  if (!row) return { text: "—", tone: "muted" };
   if (row.status === "error") return { text: "error", tone: "muted", title: row.error };
   const m = row.metrics;
   const tone = { caught: "good", tunneled: "bad", "off plate": "warn" }[m.outcome];
   const text = m.outcome === "tunneled" ? `through at ${fx(m.tunnel_at_s * 1e3, 0)} ms`
     : m.outcome;
-  const file = replayFor("card-catch", variant + suffix);
+  const file = replayFor("card-catch", variant);
   return { text, tone, onclick: file ? () => openReplay(file) : null };
 }
 
@@ -199,10 +200,14 @@ function supportRows() {
       : ["silently ignored", "bad"];
   };
   const spec = (r) => {
-    const row = get(variantRows("card-catch", "dt1ms-v1-speculative"), r);
-    if (r === "mujoco4") return row?.metrics?.caught ? ["works", "good"] : ["fails", "bad"];
-    if (r === "mujoco311") return ["absent", "muted"];
-    return r === "mjwarp4" ? ["not implemented", "muted"] : ["no equivalent", "muted"];
+    // Headline: 2 m/s @ 16 ms (official demo scale). mujoco4 enables SPECULATIVE on-route.
+    const row = get(variantRows("card-catch", "dt16ms-v2"), r);
+    if (r === "mujoco4") {
+      return row?.metrics?.caught ? ["catches @ 16 ms", "good"] : ["fails", "bad"];
+    }
+    if (r === "mujoco311") return ["absent (tunnels)", "muted"];
+    if (r === "mjwarp4") return ["not implemented", "muted"];
+    return row?.metrics?.outcome === "tunneled" ? ["tunnels", "bad"] : ["no equivalent", "muted"];
   };
   const rk4 = (r) => {
     const e = metric("tumble", "dt10ms-rk4", r, "max_error_deg");
@@ -288,17 +293,18 @@ function overview() {
     },
     {
       topic: "New in 4.0: speculative contacts",
-      claim: "A stiff contact catches a thin card on every engine; only speculative contacts "
-        + "catch a fast one.",
-      replay: ["card-catch", "dt1ms-v3-speculative"],
-      text: "A 0.3 mm card on a 1 mm plate is caught at 0.3–1 m/s on all five engines when the "
-        + "contact time constant is two timesteps; with the article's 10 ms it sinks past the "
-        + "plate's mid-plane and falls through even at 0.3 m/s. From 2 mm of travel per step "
-        + "(3 m/s at 1 ms) only MuJoCo 4.0 CPU's speculative contacts catch it.",
-      chart: () => matrix(CARD_CASES.slice(0, 4).concat([CARD_CASES[5]]).map(([, t]) => t),
-        CARD_ROUTES.map(([r, v]) => ({ label: v ? "4.0 + spec." : SHORT[r], color: COLORS[r] })),
+      claim: "At the official demo scale (2 m/s, 16 ms step) every engine tunnels the thin "
+        + "card; only MuJoCo 4.0 CPU catches it.",
+      replay: ["card-catch", "dt16ms-v2"],
+      text: "Turn on with flag speculative=\"enable\" in <option> (or enable=[\"SPECULATIVE\"] "
+        + "in Python); without it, 4.0 tunnels like the others. Discrete CCD only sees "
+        + "overlaps at step boundaries, so slow speed or small Δt keeps v·Δt ≲ 0.65 mm and "
+        + "every engine catches — the official hard scale (≳2 m/s, 8–16 ms) jumps past that. "
+        + "Warp rejects the flag.",
+      chart: () => matrix(CARD_CASES.map(([, t]) => t),
+        CARD_ROUTES.map(([r]) => ({ label: SHORT[r], color: COLORS[r] })),
         (i, j) => {
-          const c = cardCell([...CARD_CASES.slice(0, 4), CARD_CASES[5]][i][0], ...CARD_ROUTES[j]);
+          const c = cardCell(CARD_CASES[i][0], CARD_ROUTES[j][0]);
           return c && { ...c, text: c.text.startsWith("through") ? "✕" : c.text === "caught" ? "✓"
             : "~", onclick: null };
         }),
@@ -404,7 +410,7 @@ function overview() {
     "scenarios#twist", ["twist", "dt1ms-disc-hydro-iw"]],
     ["Thin parts (cards, sheet metal)", "Set the contact time constant to two timesteps and "
       + "keep v·dt below half the combined thickness; beyond that, MuJoCo 4.0 CPU with "
-      + "speculative contacts.", "mujoco4#card", ["card-catch", "dt1ms-v3-speculative"]],
+      + "speculative contacts.", "mujoco4#card", ["card-catch", "dt16ms-v2"]],
     ["Throwing, flying, tumbling", "Use RK4 on MuJoCo 4.0 CPU or a smaller step; Euler and "
       + "implicitfast drift degrees within seconds.", "mujoco4#tumble", ["tumble", "dt10ms-rk4"]],
     ["Soft and plastic objects", "MuJoCo 4.0 (CPU or MuJoCo-Warp) with a stiff pad contact "
@@ -453,11 +459,6 @@ function beyond() {
     out.push([`A 1 mm shell with bending yield 0.002 keeps a ${fx(sh, 1)} mm tip set after a `
       + `15 mm press on 4.0 CPU and ${fx(shw, 1)} mm on MuJoCo-Warp; at 0.004 it springs back.`,
     "scenarios#plastic-sheet", ["sheet", "dt0.1ms-yb0.002"]]);
-  }
-  const spin = get(variantRows("card-catch", "dt1ms-v1-w30-speculative"), "mujoco4", "metrics");
-  if (spin && !spin.caught) {
-    out.push(["Speculative contacts catch a flat card at up to 10 m/s, but not one spinning at "
-      + "30 rad/s.", "mujoco4#card", ["card-catch", "dt1ms-v1-w30-speculative"]]);
   }
   const gi = metric("tumble", "dt2ms-implicitfast", "genesis", "max_error_deg");
   const mi = metric("tumble", "dt2ms-implicitfast", "mujoco4", "max_error_deg");
@@ -1005,7 +1006,7 @@ const OUTCOME = {
 const OUTCOME_LABEL = {
   hinge: "error vs analytic", tumble: "RK4 error, 2 ms", "panda-effort": "hand excursion",
   "panda-tracking": "tracking error", slide: "peak contact force", drop: "peak contact force",
-  "card-catch": "card at 1 m/s", "collision-chain": "peak horizontal force",
+  "card-catch": "2 m/s · 16 ms (official scale)", "collision-chain": "peak horizontal force",
   grasp: "hold lift", stack: "20 mm offset stack", push: "objects through channel",
   insertion: "tilted 0.1 mm depth", "soft-insertion": "soft peg depth",
   "cloth-fold": "fold coverage",
@@ -1115,21 +1116,20 @@ function versionsChart() {
 function cardSection() {
   const cols = cardCols();
   $("#card-matrix").replaceChildren(matrix(CARD_CASES.map(([, t]) => t), cols, (i, j) =>
-    cardCell(CARD_CASES[i][0], ...CARD_ROUTES[j]), { corner: "impact speed" }),
-  el("p", { class: "muted" }, "Click a cell for its replay. 'Through at N ms' is when the card's "
-    + "centre passed below the plate inside its footprint."));
+    cardCell(CARD_CASES[i][0], CARD_ROUTES[j][0]), { corner: "case" }),
+  el("p", { class: "muted" }, "Same scene on all five engines. MuJoCo 4.0 CPU enables "
+    + "SPECULATIVE on this route (Warp rejects the flag). Click a cell for its replay."));
   const z = (v, r) => metric("card-catch", v, r, "height_mm");
-  const series = [...ROUTES.map((r) => ({ label: label(r), color: COLORS[r], r, v: "dt1ms-v3" })),
-                  { label: "4.0 + speculative", color: "#ffe066", r: "mujoco4",
-                    v: "dt1ms-v3-speculative" }]
-    .map((s) => ({ ...s, points: (z(s.v, s.r) ?? []).slice(0, 21).map((h, k) => [k, h]),
+  const series = ROUTES.map((r) => ({ label: label(r), color: COLORS[r], r, v: "dt16ms-v2" }))
+    .map((s) => ({ ...s, points: (z(s.v, s.r) ?? []).map((h, k) => [k * 16, h]),
                    marker: true })).filter((s) => s.points.length);
-  $("#card-chart").replaceChildren(lines(series, { xlabel: "time [ms], 3 m/s release, 1 ms step",
-    ylabel: "card centre above plate top [mm]", ymin: -8, ymax: 6, xmin: 0, xmax: 20,
+  $("#card-chart").replaceChildren(lines(series, {
+    xlabel: "time [ms], 2 m/s release, 16 ms step (official scale)",
+    ylabel: "card centre above plate top [mm]", ymin: -8, ymax: 8, xmin: 0, xmax: 160,
     hline: { value: -1, label: "plate bottom (1 mm plate)", color: "#ff6b6b" }, height: 280 }),
-  el("p", { class: "muted" }, "Without speculative contacts the five engines trace the same "
-    + "falling line, so they overlap as one."),
-  replayLink("card-catch", "dt1ms-v3", "Open the 3 m/s card replay →"));
+  el("p", { class: "muted" }, "Discrete engines share the tunneling trajectory; MuJoCo 4.0 "
+    + "with speculative contacts arrests on the plate."),
+  replayLink("card-catch", "dt16ms-v2", "Open the 16 ms card replay →"));
 }
 
 function tumbleSection() {

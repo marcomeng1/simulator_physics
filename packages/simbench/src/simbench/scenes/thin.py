@@ -8,6 +8,9 @@ card-catch  An 88 x 63 x 0.3 mm, 1.8 g playing card released flat 5 mm above a 1
             thickness (0.65 mm) before stopping it, and a step longer than that half
             thickness, which only continuous collision (`speculative`, 4.0) handles. The
             default time constant is two timesteps, the stiffest MuJoCo recommends.
+            Headline (PRIMARY ``dt16ms-v2``) matches the official speculative demo scale:
+            ≳2 m/s at a 16 ms step. MuJoCo 4.0 CPU enables SPECULATIVE on that route;
+            other engines (and 4.0 without the flag) tunnel. Easy ≤1 m/s cases are omitted.
 tumble      A free T-handle spun about its intermediate principal axis with no gravity
             (the Dzhanibekov flip). 4.0 made RK4 fourth-order for free-body
             orientations; the metric compares against an independent rigid-body solve.

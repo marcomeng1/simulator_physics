@@ -44,8 +44,16 @@ CONTACT_OPTIONS = [
 JACOBIAN = [("jac-dense", {"jacobian": "DENSE"}, CPU), ("jac-sparse", {"jacobian": "SPARSE"}, CPU)]
 DETERMINISTIC = {"mjwarp4": {"deterministic": True}, "newton": {"deterministic": "RUN_TO_RUN"}}
 
-CARD_CASES = [(0.001, v, 0.0) for v in (0.3, 1.0, 3.0, 10.0)] + [(0.002, 1.0, 0.0),
-                                                                (0.001, 1.0, 30.0)]
+# Thin-card headline: cases where discrete CCD tunnels (v·dt ≳ half-thickness) but MuJoCo
+# 4.0 CPU + SPECULATIVE catches. Aligns with the official demo (≳2 m/s at 8–16 ms).
+# No ≤1 m/s / soft / spin rows — those pass on every engine and hide the 4.0 feature.
+CARD_CASES = [
+    (0.001, 3.0, 0.0),   # ~3 mm/step
+    (0.001, 10.0, 0.0),  # ~10 mm/step
+    (0.008, 2.0, 0.0),   # official threshold: discrete misses above ~8 ms
+    (0.016, 2.0, 0.0),   # official speculative demo timestep
+]
+CARD_OTHERS = ("mujoco311", "mjwarp4", "newton", "genesis")
 
 
 _IW, _HYDRO = {"mujoco_invweight": True}, {"contacts": "hydroelastic", "naconmax": 12000,
@@ -205,13 +213,14 @@ PLANS: dict[str, list[Run]] = {
     # Other MuJoCo 4.0 changes: speculative contacts on a thin card, fourth-order RK4
     # orientations on a tumbling free body, and 2D shell bending plasticity.
     "mj4new": [
-        *[r for dt, v, w in CARD_CASES for r in [
-            Run("card-catch", {"dt": dt, "speed": v, "spin": w}, tag=_card_tag(v, w)),
-            *_option_runs("card-catch", {"dt": dt, "speed": v, "spin": w}, _card_tag(v, w),
-                          [("speculative", {"enable": ["SPECULATIVE"]}, MJ4)])]],
-        # The article's 10 ms contact time constant instead of two timesteps.
-        *[Run("card-catch", {"dt": 0.001, "speed": v, "contact_tc": 0.01},
-              tag=f"v{v:g}-soft") for v in (0.3, 1.0)],
+        # Same variant tag for all five engines: mujoco4 alone gets SPECULATIVE (Warp/311
+        # reject or lack the flag). No separate -speculative single-engine rows.
+        *[Run("card-catch", {"dt": dt, "speed": v, "spin": w}, tag=_card_tag(v, w),
+              routes=CARD_OTHERS)
+          for dt, v, w in CARD_CASES],
+        *[Run("card-catch", {"dt": dt, "speed": v, "spin": w}, tag=_card_tag(v, w),
+              sim={"options": {"enable": ["SPECULATIVE"]}}, routes=MJ4)
+          for dt, v, w in CARD_CASES],
         *[Run("tumble", {"dt": dt, "integrator": "RK4"}, tag="rk4")
           for dt in (0.01, 0.005, 0.002, 0.001)],
         *[Run("tumble", {"dt": dt, "integrator": integ}, tag=integ.lower())
@@ -249,7 +258,7 @@ PRIMARY = {"slide": "dt2ms", "drop": "dt1ms", "hinge": "dt1ms", "collision-chain
            "insertion": "dt1ms-c100-tilted", "soft-insertion": "dt1ms-fem-peg",
            "cloth-fold": "dt0.1ms-square",
            "ball-compress": "dt0.05ms",
-           "hinge-plastic": "dt1ms-y5deg", "card-catch": "dt1ms-v1",
+           "hinge-plastic": "dt1ms-y5deg", "card-catch": "dt16ms-v2",
            "tumble": "dt2ms-rk4", "sheet": "dt0.1ms-yb0.002",
            "ball-grasp": "dt0.05ms-e2N-stiff", "twist": "dt1ms-disc",
            "g1-walk": "dt2ms-flat-v0.6"}

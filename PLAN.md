@@ -240,18 +240,16 @@ traces are scored with the same metric code.
 
 ### Other MuJoCo 4.0 features (`mj4new.json`)
 - Thin card catch (speculative contacts): an 88 × 63 × 0.3 mm, 1.8 g card released
-  5 mm above a 1 mm static plate.
+  5 mm above a 1 mm static plate. Headline is the official demo scale (~2 m/s at
+  8–16 ms); easy ≤1 m/s / soft / spin rows and single-engine `-speculative` tags are
+  omitted — they pass on every engine or only run on mujoco4.
   - Once penetration passes half the combined thickness (0.65 mm), the box–box normal
-    flips and the card is pushed out of the far side. Two causes get it there:
-    - Soft contact. With the article's 10 ms time constant (`solref 0.01 1`), the
-      contact is found (penetration 0.23 mm at first touch at 0.3 m/s) but barely slows
-      the card, which falls through on every route even at 0.3 m/s (`-soft` variants).
-      The scene therefore uses two timesteps (`solref 0.002 1` at 1 ms).
-    - Long steps. With that stiff contact all five routes catch the card at 0.3 and
-      1 m/s, also spinning at 30 rad/s. At 3 and 10 m/s (1 ms) and at 1 m/s with 2 ms
-      steps (2 mm or more per step) it falls through on every route.
-  - MuJoCo 4.0 with `enable="SPECULATIVE"` catches it in every case.
-  - MuJoCo-Warp 4.0 does not implement the flag. Newton and Genesis have no equivalent.
+    flips and the card tunnels. Discrete CCD misses whenever `v·dt ≳ 0.65 mm`.
+  - Matrix (stiff `solref 2·dt`): 3 / 10 m/s at 1 ms, and 2 m/s at 8 / 16 ms. Four
+    engines tunnel on every cell; MuJoCo 4.0 CPU with `enable="SPECULATIVE"` catches
+    all four (same variant tag — Warp/3.11 reject or lack the flag).
+  - Official docs: a 0.7 mm card at ≳2 m/s needs speculative once the step exceeds
+    ~8 ms; the showcase uses `timestep="0.016"`. Warp does not implement the flag yet.
 - Tumbling T-handle (fourth-order RK4 for free bodies): a T-handle with no gravity and
   inertia (1, 4, 4.8)e-4 kg·m², spun at 6 rad/s about its intermediate axis for 4 s.
   It is measured against an independent RK4 solve at 0.1 ms.
