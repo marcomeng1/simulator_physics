@@ -141,7 +141,7 @@
         <li><b>Validate the task outcome on a second engine</b> before trusting a success
           rate, especially for clutter, thin parts, twisting grips and soft objects.</li>
       </ol>
-      <p class="short" data-replay="g1-walk|dt2ms-sand-v0.6"><b>In short:</b> pick the engine
+      <p class="short" data-replay="g1-walk|dt2ms-flat-basketball"><b>In short:</b> pick the engine
         your assets and training stack fit, set every physics option explicitly, and confirm
         the outcomes that matter on a second engine.</p>
 
@@ -166,8 +166,13 @@
         <li><a href="https://genesis-world.readthedocs.io/en/latest/">Genesis World</a>, Genesis AI.</li>
         <li><a href="https://github.com/google-deepmind/mujoco_menagerie">MuJoCo Menagerie</a>,
           Franka Emika Panda model.</li>
-        <li><a href="https://github.com/unitreerobotics/unitree_rl_gym">unitree_rl_gym</a>,
-          Unitree G1 12-DOF model and pretrained walking policy (<code>motion.pt</code>).</li>
+        <li>Cartwheel Inc., <a href="https://github.com/Cartwhl/cartwheel-control">Cartwheel
+          Control</a> (Apache-2.0 code) and
+          <a href="https://huggingface.co/andrew-cartwheel/cartwheel-control">open weights</a>
+          (Cartwheel Open Model License): Unitree G1 29-DOF motion-tracking policy and
+          example motions including <code>basketball_shot</code>. See also
+          <a href="https://getcartwheel.com/blog/cartwheel-control">getcartwheel.com/blog/cartwheel-control</a>.
+          Used with attribution for the legged-locomotion benchmark.</li>
       </ol>
 
       <h2 class="family" id="licences">Licences</h2>
@@ -179,9 +184,14 @@
           <tr><td>Franka Emika Panda (Menagerie)</td><td>Apache-2.0
             (<a href="data/PANDA-LICENSE">licence</a>)</td><td>fetched at a pinned commit,
             meshes shown in replays</td></tr>
-          <tr><td>Unitree G1 model and walking policy</td><td>BSD-3-Clause
-            (<a href="data/UNITREE-LICENSE">licence</a>)</td><td>fetched at a pinned commit;
-            policy weights read with numpy, meshes decimated for the viewer</td></tr>
+          <tr><td>Cartwheel Control (policy, motions, packaging)</td><td>Cartwheel Open Model
+            License (<a href="data/CARTWHEEL-LICENSE">licence</a>,
+            <a href="data/CARTWHEEL-NOTICE">notice</a>); code Apache-2.0</td>
+            <td>credited for the G1 <code>basketball_shot</code> benchmark; fetched from
+            Hugging Face at a pinned revision; MLP weights read with safetensors/numpy</td></tr>
+          <tr><td>Unitree G1 MJCF/meshes (via Cartwheel)</td><td>BSD-3-Clause
+            (<a href="data/G1-MODEL-LICENSE">licence</a>)</td><td>bundled under
+            <code>g1/model/</code>; meshes decimated for the viewer</td></tr>
           <tr><td>Article audits, metrics and replays</td><td>© Manda Robotics</td><td>fetched
             from the article for comparison; its metrics are quoted with attribution, its
             replay traces appear only in local builds</td></tr>
@@ -359,28 +369,36 @@
       <p class="short" data-replay="sheet|dt0.1ms-yb0.002"><b>In short:</b> shell plasticity keeps a permanent set on MuJoCo 4.0
         CPU; MuJoCo-Warp 4.0 keeps much less.</p>
 
-      <h2 class="family" id="legged">Legged locomotion: Unitree G1 on five terrains</h2>
-      <p class="muted prose">Unitree's pretrained G1 walking policy
-        (<code>unitree_rl_gym</code>, 12 leg joints, LSTM, trained in Isaac Gym) runs exactly
-        as in Unitree's MuJoCo deploy script: 50 Hz policy, 500 Hz PD, a constant forward
-        command for 10 s. Each foot touches the ground through four 5 mm spheres; the leg
-        collision meshes touch only when the feet sink deep. Terrains
-        are contact-parameter models, the same on every engine: <b>flat</b> (MuJoCo default
-        contact), <b>glass</b> (μ 0.1), <b>sand</b> (soft, damped, 1.5 cm ripples),
-        <b>mud</b> (very soft, overdamped, μ 1.2) and <b>sponge</b> (soft, springy, bumps up
-        to 2.5 cm). The policy is blind and never saw these terrains.</p>
+      <h2 class="family" id="legged">Legged locomotion: G1 basketball_shot on five terrains</h2>
+      <p class="muted prose"><b>Credit:</b> whole-body motion-tracking policy, reference
+        motion and G1 packaging from
+        <a href="https://github.com/Cartwhl/cartwheel-control">Cartwheel Control</a>
+        (<a href="https://getcartwheel.com/blog/cartwheel-control">blog</a>;
+        weights on
+        <a href="https://huggingface.co/andrew-cartwheel/cartwheel-control">Hugging Face</a>).
+        Licensed by Cartwheel under the
+        <a href="data/CARTWHEEL-LICENSE">Cartwheel Open Model License</a>
+        (see <a href="data/CARTWHEEL-NOTICE">NOTICE</a>). Unitree G1 MJCF/meshes remain
+        BSD-3 (see <a href="data/G1-MODEL-LICENSE">model licence</a>). We reimplement the
+        50&nbsp;Hz observation / goal loop in numpy and run it on every engine here; we do
+        not use Cartwheel's mjlab simulator.</p>
+      <p class="muted prose">The released 29-DOF G1 policy tracks the example
+        <code>basketball_shot</code> clip: 50 Hz MLP with a 10-frame observation history and
+        10-frame motion goal, 500 Hz PD on every hinge. Terrains are contact-parameter
+        models, the same on every engine: <b>flat</b> (MuJoCo default contact),
+        <b>glass</b> (μ 0.1), <b>sand</b> (soft, damped ripples), <b>mud</b> (very soft,
+        overdamped), and <b>sponge</b> (soft, springy bumps). The policy was not trained on
+        these terrains.</p>
       <div id="g1-matrix"></div>
       <div class="grid2">
         <div><div id="g1-sink" class="chart-box"></div></div>
         <div><div id="g1-track" class="chart-box"></div></div>
       </div>
       <p class="muted prose">Why engines part ways on soft ground: a 35 kg block on eight
-        5 mm spheres (the G1's weight and feet) settles 4.8 / 8.1 / 6.4 mm into sand on
-        MuJoCo 4.0 / Newton / Genesis, and 12.0 / 9.2 mm into mud on MuJoCo 4.0 / Newton,
-        while Genesis lets it fall through the floor. Same friction, solref and solimp, so
-        the engines map soft-contact impedance differently
+        5 mm spheres (the G1's weight and feet) settles differently into sand/mud across
+        MuJoCo / Newton / Genesis with the same friction, solref and solimp
         (<code>scripts/probes/soft_contact_probe.py</code>).</p>
-      <p class="short" id="g1-short" data-replay="g1-walk|dt2ms-glass-v0.6"></p>
+      <p class="short" id="g1-short" data-replay="g1-walk|dt2ms-flat-basketball"></p>
     </section>
 
     <section id="mujoco4" class="tab">
@@ -540,9 +558,13 @@
   <footer>
     Robot model: Franka Emika Panda from
     <a href="https://github.com/google-deepmind/mujoco_menagerie">MuJoCo Menagerie</a>
-    (Apache-2.0, see <a href="data/PANDA-LICENSE">licence</a>); Unitree G1 and its walking
-    policy from <a href="https://github.com/unitreerobotics/unitree_rl_gym">unitree_rl_gym</a>
-    (BSD-3-Clause, see <a href="data/UNITREE-LICENSE">licence</a>). Data: <code>results/</code>.
+    (Apache-2.0, see <a href="data/PANDA-LICENSE">licence</a>).
+    Legged locomotion uses <a href="https://github.com/Cartwhl/cartwheel-control">Cartwheel
+    Control</a> policy and <code>basketball_shot</code> motion
+    (<a href="https://huggingface.co/andrew-cartwheel/cartwheel-control">weights</a>;
+    <a href="data/CARTWHEEL-LICENSE">Cartwheel Open Model License</a> /
+    <a href="data/CARTWHEEL-NOTICE">NOTICE</a>); Unitree G1 model BSD-3
+    (<a href="data/G1-MODEL-LICENSE">licence</a>). Data: <code>results/</code>.
     Scenario and probe scripts: <code>packages/simbench/src/simbench/scenes/</code>,
     <code>scripts/probes/</code>.
   </footer>

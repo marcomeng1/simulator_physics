@@ -16,7 +16,7 @@ import shutil
 
 import numpy as np
 
-from simbench.paths import REPO, SUMMARY, UNITREE
+from simbench.paths import CARTWHEEL, REPO, SUMMARY
 from simbench.plans import PLANS, PRIMARY
 from simbench.reference import BUNDLES, ENGINE_LABELS, article_traces
 from simbench.report import ARTICLE_VARIANTS, HEADLINE, ROUTE_ORDER, _load
@@ -60,7 +60,8 @@ EXTRA_VARIANTS = {"stack": ["dt1ms-offset24mm"], "push": ["dt1ms-w80mm"],
                   "card-catch": ["dt1ms-v3", "dt1ms-v10", "dt8ms-v2"],
                   "tumble": ["dt10ms-rk4", "dt2ms-euler"], "sheet": ["dt0.1ms-elastic"],
                   "twist": ["dt1ms-disc-iw", "dt1ms-disc-hydro-iw", "dt1ms-square"],
-                  "g1-walk": [f"dt2ms-{t}-v0.6" for t in ("glass", "sand", "mud", "sponge")]}
+                  "g1-walk": [f"dt2ms-{t}-basketball"
+                              for t in ("glass", "sand", "mud", "sponge")]}
 # Scenes from contact-free to contact-rich; the site's replay list and scenario ladder.
 LADDER = [("No contact", ["hinge", "tumble", "panda-effort", "panda-tracking"]),
           ("One body on a surface", ["slide", "drop", "card-catch"]),
@@ -82,7 +83,8 @@ TITLES = {"slide": "Sliding block", "drop": "Drop and settle", "hinge": "Hinged 
           "ball-compress": "Ball compression",
           "ball-grasp": "Soft-ball grasp", "card-catch": "Thin card catch",
           "tumble": "Tumbling T-handle", "sheet": "Plastic sheet bend",
-          "twist": "Pinch and twist", "g1-walk": "G1 walking on terrain"}
+          "twist": "Pinch and twist",
+          "g1-walk": "Cartwheel G1 basketball_shot"}
 
 
 def _b64(a: np.ndarray, scale: float) -> str:
@@ -152,8 +154,9 @@ def geometry(scene_name: str, overrides: dict, meshes: dict) -> dict:
     geoms = []
     for g in range(m.ngeom):
         b = int(m.geom_bodyid[g])
-        colliding = m.geom_contype[g] or m.geom_conaffinity[g]
-        if not colliding and m.geom_group[g] == 3:  # Menagerie collision-only meshes
+        # Group 3 is collision-only (capsules under visual meshes); skip so the viewer
+        # shows Cartwheel/Menagerie visuals instead of green collision proxies.
+        if m.geom_group[g] == 3:
             continue
         if b != 0 and b not in tracked:
             continue
@@ -331,7 +334,10 @@ def export(public: bool = False) -> None:
          "headline": HEADLINE, "ladder_groups": LADDER, "ladder": ladder(),
          "public": public, "build": int(time.time())}, indent=1))
     for licence, name in ((REPO / "assets" / "menagerie" / "franka_emika_panda" / "LICENSE",
-                           "PANDA-LICENSE"), (UNITREE / "LICENSE", "UNITREE-LICENSE")):
+                           "PANDA-LICENSE"),
+                          (CARTWHEEL / "LICENSE", "CARTWHEEL-LICENSE"),
+                          (CARTWHEEL / "NOTICE", "CARTWHEEL-NOTICE"),
+                          (CARTWHEEL / "g1" / "model" / "LICENSE", "G1-MODEL-LICENSE")):
         if licence.exists():
             shutil.copy(licence, DATA / name)
     print(f"wrote {DATA.relative_to(REPO)} ({len(index)} replays, {len(summaries)} summaries)")

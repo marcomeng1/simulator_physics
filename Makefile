@@ -42,8 +42,7 @@ mj4new:
 	@for r in $(ROUTES); do $(call RUN,$$r) run-plan --route $$r --plan $@ || exit 1; done
 	uv run --locked simbench report --plan $@
 
-# Pinch-and-twist slip torque: point contacts everywhere, hydroelastic patches on Newton.
-# G1 walking policy on contact-parameter terrains (needs `make fetch` for the robot).
+# Pinch-and-twist + Cartwheel G1 basketball_shot on contact terrains (needs `make fetch`).
 patch terrain:
 	@for r in $(ROUTES); do $(call RUN,$$r) run-plan --route $$r --plan $@ || exit 1; done
 	uv run --locked simbench report --plan $@

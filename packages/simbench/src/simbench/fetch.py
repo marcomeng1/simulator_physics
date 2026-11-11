@@ -1,19 +1,18 @@
-"""Fetch pinned external inputs: the Menagerie Panda and the article's reference files.
+"""Fetch pinned external inputs: the Menagerie Panda, Cartwheel G1, and article files.
 
-Both are recorded in committed lock files with SHA-256 hashes, so a fresh checkout
-reproduces byte-identical inputs and detects upstream changes.
+Both Menagerie and Cartwheel are recorded in committed lock files with SHA-256 hashes,
+so a fresh checkout reproduces byte-identical inputs and detects upstream changes.
 """
 
 import hashlib
 import json
-import re
 import shutil
 import subprocess
 import tempfile
 import urllib.request
 from pathlib import Path
 
-from simbench.paths import ASSETS, MENAGERIE, REFERENCE, UNITREE
+from simbench.paths import ASSETS, CARTWHEEL, CARTWHEEL_G1, MENAGERIE, REFERENCE
 
 MENAGERIE_REPO = "https://github.com/google-deepmind/mujoco_menagerie"
 # The revision named in the article's Panda audit. Later revisions up to 98a70c5
@@ -22,11 +21,15 @@ MENAGERIE_COMMIT = "822c2d8f877dd166c5b7d3c9f7e3c3b6589473b7"
 MENAGERIE_LOCK = ASSETS / "menagerie.lock.json"
 MENAGERIE_MODELS = ["franka_emika_panda"]
 
-UNITREE_REPO = "https://github.com/unitreerobotics/unitree_rl_gym"
-UNITREE_COMMIT = "276801e46c5d433564f24658bac64f254b7d2d4b"
-UNITREE_LOCK = ASSETS / "unitree.lock.json"
-UNITREE_POLICY = "deploy/pre_train/g1/motion.pt"
-UNITREE_CONFIG = "deploy/deploy_mujoco/configs/g1.yaml"
+CARTWHEEL_REPO = "andrew-cartwheel/cartwheel-control"
+CARTWHEEL_REVISION = "24fc279af8f70097f503767b81db5384d779aae5"
+CARTWHEEL_LOCK = ASSETS / "cartwheel.lock.json"
+CARTWHEEL_PATTERNS = [
+    "LICENSE", "NOTICE",
+    "g1/config.json", "g1/policy.safetensors",
+    "g1/motions/basketball_shot.npz",
+    "g1/model/**",
+]
 
 ARTICLE_BASE = "https://mandarobotics.com/blog/comparing-physics-engines/"
 REFERENCE_LOCK = REFERENCE / "manifest.json"
@@ -143,40 +146,45 @@ def fetch_menagerie(update: bool = False) -> None:
     print(f"menagerie {commit[:12]} ({commit_date}): {len(files)} files")
 
 
-def fetch_unitree(update: bool = False) -> None:
-    """Sparse-checkout the 12-DOF G1, its pretrained walking policy and deploy config.
+def fetch_cartwheel(update: bool = False) -> None:
+    """Download the pinned Cartwheel G1 policy, MJCF and basketball_shot motion."""
+    from huggingface_hub import snapshot_download
 
-    Menagerie's G1 is the 29-DOF robot; the released policy was trained on this one.
-    """
-    lock = json.loads(UNITREE_LOCK.read_text()) if UNITREE_LOCK.exists() else None
-    if lock is not None and lock["commit"] != UNITREE_COMMIT:
+    lock = json.loads(CARTWHEEL_LOCK.read_text()) if CARTWHEEL_LOCK.exists() else None
+    if lock is not None and lock["revision"] != CARTWHEEL_REVISION:
         update = True
-    g1 = "resources/robots/g1_description"
-    with tempfile.TemporaryDirectory() as tmp:
-        clone = Path(tmp) / "unitree"
-        _git("clone", "--filter=blob:none", "--no-checkout", "--quiet", UNITREE_REPO, str(clone))
-        _git("sparse-checkout", "set", "--no-cone", "/LICENSE", f"/{g1}/g1_12dof.xml",
-             f"/{g1}/meshes/", f"/{UNITREE_POLICY}", f"/{UNITREE_CONFIG}", cwd=clone)
-        _git("checkout", "--quiet", UNITREE_COMMIT, cwd=clone)
-        commit_date = _git("show", "-s", "--format=%cI", UNITREE_COMMIT, cwd=clone)
-        xml = (clone / g1 / "g1_12dof.xml").read_text()
-        meshes = sorted(set(re.findall(r'file="([^"]+)"', xml)))
-        if UNITREE.exists():
-            shutil.rmtree(UNITREE)
-        (UNITREE / "meshes").mkdir(parents=True)
-        for rel in ("LICENSE", f"{g1}/g1_12dof.xml", UNITREE_POLICY, UNITREE_CONFIG):
-            shutil.copy(clone / rel, UNITREE / Path(rel).name)
-        for name in meshes:
-            shutil.copy(clone / g1 / "meshes" / name, UNITREE / "meshes" / name)
 
-    files = {str(p.relative_to(UNITREE)): _sha256(p)
-             for p in sorted(UNITREE.rglob("*")) if p.is_file()}
+    with tempfile.TemporaryDirectory() as tmp:
+        downloaded = snapshot_download(
+            CARTWHEEL_REPO, revision=CARTWHEEL_REVISION,
+            allow_patterns=CARTWHEEL_PATTERNS, local_dir=tmp,
+        )
+        src = Path(downloaded)
+        if CARTWHEEL.exists():
+            shutil.rmtree(CARTWHEEL)
+        CARTWHEEL.mkdir(parents=True)
+        for name in ("LICENSE", "NOTICE"):
+            shutil.copy2(src / name, CARTWHEEL / name)
+        shutil.copytree(src / "g1", CARTWHEEL_G1)
+
+    required = [CARTWHEEL_G1 / "config.json", CARTWHEEL_G1 / "policy.safetensors",
+                CARTWHEEL_G1 / "motions" / "basketball_shot.npz",
+                CARTWHEEL_G1 / "model" / "g1.xml", CARTWHEEL / "LICENSE", CARTWHEEL / "NOTICE"]
+    missing = [str(p.relative_to(CARTWHEEL)) for p in required if not p.is_file()]
+    if missing:
+        raise RuntimeError(f"Cartwheel fetch incomplete: missing {missing}")
+
+    files = {str(p.relative_to(CARTWHEEL)): _sha256(p)
+             for p in sorted(CARTWHEEL.rglob("*")) if p.is_file()}
     if lock is not None and not update and files != lock["files"]:
-        raise RuntimeError("unitree_rl_gym checkout does not match assets/unitree.lock.json")
-    UNITREE_LOCK.write_text(json.dumps(
-        {"repo": UNITREE_REPO, "commit": UNITREE_COMMIT, "commit_date": commit_date,
-         "license": "BSD-3-Clause", "files": files}, indent=2) + "\n")
-    print(f"unitree_rl_gym {UNITREE_COMMIT[:12]} ({commit_date}): {len(files)} files")
+        raise RuntimeError("Cartwheel checkout does not match assets/cartwheel.lock.json")
+    CARTWHEEL_LOCK.write_text(json.dumps({
+        "repo": CARTWHEEL_REPO, "revision": CARTWHEEL_REVISION,
+        "license": "Cartwheel Open Model License (weights/motions); Apache-2.0 (code); "
+                   "BSD-3-Clause (g1/model)",
+        "files": files,
+    }, indent=2) + "\n")
+    print(f"cartwheel {CARTWHEEL_REVISION[:12]}: {len(files)} files")
 
 
 def fetch_reference(update: bool = False) -> None:

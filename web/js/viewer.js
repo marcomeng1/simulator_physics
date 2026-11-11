@@ -39,6 +39,77 @@ const checker = () => {
   return tex;
 };
 
+/** Distinct ground textures so terrain materials read immediately in the replay. */
+function terrainTexture(look) {
+  const tex = canvasTexture(256, 256, (g) => {
+    if (look === "glass") {
+      g.fillStyle = "#6a9bb8";
+      g.fillRect(0, 0, 256, 256);
+      g.strokeStyle = "rgba(220,240,255,0.55)";
+      g.lineWidth = 3;
+      for (let i = 0; i <= 8; i++) {
+        g.beginPath(); g.moveTo(i * 32, 0); g.lineTo(i * 32, 256); g.stroke();
+        g.beginPath(); g.moveTo(0, i * 32); g.lineTo(256, i * 32); g.stroke();
+      }
+      g.fillStyle = "rgba(255,255,255,0.18)";
+      g.fillRect(8, 8, 40, 12);
+    } else if (look === "sand") {
+      g.fillStyle = "#c9a05a";
+      g.fillRect(0, 0, 256, 256);
+      for (let i = 0; i < 900; i++) {
+        g.fillStyle = i % 3 ? "#b8893f" : "#d9b574";
+        g.fillRect((i * 47) % 256, (i * 91) % 256, 2, 2);
+      }
+      g.strokeStyle = "rgba(120,80,30,0.25)";
+      for (let y = 10; y < 256; y += 18) {
+        g.beginPath();
+        g.moveTo(0, y);
+        for (let x = 0; x < 256; x += 8) g.lineTo(x, y + Math.sin(x * 0.08 + y) * 4);
+        g.stroke();
+      }
+    } else if (look === "mud") {
+      g.fillStyle = "#3a2516";
+      g.fillRect(0, 0, 256, 256);
+      for (let i = 0; i < 40; i++) {
+        g.fillStyle = i % 2 ? "#2a180e" : "#4a3020";
+        g.beginPath();
+        g.ellipse((i * 67) % 256, (i * 99) % 256, 18 + (i % 5) * 4, 10 + (i % 4) * 3, i, 0, 7);
+        g.fill();
+      }
+    } else if (look === "sponge") {
+      g.fillStyle = "#e87888";
+      g.fillRect(0, 0, 256, 256);
+      for (let i = 0; i < 120; i++) {
+        g.fillStyle = i % 2 ? "#f0a0a8" : "#d06070";
+        g.beginPath();
+        g.arc((i * 53) % 256, (i * 97) % 256, 4 + (i % 5), 0, 7);
+        g.fill();
+      }
+    } else { // concrete / flat
+      g.fillStyle = "#8a8e94";
+      g.fillRect(0, 0, 256, 256);
+      g.fillStyle = "#7a7e84";
+      g.fillRect(0, 0, 128, 128);
+      g.fillRect(128, 128, 128, 128);
+      g.strokeStyle = "rgba(40,40,45,0.35)";
+      g.strokeRect(0.5, 0.5, 127, 127);
+      g.strokeRect(128.5, 128.5, 127, 127);
+      for (let i = 0; i < 200; i++) {
+        g.fillStyle = "rgba(60,60,65,0.25)";
+        g.fillRect((i * 37) % 256, (i * 73) % 256, 1, 1);
+      }
+    }
+  });
+  tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+  tex.anisotropy = 8;
+  return tex;
+}
+
+function terrainLook(name = "") {
+  const m = /floor_(\w+)/.exec(name || "");
+  return m ? m[1] : "concrete";
+}
+
 export function frameAt(t, time) {
   let lo = 0, hi = t.length - 1;
   while (lo < hi) {
@@ -137,6 +208,7 @@ export class Viewer {
     this.sun.intensity = on ? 2.6 : 2.2;
     this.floors?.forEach((m) => {
       m.map = on ? m.userData.map : null;
+      // Keep material tint from the terrain texture; only fall back to dark when map is off.
       m.color.set(on ? 0xffffff : 0x1b2027);
       m.needsUpdate = true;
     });
@@ -161,14 +233,17 @@ export class Viewer {
       const geo = geomMesh(g, replay.meshes, cache);
       if (!geo) continue;
       const plane = g.type === "plane";
+      const look = terrainLook(g.name);
+      const base = new THREE.Color(...g.rgba.slice(0, 3));
       const mat = new THREE.MeshStandardMaterial({
-        color: plane ? 0x1b2027 : new THREE.Color(...g.rgba.slice(0, 3)), roughness: 0.9,
-        transparent: !plane && g.rgba[3] < 1, opacity: g.rgba[3] });
+        color: plane ? 0xffffff : base,
+        roughness: look === "glass" ? 0.12 : look === "mud" ? 0.95 : 0.85,
+        metalness: look === "glass" ? 0.35 : 0.02,
+        transparent: g.rgba[3] < 0.99, opacity: g.rgba[3] });
       if (!plane) mat.userData = { alpha: g.rgba[3], fixed: true };
       if (plane) {
-        Object.assign(mat, { roughness: 0.75 });
-        mat.userData = { map: this.checker.clone(), extent: [2 * (g.size[0] || 10),
-                                                             2 * (g.size[1] || 10)] };
+        const map = terrainTexture(look);
+        mat.userData = { map, extent: [2 * (g.size[0] || 10), 2 * (g.size[1] || 10)] };
         this.floors.push(mat);
       }
       const mesh = new THREE.Mesh(geo, mat);

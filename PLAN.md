@@ -298,28 +298,28 @@ traces are scored with the same metric code.
   solver's iteration limit; it needs naconmax 12,000 and njmax 40,000.
 
 ### Legged locomotion results (`terrain.json`)
-- Unitree G1 12-DOF from `unitree_rl_gym` (`276801e46c5d`, BSD-3) with its pretrained
-  LSTM walking policy (`motion.pt`), read with numpy (matches torch to 7e-6). It runs
-  as in Unitree's MuJoCo deploy script: 50 Hz policy, 500 Hz PD, torques clipped to the
-  actuator ranges, a 0.8 s gait clock and a constant command for 10 s. Menagerie's G1 is
-  the 29-DOF robot, which this policy was not trained on.
+- **Credit:** [Cartwheel Control](https://github.com/Cartwhl/cartwheel-control)
+  ([HF](https://huggingface.co/andrew-cartwheel/cartwheel-control),
+  [blog](https://getcartwheel.com/blog/cartwheel-control)) — G1 29-DOF motion-tracking
+  policy and `basketball_shot` motion (revision `24fc279`). Licensed by Cartwheel under
+  the Cartwheel Open Model License; G1 MJCF BSD-3. Inference is reimplemented in simbench
+  (numpy MLP + PD) across five engines; not `cartwheel-play` / mjlab.
+- Tracks `basketball_shot` at 50 Hz (hist/goal = 10) with 500 Hz PD (Cartwheel RP1 gains
+  from armature/effort); fall rule height 0.25 m / tilt 0.8. Weights via safetensors.
 - Terrains are contact-parameter models applied to every colliding geom and the ground.
   flat: MuJoCo defaults. glass: μ 0.1. sand: μ 0.6, solref 0.05 1.2, solimp 0.3 0.95
   0.02, with 1.5 cm ripples. mud: μ 1.2, solref 0.05 2, solimp 0.6 0.95 0.03. sponge:
-  μ 0.9, solref 0.05 0.15, solimp 0.3 0.95 0.02, with bumps up to 2.5 cm.
-  Commands are 0.3, 0.6 and 0.9 m/s.
-- Flat: all five engines walk 2.8 / 5.5 / 8.0 m (0.93–0.97× the command). MuJoCo 3.11,
-  4.0 and MuJoCo-Warp agree to 0.02 mm, Genesis to 3 mm, Newton to 15 cm.
-- Glass topples the policy at 0.6 and 0.9 m/s on every engine (1.1–1.8 s), except
-  Newton at 0.6 m/s, which slides on until 8.9 s. At 0.3 m/s the MuJoCo engines keep
-  walking, slipping 0.4 m/s at the feet, while Newton and Genesis fall.
-- Sand, mud and sponge: the MuJoCo engines and Newton walk every case (sink 14 / 33–45
-  / 7.5 mm on MuJoCo). Genesis falls in all 9 runs within 1–4.5 s.
-- Cause, from `scripts/probes/soft_contact_probe.py`: a 35 kg block on eight 5 mm
-  spheres with the same parameters settles 4.8 / 8.1 / 6.4 mm into sand on MuJoCo 4.0
-  / Newton / Genesis, and 12.0 / 9.2 mm into mud on MuJoCo 4.0 / Newton. Genesis lets
-  it fall through the floor on mud. Genesis reads the same friction, solref and solimp
-  per geom (checked after build), so it maps soft-contact impedance differently.
+  μ 0.9, solref 0.05 0.15, solimp 0.3 0.95 0.02, with bumps up to 2.5 cm. One motion per
+  terrain (no speed axis).
+- Headline metrics: `fell_at_s`, `completed`, `joint_mae_deg`, `root_err_mm`, `sink_mm`.
+- Flat: MuJoCo 3.11/4.0 complete (~5.6° joint MAE, ~141 mm root err); Warp/Newton also
+  complete (~5.5–5.6°, 141–168 mm). Glass: all four fall ~3.8–5.0 s. Sand: all four
+  complete. Mud: MuJoCo + Newton + Warp complete (Warp root drifts more). Sponge: MuJoCo
+  + Newton complete; Warp falls ~5.9 s. Genesis fails at build with a CUDA
+  `cuFuncSetAttribute` error on this 29-DOF free-base MJCF (collision-only capsules;
+  visual STLs stripped) — recorded as route errors in `terrain.json`.
+- Soft-ground separation still explained by `scripts/probes/soft_contact_probe.py` (same
+  contact parameters map to different sinkage per engine).
 
 ### Phase 0 results
 - Five locked routes install and step both Panda models on the RTX 5090

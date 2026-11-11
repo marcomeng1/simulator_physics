@@ -361,11 +361,13 @@ function overview() {
     },
     g1Rows().length && {
       topic: "Legged locomotion on terrain",
-      claim: "A G1 walking policy transfers on flat ground, falls on glass, and fails on Genesis "
-        + "soft ground.",
-      replay: ["g1-walk", "dt2ms-sand-v0.6"],
-      text: g1Summary(),
-      chart: () => g1Matrix(0.6, true),
+      claim: "Cartwheel's G1 basketball_shot tracks on flat ground; soft and slick terrains "
+        + "separate the engines.",
+      replay: ["g1-walk", "dt2ms-flat-basketball"],
+      text: "Policy, motion and G1 packaging from Cartwheel Control "
+        + "(github.com/Cartwhl/cartwheel-control; Cartwheel Open Model License). "
+        + g1Summary(),
+      chart: () => g1Matrix(true),
       go: "scenarios#legged",
     },
     peak && {
@@ -395,9 +397,9 @@ function overview() {
   };
 
   const advice = [
-    ["Legged locomotion", "Flat and soft terrains transfer between the MuJoCo engines and "
-      + "Newton, not to Genesis. Randomise friction well below 0.5 and contact softness.",
-    "scenarios#legged", ["g1-walk", "dt2ms-glass-v0.6"]],
+    ["Legged locomotion", "Cartwheel 29-DOF tracking stresses contact; validate soft and "
+      + "low-friction terrains on a second engine before trusting a success rate.",
+    "scenarios#legged", ["g1-walk", "dt2ms-flat-basketball"]],
     ["Grasping and pick-and-place", "Lift, stack and push outcomes agree on all five engines. "
       + "Train on GPU (MuJoCo-Warp or Newton), spot-check on MuJoCo CPU.", "scenarios#ladder", ["grasp", "dt1ms"]],
     ["Insertion and assembly", "Geometry decides, so any engine works; model the chamfer and "
@@ -1001,7 +1003,7 @@ const OUTCOME = {
   "hinge-plastic": ["final_angle_deg", (v) => `${fx(v, 2)}°`],
   sheet: ["permanent_set_mm", (v) => `${fx(v, 1)} mm set`],
   twist: ["slip_ratio", (v) => `${fx(v, 2)}× analytic`],
-  "g1-walk": ["speed_ratio", (v) => `${fx(v, 2)}× speed`],
+  "g1-walk": ["joint_mae_deg", (v) => (v == null ? "—" : `${fx(v, 1)}° joint`)],
 };
 const OUTCOME_LABEL = {
   hinge: "error vs analytic", tumble: "RK4 error, 2 ms", "panda-effort": "hand excursion",
@@ -1012,7 +1014,7 @@ const OUTCOME_LABEL = {
   "cloth-fold": "fold coverage",
   sweep: "objects collected", "ball-compress": "plate load",
   "ball-grasp": "2 N hold lift", "hinge-plastic": "rest angle", sheet: "tip set",
-  twist: "disc slip torque", "g1-walk": "flat, 0.6 m/s",
+  twist: "disc slip torque", "g1-walk": "flat · basketball_shot",
 };
 const outcomeTone = (scene, m, row) => {
   if (row.status === "error") return "muted";
@@ -1350,67 +1352,63 @@ function twistSection() {
 // --- legged locomotion ---------------------------------------------------------------
 
 const TERRAINS = ["flat", "glass", "sand", "mud", "sponge"];
-const G1_SPEEDS = [0.3, 0.6, 0.9];
-const g1Metrics = (terrain, speed, route) =>
-  metric("g1-walk", `dt2ms-${terrain}-v${speed}`, route, "fell") == null ? null
-    : get(variantRows("g1-walk", `dt2ms-${terrain}-v${speed}`), route, "metrics");
-const g1Rows = () => TERRAINS.flatMap((t) => G1_SPEEDS.map((v) => [t, v]))
-  .filter(([t, v]) => ROUTES.some((r) => g1Metrics(t, v, r)));
+const g1Metrics = (terrain, route) =>
+  get(variantRows("g1-walk", `dt2ms-${terrain}-basketball`), route, "metrics") ?? null;
+const g1Rows = () => TERRAINS.filter((t) => ROUTES.some((r) => g1Metrics(t, r)));
 
-function g1Cell(terrain, speed, route, compact) {
-  const m = g1Metrics(terrain, speed, route);
+function g1Cell(terrain, route, compact) {
+  const m = g1Metrics(terrain, route);
   if (!m) return { text: "—", tone: "empty" };
-  const file = replayFor("g1-walk", `dt2ms-${terrain}-v${speed}`);
+  const file = replayFor("g1-walk", `dt2ms-${terrain}-basketball`);
   const onclick = file && !compact ? () => openReplay(file) : null;
-  const title = `${fx(m.distance_m, 2)} m, drift ${fx(m.lateral_drift_m, 2)} m, sink `
-    + `${fx(m.sink_mm, 1)} mm, foot slip ${fx(m.foot_slip_mm_s, 0)} mm/s`;
+  const title = `joint ${fx(m.joint_mae_deg, 1)}°, root ${fx(m.root_err_mm, 0)} mm, sink `
+    + `${fx(m.sink_mm, 1)} mm`;
   if (m.fell) return { text: compact ? "✕" : `falls ${fx(m.fell_at_s, 1)} s`, tone: "bad", title, onclick };
-  const tone = m.speed_ratio > 0.7 && m.speed_ratio < 1.3 ? "good" : "warn";
-  return { text: compact ? "✓" : `${fx(m.speed_ratio, 2)}× speed`, tone, title, onclick };
+  const tone = m.completed ? "good" : "warn";
+  return { text: compact ? "✓" : `${fx(m.joint_mae_deg, 1)}°`, tone, title, onclick };
 }
 
-function g1Matrix(speed = null, compact = false) {
-  const rows = speed == null ? g1Rows() : TERRAINS.map((t) => [t, speed]);
-  return matrix(rows.map(([t, v]) => (speed == null ? `${t} · ${v} m/s` : t)),
+function g1Matrix(compact = false) {
+  const rows = g1Rows();
+  return matrix(rows,
     ROUTES.map((r) => ({ label: compact ? SHORT[r] : label(r), color: COLORS[r] })),
-    (i, j) => g1Cell(...rows[i], ROUTES[j], compact),
-    compact ? {} : { corner: "terrain · command" });
+    (i, j) => g1Cell(rows[i], ROUTES[j], compact),
+    compact ? {} : { corner: "terrain" });
 }
 
 function g1Falls() {
-  return Object.fromEntries(ROUTES.map((r) => [r, g1Rows().filter(([t, v]) =>
-    g1Metrics(t, v, r)?.fell).map(([t, v]) => `${t} ${v}`)]));
+  return Object.fromEntries(ROUTES.map((r) => [r, g1Rows().filter((t) =>
+    g1Metrics(t, r)?.fell)]));
 }
 
 function g1Summary() {
   const falls = g1Falls();
-  const soft = (r) => falls[r].filter((f) => !f.startsWith("glass")).length;
-  const softRuns = g1Rows().filter(([t]) => !["flat", "glass"].includes(t)).length;
-  const flatOk = ROUTES.every((r) => !falls[r].some((f) => f.startsWith("flat")));
-  const steady = ROUTES.filter((r) => !soft(r)).map((r) => SHORT[r]);
-  const shaky = ROUTES.filter((r) => soft(r)).map((r) => `${label(r)} falls in ${soft(r)} of `
-    + `${softRuns}`);
-  return `${flatOk ? "Every engine walks flat ground alike. " : ""}Glass (μ 0.1) topples the `
-    + "policy at 0.6 m/s and above almost everywhere. On sand, mud and sponge "
-    + `${steady.join(", ")} keep walking${shaky.length ? `; ${shaky.join(", ")} runs with the `
-      + "same contact parameters, because soft contact maps to different sinkage per engine"
-      : ""}.`;
+  const flatOk = ROUTES.every((r) => !falls[r].includes("flat"));
+  const nFall = (r) => falls[r].length;
+  const steady = ROUTES.filter((r) => !nFall(r)).map((r) => SHORT[r]);
+  const shaky = ROUTES.filter((r) => nFall(r)).map((r) => `${label(r)} falls on `
+    + `${falls[r].join("/")}`);
+  return `${flatOk ? "Flat basketball_shot completes on every engine. " : ""}`
+    + (steady.length ? `${steady.join(", ")} complete every terrain. ` : "")
+    + (shaky.length ? shaky.join("; ") + "." : "Contact-parameter terrains separate soft-ground "
+      + "behaviour across engines.");
 }
 
 function g1Section() {
   if (!g1Rows().length) return;
-  $("#g1-matrix").replaceChildren(g1Matrix(), el("p", { class: "muted" }, "Cells: forward "
-    + "speed from 2 s to the end over the command, or the time the pelvis dropped below 0.5 m. "
-    + "Hover for distance, drift, sinkage and foot slip; 0.6 m/s cells open the replay."));
+  $("#g1-matrix").replaceChildren(g1Matrix(), el("p", { class: "muted" }, "Credit: Cartwheel "
+    + "Control (policy + basketball_shot). Cells: mean joint error vs that reference, or "
+    + "fall time (Cartwheel height/tilt rule). Hover for root error and sinkage; click for "
+    + "the replay."));
   const grouped = (key, unit, digits = 1) => bars(TERRAINS.map((t) => ({ label: t,
     bars: ROUTES.map((r) => {
-      const v = g1Metrics(t, 0.6, r)?.[key];
+      const v = g1Metrics(t, r)?.[key];
       return v == null ? null : { value: v, color: COLORS[r], text: `${fx(v, digits)}` };
     }).filter(Boolean) })), { unit, labelW: 70, barH: 8 });
-  $("#g1-sink").replaceChildren(el("h3", {}, "Foot sinkage at 0.6 m/s"),
+  $("#g1-sink").replaceChildren(el("h3", {}, "Foot sinkage"),
     grouped("sink_mm", "median deepest foot penetration [mm]"));
-  $("#g1-track").replaceChildren(el("h3", {}, "Foot slip at 0.6 m/s"),
-    grouped("foot_slip_mm_s", "mean loaded-foot speed [mm/s]", 0), routeLegend(ROUTES));
+  $("#g1-track").replaceChildren(el("h3", {}, "Joint tracking error"),
+    grouped("joint_mae_deg", "mean |q − q_ref| [°]", 1), routeLegend(ROUTES));
   $("#g1-short").replaceChildren(el("b", {}, "In short: "), g1Summary());
 }
 

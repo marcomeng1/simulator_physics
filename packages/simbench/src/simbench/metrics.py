@@ -606,37 +606,67 @@ def twist_metrics(tr: Trace) -> dict:
             "torque_Nm": torque[:: max(1, len(torque) // 200)].round(5).tolist()}
 
 
+def _grav_z_body(quat_wxyz) -> float:
+    """z-component of gravity (0,0,-1) in the body frame."""
+    w, x, y, z = quat_wxyz
+    # R^T @ (0,0,-1) z-component = -(1 - 2(x^2+y^2)) = 2(x^2+y^2) - 1
+    return 2 * (x * x + y * y) - 1
+
+
 def walk_metrics(tr: Trace) -> dict:
-    """G1 walking: fall time, tracking, drift, foot sinkage and slip, cost of transport."""
+    """G1 Cartwheel tracking: fall time, joint/root error vs reference, foot sinkage."""
     p = tr.meta["params"]
     base = tr.pos[:, tr.body("pelvis")]
     if not len(tr.t) or not np.isfinite(base).all():
-        return {"frames": len(tr.t), "fell": None}
-    down = np.flatnonzero(base[:, 2] < 0.5)
-    fell_at = float(tr.t[down[0]]) if len(down) else None
+        return {"frames": len(tr.t), "fell": None, "completed": False}
+    hz = float(p.get("policy_hz") or 50.0)
+    ref = None
+    try:
+        from simbench.scenes.g1 import load_motion
+        ref = load_motion(p.get("motion") or "basketball_shot")
+    except Exception:
+        ref = np.asarray(p.get("ref_qpos") or [], float)
+        if ref.ndim != 2 or ref.shape[0] == 0:
+            ref = None
+    fell_at = None
+    if ref is not None:
+        for i, t in enumerate(tr.t):
+            fi = min(int(round(t * hz)), len(ref) - 1)
+            if abs(ref[fi, 2] - base[i, 2]) > 0.25:
+                fell_at = float(t)
+                break
+            if abs(_grav_z_body(ref[fi, 3:7]) - _grav_z_body(tr.quat[i, tr.body("pelvis")])) > 0.8:
+                fell_at = float(t)
+                break
+    if fell_at is None:
+        down = np.flatnonzero(base[:, 2] < 0.35)
+        fell_at = float(tr.t[down[0]]) if len(down) else None
     up = tr.t < (fell_at if fell_at is not None else np.inf)
-    t, x = tr.t[up], base[up]
-    rec_dt = float(tr.t[1] - tr.t[0])
-    window = t >= 2.0
-    speed = (x[window][-1, 0] - x[window][0, 0]) / (t[window][-1] - t[window][0]) \
-        if window.sum() > 50 else None
-    feet = [tr.body(f) for f in FEET]
-    loaded = np.linalg.norm(tr.contact_net[up][:, feet], axis=2) > 50.0
-    horizontal = np.linalg.norm(tr.linvel[up][:, feet, :2], axis=2)
+    x = base[up]
     frames = np.flatnonzero(up)
-    on = np.isin(tr.c_frame, frames)
+    on = np.isin(tr.c_frame, frames) if len(tr.c_frame) else np.zeros(0, bool)
     pen = np.zeros(len(tr.t))
-    np.maximum.at(pen, tr.c_frame[on], -tr.c_dist[on])
-    distance = float(x[-1, 0] - x[0, 0])
-    work = float(np.abs(tr.tau[up] * tr.qd[up]).sum() * rec_dt)
+    if len(tr.c_frame):
+        np.maximum.at(pen, tr.c_frame[on], -tr.c_dist[on])
+    joint_mae = root_err = None
+    if ref is not None and tr.q.shape[1] > 0:
+        errs, roots = [], []
+        for i in np.flatnonzero(up):
+            fi = min(int(round(tr.t[i] * hz)), len(ref) - 1)
+            n = min(tr.q.shape[1], ref.shape[1] - 7)
+            errs.append(np.abs(tr.q[i, :n] - ref[fi, 7:7 + n]).mean())
+            roots.append(np.linalg.norm(base[i] - ref[fi, :3]))
+        joint_mae = float(np.mean(errs)) if errs else None
+        root_err = float(np.mean(roots)) if roots else None
+    completed = fell_at is None and tr.meta.get("status") == "ok"
     step = max(1, len(tr.t) // 250)
     return {"frames": len(tr.t), "fell": fell_at is not None, "fell_at_s": fell_at,
-            "distance_m": distance, "speed_ratio": speed / p["speed"] if speed else None,
-            "lateral_drift_m": float(abs(x[-1, 1] - x[0, 1])),
-            "base_height_m": float(x[:, 2].mean()),
-            "sink_mm": float(np.median(pen[frames]) * 1e3),
-            "foot_slip_mm_s": float(horizontal[loaded].mean() * 1e3) if loaded.any() else None,
-            "cost_of_transport": work / (p["mass"] * 9.81 * distance) if distance > 0.5 else None,
+            "completed": bool(completed),
+            "joint_mae_deg": float(np.degrees(joint_mae)) if joint_mae is not None else None,
+            "root_err_mm": float(root_err * 1e3) if root_err is not None else None,
+            "distance_m": float(x[-1, 0] - x[0, 0]) if len(x) else None,
+            "base_height_m": float(x[:, 2].mean()) if len(x) else None,
+            "sink_mm": float(np.median(pen[frames]) * 1e3) if len(frames) else None,
             "x_m": base[::step, 0].round(4).tolist(), "z_m": base[::step, 2].round(4).tolist()}
 
 

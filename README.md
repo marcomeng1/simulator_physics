@@ -22,7 +22,7 @@ The shared, engine-agnostic code lives in `packages/simbench` and depends only o
 
 ```bash
 make sync         # create every environment from its lock file
-make fetch        # pinned Menagerie Panda, Unitree G1 + policy, article reference files (hash-checked)
+make fetch        # pinned Menagerie Panda, Cartwheel G1 + policy, article reference files (hash-checked)
 make env-report   # versions, hardware and a smoke step per route -> results/summary/env/
 make audit        # post-import model readback per route + comparison -> results/summary/audit/
 make phase1 phase2 phase3   # scenes on every route -> results/raw/, results/summary/phaseN.json
@@ -33,7 +33,7 @@ make tuning       # push-controller grid per route -> results/summary/tuning/<ro
 make plastic      # 4.0 elasto-plasticity: hinge springyield, flex yield -> results/summary/plastic.json
 make mj4new       # 4.0 features: thin card (speculative), RK4 tumble, plastic sheet -> results/summary/mj4new.json
 make patch        # pinch-and-twist slip torque, point vs Newton hydroelastic contact -> results/summary/patch.json
-make terrain      # Unitree G1 walking policy on flat/glass/sand/mud/sponge -> results/summary/terrain.json
+make terrain      # Cartwheel Control G1 basketball_shot on terrains -> results/summary/terrain.json
 make bench        # batched runtime per route -> results/summary/bench/
 make web serve    # export web/data/ and open the site at http://localhost:8000
 make lint test
@@ -56,7 +56,7 @@ committed.
 - **Scenarios:** every scene ordered from contact-free to contact-rich (outcome per
   engine), then grouped by task family: contact-rich manipulation (sweep,
   insertion, tuning, pinch-and-twist with hydroelastic contact), deformable and
-  elasto-plastic bodies, and legged locomotion (G1 on five terrains).
+  elasto-plastic bodies, and legged locomotion (Cartwheel G1 basketball_shot on five terrains).
 - **MuJoCo 4.0:** 3.11 vs 4.0 on identical MJCF, the thin-card catch with speculative
   contacts, the RK4 tumble convergence, feature support per engine, and the option /
   determinism variants.
@@ -78,6 +78,18 @@ twist contact models, soft-contact sinkage). They are kept for reference and exc
 
 Any command can be run in a single route, e.g.
 `uv run --locked --project envs/mujoco4 simbench audit --route mujoco4 --model panda_article`.
+
+### Credits
+
+- **Cartwheel Control** ([GitHub](https://github.com/Cartwhl/cartwheel-control),
+  [HF weights](https://huggingface.co/andrew-cartwheel/cartwheel-control),
+  [blog](https://getcartwheel.com/blog/cartwheel-control)): G1 29-DOF motion-tracking
+  policy and `basketball_shot` reference used in the legged-locomotion benchmark.
+  Weights/motions under the Cartwheel Open Model License (“Licensed by Cartwheel under
+  the Cartwheel Open Model License”); code Apache-2.0. We reimplement the control loop in
+  numpy for multi-engine comparison and do not run `cartwheel-play` / mjlab.
+- **Unitree G1** model (via Cartwheel’s packaging / Menagerie lineage): BSD-3-Clause.
+- **Manda Robotics** article: scene parameters and comparison framing for the broader study.
 
 ### Publishing to GitHub Pages
 

@@ -49,8 +49,8 @@ HEADLINE = {
     "tumble": ["final_error_deg", "max_error_deg", "momentum_drift", "energy_drift"],
     "sheet": ["held_tip_mm", "peak_tip_mm", "permanent_set_mm"],
     "twist": ["slip_torque_Nm", "slip_ratio", "contacts_per_step", "pad_speed_max"],
-    "g1-walk": ["fell_at_s", "distance_m", "speed_ratio", "lateral_drift_m", "sink_mm",
-                "foot_slip_mm_s", "cost_of_transport"],
+    "g1-walk": ["fell_at_s", "completed", "joint_mae_deg", "root_err_mm", "sink_mm",
+                "distance_m"],
 }
 
 
@@ -242,11 +242,28 @@ def phase_report(plan: str) -> dict:
     report = {scene: {} for scene, _ in variants}
     for scene, variant in variants:
         report[scene][variant] = variant_summary(scene, variant)
+    if plan == "terrain":
+        # Keep Cartwheel attribution next to the numbers that depend on their release.
+        report["_credits"] = {
+            "legged_locomotion": (
+                "Policy, basketball_shot motion and G1 packaging from Cartwheel Control "
+                "(https://github.com/Cartwhl/cartwheel-control; "
+                "https://huggingface.co/andrew-cartwheel/cartwheel-control). "
+                "Licensed by Cartwheel under the Cartwheel Open Model License. "
+                "Unitree G1 MJCF/meshes: BSD-3-Clause. Inference reimplemented in simbench "
+                "(numpy); not cartwheel-play / mjlab."
+            ),
+        }
+        print("\nCredit: Cartwheel Control — G1 policy + basketball_shot "
+              "(https://github.com/Cartwhl/cartwheel-control; "
+              "Cartwheel Open Model License).")
     out = SUMMARY / f"{plan}.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(report, indent=2) + "\n")
 
     for scene, variants_ in report.items():
+        if scene.startswith("_"):
+            continue
         for variant, rows in variants_.items():
             keys = HEADLINE[scene]
             print(f"\n{scene} / {variant}")

@@ -243,11 +243,18 @@ PLANS: dict[str, list[Run]] = {
                   sim=sim, routes=("newton",), base=f"dt1ms-{shape}")
               for name, sim in NEWTON_CONTACTS]]],
     ],
-    # Unitree G1 with its pretrained walking policy on contact-parameter terrains.
+    # Cartwheel G1 (29-DOF) tracking basketball_shot on contact-parameter terrains.
+    # Larger contact buffers: many foot capsules + terrain features overflow defaults.
     "terrain": [
-        Run("g1-walk", {"dt": 0.002, "terrain": terrain, "speed": speed},
-            tag=f"{terrain}-v{speed:g}")
-        for terrain in ("flat", "glass", "sand", "mud", "sponge") for speed in (0.3, 0.6, 0.9)
+        run
+        for terrain in ("flat", "glass", "sand", "mud", "sponge")
+        for run in (
+            Run("g1-walk", {"dt": 0.002, "terrain": terrain, "motion": "basketball_shot"},
+                tag=f"{terrain}-basketball",
+                sim={"naconmax": 2048, "njmax": 4096}, routes=("mjwarp4", "newton")),
+            Run("g1-walk", {"dt": 0.002, "terrain": terrain, "motion": "basketball_shot"},
+                tag=f"{terrain}-basketball", routes=("mujoco311", "mujoco4", "genesis")),
+        )
     ],
 }
 
@@ -261,4 +268,4 @@ PRIMARY = {"slide": "dt2ms", "drop": "dt1ms", "hinge": "dt1ms", "collision-chain
            "hinge-plastic": "dt1ms-y5deg", "card-catch": "dt16ms-v2",
            "tumble": "dt2ms-rk4", "sheet": "dt0.1ms-yb0.002",
            "ball-grasp": "dt0.05ms-e2N-stiff", "twist": "dt1ms-disc",
-           "g1-walk": "dt2ms-flat-v0.6"}
+           "g1-walk": "dt2ms-flat-basketball"}

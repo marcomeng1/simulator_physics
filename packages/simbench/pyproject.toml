@@ -3,7 +3,7 @@ name = "simbench"
 version = "0.1.0"
 description = "Engine-agnostic scenes, controller, traces and metrics for the cross-engine benchmark"
 requires-python = ">=3.12"
-dependencies = ["numpy>=1.26"]
+dependencies = ["numpy>=1.26", "safetensors>=0.6", "huggingface-hub>=0.36"]
 
 [project.scripts]
 simbench = "simbench.cli:main"

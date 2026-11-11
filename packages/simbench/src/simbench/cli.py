@@ -24,10 +24,10 @@ def _write(path: Path, data) -> None:
 
 
 def cmd_fetch(args) -> None:
-    from simbench.fetch import fetch_menagerie, fetch_reference, fetch_unitree
+    from simbench.fetch import fetch_cartwheel, fetch_menagerie, fetch_reference
 
     fetch_menagerie(update=args.update)
-    fetch_unitree(update=args.update)
+    fetch_cartwheel(update=args.update)
     fetch_reference(update=args.update)
 
 
@@ -177,7 +177,7 @@ def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(prog="simbench")
     sub = parser.add_subparsers(dest="command", required=True)
 
-    p = sub.add_parser("fetch", help="fetch the pinned Panda, G1 and article reference files")
+    p = sub.add_parser("fetch", help="fetch pinned Panda, Cartwheel G1 and article reference files")
     p.add_argument("--update", action="store_true", help="rewrite the lock files")
     p.set_defaults(func=cmd_fetch)
 
